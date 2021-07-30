@@ -5,16 +5,7 @@ var nodemailer = require('nodemailer');
 
 exports.sendEmail = function(sender, recipients, subject, text) {
 
-  var smtpConfig = {
-    host: 'mail.impressive.hu',
-    port: 465,
-    secure: true, // use SSL
-    auth: {
-      user: 'sygnusdev@greenpc.hu',
-      pass: 'PzzW4Qbbd'
-    }
-  };
-
+  
   //reusable transporter object using the default SMTP transport
   var transporter = nodemailer.createTransport(smtpConfig);
   console.log(recipients);
