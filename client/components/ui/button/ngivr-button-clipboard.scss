@@ -1,0 +1,132 @@
+// @import "../../assets/sass/variables";
+// @import "../../assets/sass/ngivr-disabled";
+// @import "./ngivr-button";
+@mixin clipboard-button {
+	width: 30px;
+	height: 30px;
+	min-width: 0px;
+	min-height: 0px;
+	//margin-top: 5px;
+	vertical-align: baseline;
+    background-color: $button-flat-bg !important;
+    color: black !important;
+}
+@mixin clipboard-focus {
+	background-color: $button-flat-bg !important;
+    color: black !important;
+}
+@mixin clipboard-hover {
+	background-color: $color-primary !important;
+	color: white !important;
+}
+
+@mixin clipboard-toolbar-hover {
+    background-color: transparent !important;
+    color: white !important;
+}
+
+@mixin clipboard-toolbar {
+    background-color: transparent !important;
+    color: white !important;
+    -webkit-box-shadow: none !important;
+    -moz-box-shadow: none !important;;
+    box-shadow: none !important;;
+}
+
+ngivr-button-clipboard-copy {
+	position: relative;
+	> .md-button {
+		@include clipboard-button;
+	}
+
+    > .md-button:hover {
+        @include clipboard-hover;
+    }
+    > .ngivr-button-clipboard-toolbar {
+        @include clipboard-toolbar;
+    }
+    > .ngivr-button-clipboard-toolbar:hover {
+        @include clipboard-toolbar-hover;
+    }
+   > .md-button:focus {
+   	@include clipboard-focus;
+   }
+   > button:disabled {
+  	@extend .ngivr-disabled;
+  }
+}
+
+ngivr-button-clipboard-cut {
+	position: relative;
+	> .md-button {
+		@include clipboard-button;
+	}
+	> .md-button:hover {
+	   @include clipboard-hover;
+   }
+    > .ngivr-button-clipboard-toolbar {
+        @include clipboard-toolbar;
+    }
+    > .ngivr-button-clipboard-toolbar:hover {
+        @include clipboard-toolbar-hover;
+    }
+
+    > .md-button:focus {
+   	@include clipboard-focus;
+   }
+   > button:disabled {
+  	@extend .ngivr-disabled;
+  }
+}
+
+ngivr-button-clipboard-paste {
+	position: relative;
+	> .md-button {
+		@include clipboard-button;
+	}
+	> .md-button:hover {
+	   @include clipboard-hover;
+   }
+    > .ngivr-button-clipboard-toolbar {
+        @include clipboard-toolbar;
+    }
+    > .ngivr-button-clipboard-toolbar:hover {
+        @include clipboard-toolbar-hover;
+    }
+
+   > .md-button:focus {
+   	@include clipboard-focus;
+   }
+   > button:disabled {
+  	@extend .ngivr-disabled;
+  }
+}
+ngivr-button-excel-export {
+	position: relative;
+	> .md-button {
+		width: 24px;
+		height: 24px;
+		min-width: 0px;
+		min-height: 0px;
+		//margin-top: 5px;
+		vertical-align: baseline;
+	}
+	> .md-button:hover {
+	   @include clipboard-hover;
+   }
+   > .md-button:focus {
+   	@include clipboard-focus;
+   }
+   > button.btn:disabled {
+  	@extend .ngivr-disabled;
+  }
+}
+
+.ngivr-button-clipboard-list {
+	height:24px !important;
+	width:24px !important;
+	display: inline-flex;
+	> i {
+		margin: auto !important;
+	}
+}

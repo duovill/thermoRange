@@ -1,0 +1,261 @@
+<md-dialog aria-label="">
+    <form name="changeOrderForm" novalidate ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools portlet-title">
+                <h2>{{ticket.ticketName + ' sz. mérlegjegy diszpozíciójának módosítása'}}</h2>
+
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon class="fa fa-close" aria-label="Ablak bezérésa"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content" id="orderChange">
+
+                Eredeti diszpozíció
+                <ul class="list-group">
+                    <li class="list-group-item"> Sorszám
+                        <span class="badge badge-default" ng-bind="model.origOrder.orderNumber"></span>
+                    </li>
+                    <li class="list-group-item"> Partner
+                        <span class="badge badge-default"
+                              ng-bind="model.origOrder.partner[0].name  || (model.origOrder.direction === 'out' ? model.origOrder.destination.name : model.origOrder.seller.name)"></span>
+                    </li>
+
+                    <li class="list-group-item"> Termény
+                        <span class="badge badge-default" ng-bind="model.origOrder.orderProduct[0].name"></span>
+                    </li>
+
+                    <li class="list-group-item"> Szállítás típusa
+                        <span class="badge badge-default" ng-bind="model.origOrder.transportType"></span>
+                    </li>
+
+                    <li class="list-group-item" ng-if="model.origOrder.relatedContract"> Kapcsolódó szerződés száma
+                        <span class="badge badge-default"
+                              ng-bind="model.origOrder.relatedContract[0].contractNumber"></span>
+                    </li>
+                </ul>
+
+                <div layout="row">
+                    <div flex="40">
+                        <md-input-container class="md-block">
+                            <label>Új diszpozíció száma</label>
+                            <input type="text" required name="orderNumber"
+                                   ng-model="model.model.dstOrder.orderNumber"
+                                   ng-disabled="viewOpts.ticketType == 'full'"
+                                   ngivr-validation-order-change="{halfTicketDate: doc.halfTicketDate}"
+                                   ngivr-capitalize
+                                   ng-change="loadDispo()"/>
+                        </md-input-container>
+
+                        <span
+                            ng-show="changeOrderForm.orderNumber.$pending.ngivrValidationOrdeChange"
+                            class="ngivr-validation-pending">
+                                            Keresek egy diszpozíciót!</span>
+
+                        <div ng-messages="changeOrderForm.orderNumber.$error">
+                            <div ng-if="orderError.closed"
+                                 ng-message="ngivrValidationOrderChange">A
+                                diszpozíció le van zárva!
+                            </div>
+                            <div ng-if="orderError.deleted"
+                                 ng-message="ngivrValidationOrderChange">A
+                                diszpozíció törölt!
+                            </div>
+                            <div ng-if="orderError.direction"
+                                 ng-message="ngivrValidationOrderChange">A
+                                diszpozíció ellentétes irányú az eredeti diszpozíció irányával!
+                            </div>
+                        </div>
+                        <div ng-messages="changeOrderForm.orderNumber.$error"
+                             ng-show="ngivr.form.message.show(changeOrderForm, 'orderNumber')">
+                            <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <ul class="list-group">
+
+                    <li class="list-group-item"> Partner
+                        <span class="badge badge-default"
+                              ng-bind="model.dstOrder.partner[0].name || (model.dstOrder.direction === 'out' ? model.dstOrder.destination.name : model.dstOrder.seller.name)"></span>
+                    </li>
+
+                    <li class="list-group-item"> Termény
+                        <span class="badge badge-default" ng-bind="model.dstOrder.orderProduct[0].name"></span>
+                    </li>
+
+                    <li class="list-group-item"> Szállítás típusa
+                        <span class="badge badge-default" ng-bind="model.dstOrder.transportType"></span>
+                    </li>
+                    <li class="list-group-item" ng-if="model.dstOrder.relatedContract"> Kapcsolódó szerződés száma
+                        <span class="badge badge-default"
+                              ng-bind="model.dstOrder.relatedContract[0].contractNumber"></span>
+                    </li>
+
+
+                </ul>
+
+                <div layout="row"
+                     ng-if="model.cargoPlan !== undefined && (model.dstOrder.direction == 'in' || (model.dstOrder.direction === 'internal' && ticket.direction === 'internal_in') || model.dstOrder.direction === 'external_in')">
+                    <ngivr-input-switch ng-model="model.targetDepot"
+                                        ng-click="changeUnload()"
+                                        ngivr-caption="Betárolás tárházba"
+                                        ngivr-off-display="ngivr.strings.inputSwitch.default.off"
+                                        ngivr-on-display="ngivr.strings.inputSwitch.default.on"
+                                        ngivr-on-value="true"
+                                        ngivr-off-value="false"></ngivr-input-switch>
+                </div>
+
+                <div ng-if="model.origOrder.ekaer && (model.origOrder._id !== model.dstOrder._id)">
+                    <ngivr-input-switch ng-model="model.keepVehicle"
+                                        ng-click=""
+                                        ngivr-caption="Forrás diszpozíció járművének megtartása"
+                                        ngivr-off-display="ngivr.strings.inputSwitch.default.off"
+                                        ngivr-on-display="ngivr.strings.inputSwitch.default.on"
+                                        ngivr-on-value="true"
+                                        ngivr-off-value="false"></ngivr-input-switch>
+                </div>
+
+                <div ng-if="model.dstOrder.ekaer && (model.origOrder._id !== model.dstOrder._id)">
+                    <div layout="row">
+                        <div flex>
+                            <md-input-container class="md-block" style="flex:1">
+                                <label>{{ngivr.strings.field.plateNumber1}}</label>
+                                <ngivr-autocomplete-plate-numbers ng-model="model.plateNumber1"
+                                                                  set-selected-vehicles-to-null="setSelectedVehiclesToNull()"
+                                                                  name="plateNumber1"
+                                                                  internal="ticket.direction === 'internal_in' || ledger.dispo.intShip"
+                                                                  order-id="model.dstOrder.orderId"
+                                                                  ledger="Ticket.ledger[0]"
+                                                                  required
+                                                                  itk="model.dstOrder.ITK"
+                                                                  plate-number2="model.plateNumber2"></ngivr-autocomplete-plate-numbers>
+                            </md-input-container>
+
+
+                            <div ng-messages="changeOrderForm.plateNumber1.$error"
+                                 ng-show="ngivr.form.message.show(changeOrderForm, 'plateNumber1')"
+                                 style="height: auto !important;">
+                                <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                            </div>
+                        </div>
+                        <div flex>
+                            <md-input-container class="md-block">
+                                <label>{{ngivr.strings.field.plateNumber2}}</label>
+                                <input type="text"
+                                       ng-required="true"
+                                       name="plateNumber2" ng-model="model.plateNumber2" ngivr-capitalize
+                                       disabled/>
+                            </md-input-container>
+                            <div ng-messages="changeOrderForm.plateNumber2.$error"
+                                 ng-show="ngivr.form.message.show(changeOrderForm, 'plateNumber2')"
+                                 style="height: auto !important;">
+                                <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                            </div>
+                        </div>
+
+                        <div flex>
+                            <md-input-container class="md-block" style="margin-top: 16px">
+                                <label>{{ngivr.strings.field.ekaer}}</label>
+                                <ngivr-select-vehicle ng-model="model.selectedVehicle"
+                                                      orig-tcn="ticket.ledger[0].tcn"
+                                                      watch-plate-number="true"
+                                                      order-id="undefined"
+                                                      ledger-index="0"
+                                                      set-load-date="setLoadDate(index)"
+                                                      field-to-show="tcn"
+                                                      plate-number1="model.plateNumber1"
+                                                      ng-required="true"
+                                                      plate-number2="model.plateNumber2"
+                                                      name="ekaer"
+                                                      load-location-id="model.dstOrder.loadLocation[0]._id"
+                                                      unload-location-id="model.dstOrder.unloadLocation[0]._id"
+                                                      ng-disabled="!model.plateNumber1"
+                                ></ngivr-select-vehicle>
+                            </md-input-container>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div layout="row"
+                     ng-if="model.dstOrder && (model.cargoPlan === undefined || model.targetDepot)">
+                    <div flex="100">
+                        <md-input-container class="md-block md-select-card">
+                            <label>{{ngivr.strings.field.depot}}</label>
+                            <ngivr-select-depot name="depot" ng-model="model.depotFull"
+                                                site-id="model.dstOrder.direction === 'out' ? model.dstOrder.loadLocation[0]._id : model.dstOrder.unloadLocation[0]._id"
+                                                set-depot="setDepot(depot)"
+                                                required
+                            ></ngivr-select-depot>
+                        </md-input-container>
+
+                        <div ng-messages="changeOrderForm.depot.$error"
+                             ng-show="ngivr.form.message.show(changeOrderForm, 'depot')"
+                             style="height: auto !important;">
+                            <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-if="model.cargoPlan !== undefined && !model.targetDepot">
+                    <md-input-container class="md-block md-select-card">
+                        <label>{{ngivr.strings.field.ship}}</label>
+                        <ngivr-select-ship name="ship" ng-model="model.ship"
+                                           cargo-plan-id="model.cargoPlan._id"
+
+                                           target-depot="false" ship-message="ship.message"
+                                           cargo-plan-name="model.cargoPlan.name"
+                                           order-direction="model.dstOrder.direction"
+
+                                           required></ngivr-select-ship>
+
+                    </md-input-container>
+
+                    <div ng-messages="changeOrderForm.ship.$error"
+                         ng-show="ngivr.form.message.show(changeOrderForm, 'ship')"
+                         style="height: auto !important;">
+                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                    </div>
+                </div>
+
+
+                <md-input-container class="md-block">
+                    <label>Áthelyezés oka</label>
+                    <textarea ng-model="changeReason" name="model.reason" required>
+
+                </textarea>
+                </md-input-container>
+
+                <div ng-messages="changeOrderForm.reason.$error"
+                     ng-show="ngivr.form.message.show(changeOrderForm, 'reason')">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                </div>
+
+            </div>
+
+
+            <md-dialog-actions layout="row">
+                <span flex></span>
+                <ngivr-button ng-click="cancel()">
+                    <ng-md-icon icon="close"></ng-md-icon>
+                    <md-tooltip>Mégse</md-tooltip>
+                    Mégse
+                </ngivr-button>
+                <ngivr-button ng-click="answer() ">
+                    <ng-md-icon icon="save"></ng-md-icon>
+                    <md-tooltip>Mentés</md-tooltip>
+                    Mentés
+                </ngivr-button>
+
+            </md-dialog-actions>
+
+            <!--<pre>{{model.dstOrder | json}}</pre>-->
+        </md-dialog-content>
+    </form>
+</md-dialog>

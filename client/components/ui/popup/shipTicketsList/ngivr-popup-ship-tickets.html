@@ -1,0 +1,23 @@
+<md-dialog aria-label="List dialog">
+    <md-toolbar>
+        <div class="md-toolbar-tools portlet-title">
+            <h2>{{ship.name}} hajó mérlegjegyei</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="cancel()">
+                <md-icon class="fa fa-close" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+
+        <ngivr-list-ship-ticket ngivr-url="ngivrUrl" dispo="dispo"
+        ></ngivr-list-ship-ticket>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+        <ngivr-button ng-click="cancel() || ngivr.growl('close')">
+            <ng-md-icon icon="close"></ng-md-icon>
+            <md-tooltip>Bezár</md-tooltip>
+            Bezár
+        </ngivr-button>
+    </md-dialog-actions>
+</md-dialog>

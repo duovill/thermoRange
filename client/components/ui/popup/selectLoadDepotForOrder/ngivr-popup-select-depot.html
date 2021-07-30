@@ -1,0 +1,100 @@
+<md-dialog aria-label="" ng-style="order.sygnus ? {'min-width':'1200px'} :{}">
+
+    <md-toolbar>
+        <div class="md-toolbar-tools portlet-title">
+            <h2>Raktárak</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="cancel()">
+                <md-icon class="fa fa-close" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+
+    <md-dialog-content style="margin: 10px">
+        <form name="popupSelectDepotForm">
+            <div layout="row">
+                <div flex="{{order.sygnus || !possessionTransfers.length ? 100 : 60}}"
+                     ng-style="order.sygnus ? {} : {'border-right': 'medium solid #e74c3c', 'margin-right': '2px', 'padding-right': '2px'}">
+                    <div style="width: 100%;">
+
+                        <ngivr-depot-reservation depots="order.depotsWithProduct"
+                                                 sygnus="order.sygnus"
+                                                 checked-p-t-quantity="checkedPTQuantity"
+                                                 load-depot="order.loadDepot"
+                                                 edited="edited"
+                                                 order-id="order._id"
+                                                 ngivr="ngivr" form="popupSelectDepotForm"></ngivr-depot-reservation>
+                    </div>
+                </div>
+                <div flex="40" ng-if="!order.sygnus && possessionTransfers.length">
+                    <div layout="row" class="table-head">
+                        <div flex="20">
+                            Szerződés
+                        </div>
+                        <div flex="25">
+                            Mozgásazonosító
+                        </div>
+                        <div flex="20">
+                            Teljesítés dátuma
+                        </div>
+                        <div flex="30" style="text-align: right">
+                            Mennyiség (mt)
+                        </div>
+                        <div flex="5" style="text-align: right">
+
+                        </div>
+                    </div>
+
+                    <div ng-repeat="pt in possessionTransfers">
+                        <div layout="row">
+                            <div flex="20" style="margin-top: 12px">
+                                {{pt.contractNumber}}
+                            </div>
+                            <div flex="25" style="margin-top: 12px">
+                                {{pt.ticketName}}
+                            </div>
+                            <div flex="20" style="margin-top: 12px">
+                                {{pt.fulfillmentDate | date: 'yyyy.MM.dd'}}
+                            </div>
+                            <div flex="30" style="margin-top: 12px; text-align: right">
+                                <md-tooltip md-direction="top">
+                                    Eredeti mennyiség / Technikai maradvány / Szabad mennyiség
+                                </md-tooltip>
+                                {{pt.diagramInfo.quantity | number: 3}} / {{pt.technicalRemain | number: 3}} /
+                                {{pt.free| number: 3}}
+                            </div>
+                            <div flex="5" style="margin-top: 12px; text-align: right">
+                                <md-checkbox ng-model="pt.checked" aria-label="Checkbox"
+                                             ng-change="setCheckbox($index)">
+                                </md-checkbox>
+
+                            </div>
+
+                            <md-divider></md-divider>
+                        </div>
+                    </div>
+
+
+                    <!--<pre>{{possessionTransfers |json}}</pre>-->
+                </div>
+            </div>
+        </form>
+
+
+        <!--<pre>{{order |json}}</pre>-->
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+        <ngivr-button ng-click="cancel()">
+            <ng-md-icon icon="close"></ng-md-icon>
+            <md-tooltip>Mégse</md-tooltip>
+            Mégse
+        </ngivr-button>
+        <ngivr-button ng-click="answer('save')">
+            <ng-md-icon icon="save"></ng-md-icon>
+            <md-tooltip>Mentés</md-tooltip>
+            Mentés
+        </ngivr-button>
+    </md-dialog-actions>
+
+</md-dialog>

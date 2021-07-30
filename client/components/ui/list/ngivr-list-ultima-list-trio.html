@@ -1,0 +1,154 @@
+<ngivr-list ngivr-schema="orderVehicle" ngivr-ref="this" ngivr-query="ngivrQuery">
+  <ngivr-list-searcher>
+<span style="float: right; margin-right: 5px;"><ngivr-button-excel-export ngivr-filename="excelName" transformer-function="prepareData" ng-model="preparedData" ngivr-columns="columns" ngivr-headers="headers" ngivr-add-date="1"></ngivr-button-excel-export></span>
+
+    <md-input-container class="md-block">
+      <label>{{ ngivr.strings.title.search}}</label>
+      <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+             ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+    </md-input-container>
+
+  </ngivr-list-searcher>
+
+  <ngivr-list-template>
+
+        <div layout="row" class="ngivr-list-ultima-list-trio">
+          <div flex="100">
+            <div layout="row" flex>
+
+              <div>
+                <span class="badge badge-default ship-label pull-left">{{ doc.order.orderNumber }}</span>
+              </div>
+
+              <div>
+                <md-input-container class="md-block">
+                  <label>Szállítmányozó</label>
+                  <input type="text" ng-disabled="true" name="carrier" ng-model="doc.carrier.name"/>
+                </md-input-container>
+              </div>
+
+              <div>
+                <md-input-container class="md-block">
+                  <label>Felrakás ideje</label>
+                  <input type="text" ng-disabled="true" name="carrier" ng-model="doc.loadDate"/>
+                </md-input-container>
+              </div>
+
+              <div>
+                <md-input-container class="md-block">
+                  <label>Lerakás ideje</label>
+                  <input type="text" ng-disabled="true" name="carrier" ng-model="doc.arrivalDate"/>
+                </md-input-container>
+              </div>
+
+              <div>
+                <md-input-container class="md-block">
+                  <label>VSZ</label>
+                  <input type="text" ng-disabled="true" name="carrier" ng-model="doc.contract.contractNumber"/>
+                </md-input-container>
+              </div>
+
+              <div>
+                <md-input-container class="md-block">
+                  <label>ÁRU</label>
+                  <input class="" name="volume" ng-disabled="true" ng-model="doc.contract.product[0].name"/>
+                </md-input-container>
+              </div>
+
+              <div>
+                <md-input-container class="md-block">
+                  <label>Lerakott súly (mt)</label>
+                  <input type="text" ng-disabled="true" name="carrier" ng-model="doc.unloadedWeightFormatted"/>
+                </md-input-container>
+              </div>
+
+              <div>
+                <md-input-container class="md-block">
+                  <label>Felrakott súly (mt)</label>
+                  <input type="text" ng-disabled="true" name="carrier" ng-model="doc.loadedWeightFormatted"/>
+                </md-input-container>
+              </div>
+
+              <div>
+                <md-input-container class="md-block">
+                  <label>Partner</label>
+                  <input class="" name="volume" ng-disabled="true" ng-model="doc.contract.partner[0].name"/>
+                </md-input-container>
+              </div>
+
+              <div ng-if="doc.has2Ticket">
+                <md-input-container class="md-block">
+                  <label>Partner 2</label>
+                  <input class="" name="volume" ng-disabled="true" ng-model="doc.contract.partner2[0].name"/>
+                </md-input-container>
+              </div>
+
+              <div>
+                <md-input-container class="md-block">
+                  <label>Vontató rsz</label>
+                  <input class="" name="volume" ng-disabled="true" ng-model="doc.plateNumber1"/>
+                </md-input-container>
+              </div>
+
+              <div>
+                <md-input-container class="md-block">
+                  <label>Felrakóhely</label>
+                  <input class="" name="volume" ng-disabled="true" ng-model="doc.order.loadLocation[0].name"/>
+                </md-input-container>
+              </div>
+
+              <div>
+                <md-input-container class="md-block">
+                  <label>Lerakóhely</label>
+                  <input class="" name="volume" ng-disabled="true" ng-model="doc.order.unloadLocation[0].name"/>
+                </md-input-container>
+              </div>
+
+              <div style="margin-top: 10px; min-width: 85px;">
+
+                <div flex>
+                  <div flex="50" style="float: left;" ng-if="doc.inTicket">
+                    <!--                  <div ng-if="doc.ticketDeleted">
+                                        <md-button class="md-fab md-mini red-background" ng-disabled="true"">
+                                        <img style="max-height: 24px;" src="../assets/icons/static/send.png">
+                                        </md-button>
+                                      </div>
+                                      <div ng-if="!doc.ticketDeleted">
+                                        <md-button class="md-fab md-mini" ng-disabled="true" ng-class="{'green-background':doc.inTicket}">
+                                          <img style="max-height: 24px;" src="../assets/icons/static/send.png">
+                                        </md-button>
+                                      </div>-->
+                    <div ng-if="doc.ticket">
+                      <ngivr-button-pdf-preview-ult ngivr-type="flat" ngivr-template-raw="template" ngivr-data="doc.ticket"
+                                                    ngivr-templates="setting.htmlTemplates"></ngivr-button-pdf-preview-ult>
+                    </div>
+                  </div>
+
+                  <div flex="50" style="float: right;" ng-if="doc.outTicket">
+                    <!--                  <div ng-if="doc.ticketDeleted">
+                                        <md-button class="md-fab md-mini red-background" ng-disabled="true"">
+                                        <img style="max-height: 24px;" src="../assets/icons/static/send.png">
+                                        </md-button>
+                                      </div>
+                                      <div ng-if="!doc.ticketDeleted">
+                                        <md-button class="md-fab md-mini" ng-disabled="true" ng-class="{'green-background':doc.outTicket}">
+                                          <img style="max-height: 24px;" src="../assets/icons/static/send.png">
+                                        </md-button>
+                                      </div>-->
+
+                    <div ng-if="doc.ticket2">
+                      <ngivr-button-pdf-preview-ult ngivr-type="flat" ngivr-template-raw="template" ngivr-data="doc.ticket2"
+                                                    ngivr-templates="setting.htmlTemplates"></ngivr-button-pdf-preview-ult>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+  </ngivr-list-template>
+
+</ngivr-list>

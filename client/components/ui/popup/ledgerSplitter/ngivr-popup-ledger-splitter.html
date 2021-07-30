@@ -1,0 +1,129 @@
+<md-dialog aria-label="" style="min-width: 730px">
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools portlet-title">
+                <h2>{{ngModel.ticketName}}</h2>
+                <!--<span style="margin-left: 10px;" ng-if="ngDirection == 'in'">Eredeti mennyiség: {{ ngModel.ledger[ledgerIndex].loadedWeight }} mt</span>-->
+                <span ng-show="splitWeight" style="margin-left: 10px;">Eredeti felosztható mennyiség: {{ ngModel.ledger[ledgerIndex][splitWeight] }} mt ({{splitWeight === 'loadedWeight' ? 'felrakott': 'lerakott'}})</span>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon class="fa fa-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <ng-form name="ledgerSplitterForm" novalidate>
+                    <div style="background: #000000;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            opacity: 0.2;
+            z-index: 9999;" ng-show="progressActivated">
+                        <div style="margin: 0;
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);">
+                            <md-progress-circular ng-disabled="!progressActivated" class="md-warn md-hue-1"
+                                                  md-diameter="60"></md-progress-circular>
+                        </div>
+                    </div>
+
+                    <div layout="row">
+                        <div flex="60" ng-if="ngModel.ticketType != 'possessionTransfer'">
+                            <md-input-container class="md-block md-select-margin">
+                                <label>Mérlegjegy megosztás típusa</label>
+                                <md-select name="splitType" ng-model="splitType">
+                                    <md-option ng-repeat="i in splitterTypes" value="{{i.id}}"
+                                               ng-click="changeSplitType(i.id)">{{i.value}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+                        </div>
+                        <div flex="60" style="margin-top: 2px;" ng-if="splitType == splitterTypes[0].id">
+                            <md-input-container class="md-block">
+                                <label>Diszpó szám</label>
+                                <input type="text" name="orderNumber" ng-model="splitter.orderNumber" name="orderNumber"
+                                       ngivr-validation-order-for-split="{orderError: orderError}"
+                                       ng-required="splitType == splitterTypes[0].id" ngivr-capitalize/>
+                            </md-input-container>
+
+                            <span
+                                ng-show="ledgerSplitterForm.orderNumber.$pending.ngivrValidationOrderForSplit"
+                                class="ngivr-validation-pending">
+                                                    Keresek egy diszpozíciót!</span>
+
+                            <div
+                                ng-messages="ledgerSplitterForm.orderNumber.$error">
+                                <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                                <div ng-if="orderError.notExists"
+                                     ng-message="ngivrValidationOrderForSplit">Nincs ilyen diszpozíció
+                                </div>
+                                <div ng-if="orderError.parityNotSame"
+                                     ng-message="ngivrValidationOrderForSplit">Eltérő paritás
+                                </div>
+                                <div ng-if="orderError.directionNotSame"
+                                     ng-message="ngivrValidationOrderForSplit">Eltérő irány
+                                </div>
+                                <div ng-if="orderError.deleted"
+                                     ng-message="ngivrValidationOrderForSplit">Törölt diszpozíció
+                                </div>
+                                <div ng-if="orderError.deleted"
+                                     ng-message="ngivrValidationOrderForSplit">Törölt diszpozíció
+                                </div>
+                                <div ng-if="orderError.loadLocationNotSame"
+                                     ng-message="ngivrValidationOrderForSplit">Eltérő felrakóhely
+                                </div>
+                                <div ng-if="orderError.dstNotIn"
+                                     ng-message="ngivrValidationOrderForSplit">Nem beszállítás
+                                </div>
+                                <div ng-if="orderError.loadLocationNotSame"
+                                     ng-message="ngivrValidationOrderForSplit">Partneres diszpozíció
+                                </div>
+                            </div>
+                            <!--<div ng-if="order != null">Megvan a(z) {{ order.orderNumber }} sorszámú diszpozicó</div>-->
+                            <!--<div ng-if="order == null">Nem található a diszpozicó</div>-->
+                        </div>
+
+                        <div flex="40" style="margin-top: 2px;">
+                            <md-input-container class="md-block">
+                                <label>Mennyiség (mt)</label>
+                                <input type="number" name="value" ng-model="splitter.value"
+                                       max="{{ngModel.ledger[ledgerIndex][splitWeight]}}"
+                                       required/>
+                            </md-input-container>
+
+                            <div ng-messages="ledgerSplitterForm.value.$error">
+                                <div ng-message="max">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                                <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+
+                            </div>
+                        </div>
+                    </div>
+                </ng-form>
+
+
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <ngivr-button ng-click="cancel()">
+                <ng-md-icon icon="close"></ng-md-icon>
+                <md-tooltip>Mégse</md-tooltip>
+                Mégse
+            </ngivr-button>
+            <ngivr-button ng-click="answer(ledgerSplitterForm)">
+                <ng-md-icon icon="save"></ng-md-icon>
+                <md-tooltip>Megosztás</md-tooltip>
+                Megosztás
+            </ngivr-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>
+
+

@@ -1,0 +1,31 @@
+<md-dialog aria-label="" style="min-width: 200px">
+
+    <md-toolbar>
+        <div class="md-toolbar-tools portlet-title">
+            <h2>Vontató rendszáma: {{doc.name}}</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="cancel()">
+                <md-icon class="fa fa-close" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+
+    <md-dialog-content style="margin: 10px">
+        <ngivr-autocomplete-trailer ng-model="doc.connectedUnits[0]"></ngivr-autocomplete-trailer>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+        <span flex></span>
+        <ngivr-button ng-click="cancel()">
+            <ng-md-icon icon="close"></ng-md-icon>
+            <md-tooltip>Mégse</md-tooltip>
+            {{ngivr.strings.button.cancel}}
+        </ngivr-button>
+        <ngivr-button ng-click="saveDoc()">
+            <ng-md-icon icon="save"></ng-md-icon>
+            <md-tooltip>Mentés</md-tooltip>
+            Mentés
+        </ngivr-button>
+    </md-dialog-actions>
+
+</md-dialog>

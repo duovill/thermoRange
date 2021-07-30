@@ -1,0 +1,196 @@
+@charset "UTF-8";
+.ngivr-button-row-left {
+  padding-right: 5px;
+}
+
+.ngivr-position-fixed-top-left {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+}
+
+.ngivr-position-fixed-top-right {
+  position: fixed;
+  top: 0px;
+  right: 0px;
+}
+
+.ngivr-position-fixed-bottom-left {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+}
+
+.ngivr-position-fixed-bottom-right {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+}
+
+/**
+template
+.template {
+  // > 600
+
+  // <= 600
+  @media screen and (min-width: $screen-small) {
+  }
+  // <= 960
+  @media screen and (min-width: $screen-medium) {
+  }
+  // <= 1280
+  @media screen and (min-width: $screen-large) {
+  }
+
+  // <= 1920
+  @media screen and (min-width: $screen-huge) {
+  }
+}
+*/
+body {
+  font-family: 'Arrial Narrow', sans-serif;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+}
+
+tr {
+  page-break-inside: avoid;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+.ngivr-size-a5 {
+  font-size: 14px;
+}
+
+.ngivr-highlight-gray {
+  background-color: rgba(128, 128, 128, 0.5);
+}
+
+table.invoice, table.ngivr-list {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+table.invoice thead tr, table.ngivr-list thead tr {
+  text-align: center;
+  font-weight: bold;
+  vertical-align: top !important;
+}
+
+table.invoice tbody tr, table.ngivr-list tbody tr {
+  vertical-align: top;
+  text-align: right;
+}
+
+table.invoice td, table.ngivr-list td {
+  padding: 10px;
+}
+
+.divider, .ngivr-divider {
+  height: 20px;
+}
+
+.border-horizontal, .ngivr-border-horizontal {
+  border-top: 1px solid #000000;
+}
+
+.ngivr-border-top-bottom {
+  border-top: 1px solid rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.border {
+  border: 1px solid #000000;
+}
+
+.ngivr-template-page-break {
+  height: 1px;
+  border-top-style: dotted;
+  page-break-after: always;
+}
+
+.ngivr-html-template-error {
+  color: white;
+  background-color: red;
+  padding: 5px;
+  font-size: 15px;
+}
+
+ngivr-html-template-include {
+  background-color: rgba(128, 128, 128, 0.5);
+}
+
+table.ngivr-template-list {
+  width: 100%;
+}
+
+table.ngivr-template-list tr td {
+  text-align: left;
+}
+
+table.ngivr-template-list tr td:first-child {
+  width: 33%;
+  text-align: right;
+}
+
+table.ngivr-template-list-inner-split {
+  width: 100%;
+}
+
+table.ngivr-template-list-inner-split tr td {
+  width: 50%;
+  text-align: left !important;
+}
+
+.ngivr-header {
+  font-weight: bold;
+}
+
+.ngivr-vertical-divider:before {
+  content: '|';
+  opacity: 0.35;
+}
+
+.ngivr-vertical-divider {
+  color: gray;
+}
+
+.ngivr-html-template-qr-style {
+  max-height: 3cm;
+  max-width: 3cm;
+}
+
+table.ngivr-html-template-contract {
+  width: 100%;
+}
+
+table.ngivr-html-template-contract > tbody > tr > td:first-child {
+  font-weight: bold;
+  width: 10mm;
+  vertical-align: top;
+}
+
+table.ngivr-html-template-contract > tbody > tr > td {
+  padding-top: 3mm;
+}
+
+.ngivr-html-template-contract-table-title {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.ngivr-html-template-missing {
+  display: inline-block;
+  padding: 2mm;
+  background-color: yellow;
+  font-size: 120%;
+}
+
+.ngivr-html-template-missing::after {
+  content: " HIÁNYZÓ ADAT";
+}

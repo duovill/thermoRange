@@ -1,0 +1,22 @@
+$border: 1px;
+$padding: 3px;
+$border-style: solid;
+$border-color: rgba(0, 0, 0, 0.12);
+
+.ngivr-row-head-right {
+  border-right: $border $border-style $border-color;
+}
+
+
+
+
+
+.ngivr-row-head > div {
+  @extend .ngivr-row-head-right;
+
+  padding: $padding;
+}
+
+.ngivr-row-head > div:last-child {
+  border-right: none;
+}

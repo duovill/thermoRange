@@ -1,0 +1,127 @@
+header{
+	width: 94%;
+	margin-top: 0;
+}
+
+header ul li{
+	margin-bottom: 1%;
+	font-size: 0.7em;
+}
+
+.qrcode-container p{
+    width: 175px;
+}
+
+.qrcode-container{
+	margin-top: 1%;
+}
+
+.qrcode-container div h1{
+	margin: 10% 3%;
+}
+
+.qrcode-container h3{
+	margin-top: 0%;
+	margin-bottom: 0%;
+}
+
+section{
+	padding: 0 5%;
+}
+
+.seller-container{
+	width: 65%;
+}
+
+.seller{
+	font-size: 0.7em;
+	margin:3% 0;
+}
+
+.seller td, .seller th{
+	padding-bottom: 0.3em;
+}
+
+.seller td:nth-child(1) {
+    width: 35%;
+}
+
+.seller td:nth-child(2) {
+    width: 100%;
+}
+
+.seller-container ul{
+	margin: 5% 0 0;
+}
+
+.seller-container ul li{
+	margin-bottom: 0.25em;
+}
+
+.seller-container ul li:nth-child(1){
+	margin-bottom: 0.5em;
+}
+
+.purchaser-container{
+	font-size: 0.75em;
+}
+
+.purchaser-container p{
+	text-align: left;
+	margin: 10% 0;
+}
+
+.purchaser{
+	padding-left: 10%;
+}
+
+.purchaser li{
+	margin-bottom: 7%;
+}
+
+.billcopy{
+	font-size: 1.5em;
+	margin:0 0 3%;
+}
+
+.itemizer th{
+	padding-bottom: 0.5em;
+}
+
+.paddingtop td, .paddingtop th{
+	padding-top: 0.6em;
+}
+
+.paddingbottom td, .paddingbottom th{
+	padding-bottom: 0.6em;
+}
+
+.notes{
+	font-size: 0.7em;
+}
+
+.notes li:nth-child(1){
+	padding-bottom: 0.5em;
+}
+
+.notes li:last-child{
+	padding-top: 0.5em;
+}
+
+footer{
+	width: 97%;
+	padding:0 1.5%;
+}
+
+footer h1{
+	margin: 10% 0%;
+}
+
+.pieces{
+	width: 33%;
+	margin: 5% 0 5% 2%;
+}
+
+.marketing{
+	margin-left: 0%;
+}

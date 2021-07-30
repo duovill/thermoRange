@@ -1,0 +1,93 @@
+<ngivr-list ngivr-schema="contract" ngivr-ref="this" ngivr-query="ngivrQuery">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+    <ngivr-list-template>
+            <md-card class="card-sm">
+                <md-card-content>
+                    <div layout="row" ng-click="toggleBlacksChange($index)">
+                        <div flex="20" ng-bind="doc.termTo | date: 'yyyy.MM.dd'"></div>
+                        <!-- <div flex="20" ng-bind="hedgeContract.expiry | date: 'yyyy.MM.dd'"></div> -->
+                        <div flex="20">
+                            <span>{{(doc.eurprice| number : 0) + '/' + (doc.hedgeValue| number : 0)}}</span>
+                        </div>
+                        <div flex="20">
+                            <span>{{doc.swapQuote| number : 0}}</span>
+                        </div>
+                        <div flex="20" ng-bind="doc.contractNumber"></div>
+                        <!-- <div flex="20" ng-bind="hedgeContract.bank"></div> -->
+                        <!-- <md-button flex="20" ng-click="hedgeToBuy()">Fedez</md-button> -->
+
+                        <div flex="20">
+                            <a class="waves-effect waves-whitesmoke btn-small btn btn-today"
+                               ng-if="(doc.hedgedContracts.length ? doc.hedgeValue > 0 : true) && !newHedgeContract.speculation"
+                               href="#"
+                               ng-click="hedgeToBuy(i)">Összekötés</a>
+                        </div>
+                    </div>
+
+                    <div ng-if="showBlacks[$index]" layout="row">
+                        <div flex="100">
+                            <div colspan="6">
+                                <div>
+                                    <md-tabs md-dynamic-height md-border-bottom >
+                                        <md-tab label="Fedezett tételek">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>{{ 'Mennyiség: ' + (doc.eurprice - doc.hedgeValue | number: 0) }}</td>
+                                                        <td>{{'Átlagár: ' + hedgedAvgPrice(doc.hedgedContracts[$index].hedgedContract) }}
+                                                        </td>
+                                                    </tr>
+                                                    <tr ng-repeat="k in doc.hedgedContracts| orderBy: date : true">
+                                                        <td ng-bind="k.contractNumber"></td>
+                                                        <td><span>{{ (k.eurprice | number: 0) + '/' + (k.toHedge-k.hedgeValue | number: 0)}}</span>
+                                                        </td>
+                                                        <td ng-bind="k.termTo | date : 'yyyy.MMMM d.'"></td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </md-tab>
+                                        <md-tab label="Történet">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <tbody>
+                                                    <tr>
+                                                        <td>Összekötést végezte: <b ng-bind="hedgeContract.by"></b></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Megjegyzés összekötéskor: <b ng-bind="doc.commentToLink"></b></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Zárások:</td>
+                                                    </tr>
+                                                    <div>
+                                                        <tr ng-repeat="i in hedgeContract.close| orderBy: date : true">
+                                                            <td ng-bind="doc.date | date : 'yyyy.MMMM d.'"></td>
+                                                            <td ng-bind="doc.quantity | number: 0"></td>
+                                                            <td ng-bind="doc.by"></td>
+                                                            <td>{{'Megjegyzés: ' + doc.comment}}</td>
+                                                        </tr>
+                                                        <!-- <tr>
+                                                                                                          <td>{{'Megjegyzés: ' + doc.comment}}</td>
+                                                                                                      </tr> -->
+                                                    </div>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </md-tab>
+                                    </md-tabs>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </md-card-content>
+            </md-card>
+    </ngivr-list-template>
+
+</ngivr-list>

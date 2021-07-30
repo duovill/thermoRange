@@ -1,0 +1,34 @@
+<ngivr-list ngivr-schema="thermoRangeBatch" ngivr-query="ngivrQuery" ngivr-ref="this">
+    <ngivr-list-header>
+        <div  layout="column" layout-gt-sm="row" class="ngivr-list-header-column" layout-padding>
+            <div flex="70">
+                Batch Id
+            </div>
+            <div flex="15">
+                Módosítás
+            </div>
+            <div flex="15" style="text-align: right">
+                Képkockák száma
+            </div>
+            <div>
+            </div>
+        </div>
+    </ngivr-list-header>
+    <ngivr-list-template>
+        <div layout="column" layout-gt-sm="row" layout-padding>
+            <div flex="70">
+                {{ doc._id }}
+            </div>
+            <div flex="15">
+                {{ doc.updatedAt | ngivrDate }}
+            </div>
+            <div flex="15" style="text-align: right;">
+                {{ doc.frameCount}}
+            </div>
+            <div style="position: relative">
+                <ngivr-icon-fa ngivr-icon-fa="fa-video-camera" ng-click="ref.setVideoOriginal({ doc: doc})" style="position: absolute; left: -5px; top: -0px;"></ngivr-icon-fa>
+            </div>
+        </div>
+
+    </ngivr-list-template>
+</ngivr-list>

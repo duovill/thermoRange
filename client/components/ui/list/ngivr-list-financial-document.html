@@ -1,0 +1,47 @@
+<ngivr-list ngivr-schema="financialDocument" ngivr-ref="this" ngivr-query="ngivrQuery" ngivr-sort="sort">
+
+  <ngivr-list-searcher>
+    <md-input-container class="md-block">
+      <label>{{ ngivr.strings.title.search}}</label>
+      <input ng-model="ref.partnerNev" ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+    </md-input-container>
+  </ngivr-list-searcher>
+
+  <ngivr-list-template>
+      <table style="width: 100%; margin-bottom: 10px;">
+        <tr>
+          <td style="text-align: right; width: 25px; vertical-align: top;">
+            <strong>{{ $index + 1 }}.
+            </strong>
+          </td>
+          <td>
+            <div style="clear: both;"></div>
+            <div style="float: left;">
+              {{ doc.partner[0].name }}
+            </div>
+            <div style="float: right;">
+              <ngivr-icon-fa
+                ng-click="ref.$parent.addForm(doc._id)"
+                ngivr-tooltip="{{ ngivr.strings.button.show }}"
+                ngivr-icon-fa="{{ ngivr.settings.fa.show}}"
+              ></ngivr-icon-fa>
+              &nbsp;
+              <ngivr-icon-fa
+                ng-click="command.remove(doc._id)"
+                ngivr-tooltip="{{ ngivr.strings.button.remove }}"
+                ngivr-icon-fa="{{ ngivr.settings.fa.remove }}"
+              ></ngivr-icon-fa>
+            </div>
+            <div style="clear: both;"></div>
+            <div style="float: left;" >
+              {{ doc.bruttoValue }}
+            </div>
+            <div style="float: right;">
+              {{ doc.registryDate | ngivrDate }}
+            </div>
+          </td>
+        </tr>
+      </table>
+  </ngivr-list-template>
+
+</ngivr-list>

@@ -1,0 +1,21 @@
+<ngivr-portlet ngivr-title="Felhasználók" ngivr-icon-fa="fa-list-ol">
+    <ngivr-portlet-action>
+
+        <ngivr-button ng-click="show.form ? cancel() : addUser()" ngivr-type="portal">
+            <ng-md-icon icon="{{show.form ? 'close' : 'add'}}"></ng-md-icon>
+            {{ ngivr.strings.button[show.form ? 'cancel' : 'addUser'] }}
+        </ngivr-button>
+
+
+        <ngivr-button ng-click="$ctrl.go('master')" ngivr-type="portal">
+            <ng-md-icon icon="arrow_back"></ng-md-icon>
+            {{ ngivr.strings.title.master }}
+        </ngivr-button>
+    </ngivr-portlet-action>
+
+    <ngivr-portlet-body>
+        <ngivr-form-user ng-if="show.form" ngivr-close="cancel()" ngivr-id="selected.id"></ngivr-form-user>
+        <ngivr-list-users></ngivr-list-users>
+    </ngivr-portlet-body>
+
+</ngivr-portlet>

@@ -1,0 +1,236 @@
+<ngivr-list ngivr-schema="ticket" ngivr-url="{{variables.url}}" ngivr-query="ngivrQuery" ngivr-ref="this" hide-default-sort-options="true" ngivr-sort="sort">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-template>
+
+        <div class="ngivr-list-reconcilation-template">
+            <ngivr-overlay-simple ng-if="overlay !== 0"></ngivr-overlay-simple>
+            <!--
+            ********************
+            Birtokátruházók
+            ********************
+            -->
+            <div ng-if="doc.ticketName" class="ngivr-list-tickets-without-invoice">
+
+                <!--Első sor-->
+                <div layout="row" class="ngivr-list-tickets-without-invoice-title"
+                     ng-class="{ 'ngivr-list-tickets-without-invoice-title-highlight': detailedOrders.includes(doc._id) }">
+
+                    <div flex="50" class="ngivr-list-tickets-without-invoice-title-hoverable"
+                         style="padding-left: 26px;">
+
+                        <span>
+                            <md-tooltip md-direction="top">{{ngivr.strings.possessionTransfer}}</md-tooltip>
+                            {{ doc.ticketName }}
+                        </span>
+                        <span style="padding-left: 5px; float: right">
+                            <md-tooltip md-direction="top">{{ngivr.strings.fulfillmentDate}}</md-tooltip>
+                            {{ doc.fulfillmentDate | date: 'yyyy.MM.dd' }}
+                        </span>
+                    </div>
+
+                    <!--<div flex="10"-->
+                         <!--style="padding-left: 5px;">-->
+
+                        <!--<span>-->
+                            <!--<md-tooltip md-direction="top">{{ngivr.strings.fulfillmentDate}}</md-tooltip>-->
+                            <!--{{ doc.fulfillmentDate | date: 'yyyy.MM.dd' }}-->
+                        <!--</span>-->
+                    <!--</div>-->
+
+                    <div flex style="text-align: right">
+                        <span>
+                              <md-tooltip md-direction="bottom">Súly</md-tooltip>
+                              {{ doc.tickets[0].ledger[0].loadedWeight | number : 3 }} mt
+                        </span>
+                    </div>
+
+                    <div flex style="text-align: right;">
+                        <md-checkbox aria-label="false" ng-if="!reconcilationId" style="margin-bottom: 0"
+                                     ng-click="isSelected(doc.tickets[0].ledger[0]._id, 'ticket') ? deselectTicket(doc.tickets[0], query) : selectTicket(doc.tickets[0], null, $index, null, query)"
+                                     ng-disabled="!isSelectable(doc._id.groupingId, 'ticket')"
+                                     ng-checked="isSelected(doc.tickets[0].ledger[0]._id, 'ticket')"
+                                     aria-label="Jegy">
+                        </md-checkbox>
+                    </div>
+                </div>
+
+
+                <!--Második sor-->
+                <div layout="row" class="ngivr-list-tickets-without-invoice-title"
+                     ng-class="{ 'ngivr-list-tickets-without-invoice-title-highlight': detailedOrders.includes(doc._id) }">
+                    <div flex="45" style="padding-left: 26px;">
+                      <span>
+                        {{ doc.contractPartner.name }}
+                        <md-tooltip md-direction="top">Partner</md-tooltip>
+                      </span>
+                    </div>
+
+                    <div flex style="text-align: right">
+                      <span>
+                        <md-tooltip md-direction="bottom">Adószám</md-tooltip>
+                        {{ doc.contractPartner.vatNumbers[0].number }}
+                      </span>
+                    </div>
+                    <div flex style="text-align: right;">
+                      <span>
+                        <md-tooltip md-direction="top">Szerződésszám</md-tooltip>
+                        {{ doc.contractNumber}}
+                      </span>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!--
+            ********************
+            Dispok
+            ********************
+            -->
+            <div ng-if="doc.orderNumber">
+
+                <div class="ngivr-list-tickets-without-invoice"
+                     ng-class="{ 'ngivr-list-tickets-without-invoice-highlight': detailedOrders.includes(doc._id.orderId) }">
+                    <!--Első sor-->
+                    <div layout="row" class="ngivr-list-tickets-without-invoice-title"
+                         ng-class="{ 'ngivr-list-tickets-without-invoice-title-highlight': detailedOrders.includes(doc._id.orderId) }">
+
+                        <div flex="50" ng-click="showTickets(doc._id.orderId)"
+                             >
+                            <ng-md-icon ng-if="!detailedOrders.includes(doc._id.orderId)" icon="chevron_right"></ng-md-icon>
+                            <ng-md-icon ng-if="detailedOrders.includes(doc._id.orderId)" icon="expand_more"></ng-md-icon>
+                            <span class="ngivr-list-tickets-without-invoice-title-hoverable">
+                              {{ doc.orderNumber }}
+                              <md-tooltip md-direction="top">{{ngivr.strings.tooltip.orderNumber}}</md-tooltip>
+                            </span>
+                            <span style="padding-left: 5px; float: right">
+                                <md-tooltip md-direction="top">{{ngivr.strings.fulfillmentDate}}</md-tooltip>
+                                {{ doc.fulfillmentDate | date: 'yyyy.MM.dd' }}
+                            </span>
+                        </div>
+
+                        <!--<div flex="10"-->
+                             <!--style="padding-left: 5px;">-->
+
+                            <!--<span>-->
+                                <!--<md-tooltip md-direction="top">{{ngivr.strings.fulfillmentDate}}</md-tooltip>-->
+                                <!--{{ doc.fulfillmentDate | date: 'yyyy.MM.dd' }}-->
+                            <!--</span>-->
+                        <!--</div>-->
+
+                        <div flex style="text-align: right">
+                          <span>
+                                    <md-tooltip md-direction="top">Összsúly</md-tooltip>
+                                    {{ doc.sumWeight | number : 3 }} mt
+                          </span>
+                        </div>
+
+                        <div flex style="text-align: right;">
+                            <md-checkbox aria-label="false" style="margin-bottom: 0" class="left4"
+                                         ng-if="!reconcilationId"
+                                         ng-click="isSelected(doc._id.orderId, 'order') ? deselectAllTicketsIndOrder(doc, $index) : selectAllTicketsInOrder(doc, $index, doc.tickets.length) "
+                                         ng-checked="isSelected(doc._id.orderId, 'order')"
+                                         ng-disabled="!isSelectable(doc._id.orderId, 'order', doc)">
+                            </md-checkbox>
+                        </div>
+                    </div>
+
+
+                    <!--Második sor-->
+                    <div layout="row" class="ngivr-list-tickets-without-invoice-title"
+                         ng-class="{ 'ngivr-list-tickets-without-invoice-title-highlight': detailedOrders.includes(doc._id.orderId) }">
+                        <div flex="45" style="padding-left: 26px;">
+                          <span>
+                            {{ doc.contractPartner.name }}
+                            <md-tooltip md-direction="top">Partner</md-tooltip>
+                          </span>
+                        </div>
+
+                        <div flex style="text-align: right">
+                          <span>
+                            <md-tooltip md-direction="bottom">Adószám</md-tooltip>
+                            {{ doc.contractPartner.vatNumbers[0].number }}
+                          </span>
+                        </div>
+                        <div flex style="text-align: right;">
+                          <span>
+                            <md-tooltip md-direction="top">Szerződésszám</md-tooltip>
+                            {{ doc.contractNumber}}
+                          </span>
+                        </div>
+                    </div>
+
+
+                    <!--
+                    ************************
+                    Ticketek az orderben
+                    ************************
+                    -->
+
+                    <div ng-repeat="ticket in doc.tickets" ng-if="detailedOrders.includes(doc._id.orderId)">
+                        <md-divider style="margin-bottom: 5px;"></md-divider>
+
+                        <div layout="row">
+                            <div flex="85" style="margin-left: 26px">
+                                <span>
+                                <md-tooltip md-direction="top">{{ngivr.strings.tooltip.number}}</md-tooltip>
+                                {{ ticket.ledger[0].subTicketName ? ticket.ledger[0].subTicketName : ticket.ticketName}}
+                                </span>
+                            </div>
+                            <div flex style="text-align: right;">
+                                <md-checkbox aria-label="false" ng-if="!reconcilationId" style="margin-bottom: 0"
+                                             ng-click="isSelected(ticket.ledger[0]._id, 'ticket') ? deselectTicket(ticket, doc.ticket.length) : selectTicket(ticket, doc._id.orderId, $index, $parent.$index, doc.tickets.length)"
+                                             ng-checked="isSelected(ticket.ledger[0]._id, 'ticket')"
+                                             aria-label="{{ ngivr.strings.ticketName }}"
+                                             ng-disabled="!isSelectable(ticket._id, 'ticket')">
+                                </md-checkbox>
+                            </div>
+                        </div>
+
+                        <div layout="row">
+                            <div flex="60" style="margin-left: 26px">
+                                <span>
+                                  <md-tooltip md-direction="top">{{ngivr.strings.plateNumber}}</md-tooltip>
+                                  {{ ticket.ticketType === 'possessionTransfer' ? 'Birtokátruházó' : ticket.plateNumber1 + '/' + ticket.plateNumber2 }}
+                                </span>
+                            </div>
+                            <div flex="40">
+                                <span>
+                                  <md-tooltip md-direction="top">{{ngivr.strings.fulfillmentDate}}</md-tooltip>
+                                  {{ ticket.fulfillmentDate | date: 'yyyy.MM.dd' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div layout="row">
+                            <div flex="60" style="margin-left: 26px">
+                                <span>
+                                  <md-tooltip md-direction="top">{{ngivr.strings.loadedWeight}}</md-tooltip>
+                                  {{ (ticket.ledger[0].loadedWeight | number : 3) + ' mt' }}
+                                </span>
+                            </div>
+                            <div flex="40">
+                                <span>
+                                  <md-tooltip md-direction="top">{{ngivr.strings.unloadedWeight}}</md-tooltip>
+                                  {{ (ticket.ledger[0].unloadedWeight | number : 3) + ' mt' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="ngivr-list-tickets-without-invoice-divider"
+                 ng-if="!detailedOrders.includes(doc._id.orderId) && !detailedOrders.includes(docNext._id.orderId)"></div>
+        </div>
+    </ngivr-list-template>
+
+</ngivr-list>

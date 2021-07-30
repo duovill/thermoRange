@@ -1,0 +1,91 @@
+<ngivr-list ngivr-schema="ticket" ngivr-ref="this" ngivr-query="ngivrQuery">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <md-tooltip md-direction="top" ng-if="!contractId">Sorszámra, termékre, termékcsoportra és partnerre keres</md-tooltip>
+            <md-tooltip md-direction="top" ng-if="contractId">Sorszámra keres</md-tooltip>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-template>
+        <div class="ngivr-list-tickets-without-invoice">
+            <div layout="row" layout-wrap class="center-in-table">
+                <div flex="30">
+                    <md-tooltip md-direction="top">Sorszám</md-tooltip>
+                    <span ng-style="{'color': doc.deleted ? 'red' :'inherit'}" ng-bind="doc.ticketName"></span>
+                    <ngivr-button-clipboard-copy ng-model="doc.ticketName"
+                                                 ngivr-list-btn="true"></ngivr-button-clipboard-copy>
+                </div>
+                <div flex="45">
+                    <md-tooltip md-direction="top">Termény</md-tooltip>
+                    <span ng-bind="doc.productName"></span>
+                </div>
+                <div flex="20">
+                    <md-tooltip md-direction="top">Mennyiség</md-tooltip>
+                    <span ng-bind="(getQuantity(doc) | number : 3) + ' mt'"></span>
+                </div>
+                <div flex="5">
+                    <button class="waves-effect waves-whitesmoke btn btn-toleft-toright  margin-bottom-3"
+                            ng-click="$parent.ref.$ctrl.loadPossessionTransfer(doc, 'left', $event)">B
+                    </button>
+                </div>
+
+                <div flex="30">
+                    <md-tooltip md-direction="top">Szerződés</md-tooltip>
+                    <span ng-bind="doc.contract.contractNumber || doc.contractId.contractNumber"></span>
+                </div>
+                <div flex="45">
+                    <md-tooltip md-direction="top">Raktár</md-tooltip>
+                    <span ng-bind="doc.depot.name"></span>
+                </div>
+                <div flex="20">
+                    <md-tooltip md-direction="top">Teljesítés dátuma</md-tooltip>
+                    <span ng-bind="doc.fulfillmentDate | date: 'yyyy.MM.dd'"></span>
+                </div>
+                <div flex="5" ng-if="doc.direction === 'in'">
+                    <md-tooltip md-direction="top">Átvétel</md-tooltip>
+                    <i class="fa fa-sign-in fa-lg" aria-hidden="true" style="position: relative; bottom: 3px"></i>
+                </div>
+                <div flex="5" ng-if="doc.direction === 'out'">
+                    <md-tooltip md-direction="top">Átadás</md-tooltip>
+                    <i class="fa fa-sign-out fa-lg" aria-hidden="true"
+                       style="position: relative; bottom: 3px; float: right"></i>
+                </div>
+
+
+                <div flex="30" ng-if="doc.direction === 'in'">
+                    <md-tooltip md-direction="top">Tárolási díj kezdete</md-tooltip>
+                    <span ng-bind="doc.possessionTransfer.feeStartDate | date: 'yyyy.MM.dd'"></span>
+                </div>
+                <div flex="45" ng-if="doc.direction === 'in'">
+                    <md-tooltip ng-if="doc.direction === 'in'" md-direction="top">Tárolás díja</md-tooltip>
+                    <span ng-if="doc.possessionTransfer.feeType !== null"
+                          ng-bind="doc.direction === 'in' ?  doc.possessionTransfer.fee + ' ' + doc.possessionTransfer.currency + '/' + doc.possessionTransfer.feeType  : ''"></span>
+                </div>
+
+                <div flex="doc.technicalRemain === undefined ? 20 : 25" ng-if="doc.direction === 'in'">
+                    <md-tooltip ng-if="doc.direction === 'in'" md-direction="top">Tárolási határidő
+                    </md-tooltip>
+                    <span ng-bind="doc.possessionTransfer.dueDate | date: 'yyyy.MM.dd'"></span>
+                </div>
+                <div flex="5" ng-if="doc.direction === 'in' && doc.technicalRemain === undefined">
+                    <button class="waves-effect waves-whitesmoke btn btn-toleft-toright  margin-bottom-3"
+                            ng-click="$parent.ref.$ctrl.loadPossessionTransfer(doc, 'right', $event)">J
+                    </button>
+                </div>
+
+                <div flex="95" ng-if="doc.technicalRemain !== undefined">
+                    <span>Technikai teljesítettség: {{doc.diagramInfo.quantity | number : 3}} mt/{{(doc.diagramInfo.quantity - doc.technicalRemain) | number : 3}} mt</span>
+                </div>
+                <div flex="5" ng-if="doc.technicalRemain !== undefined">
+                    <button class="waves-effect waves-whitesmoke btn btn-toleft-toright  margin-bottom-3"
+                            ng-click="$parent.ref.$ctrl.loadPossessionTransfer(doc, 'right', $event)">J
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="ngivr-list-tickets-without-invoice-divider"></div>
+    </ngivr-list-template>
+</ngivr-list>

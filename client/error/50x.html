@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html><head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <base href="/">
+    <title></title>
+    <meta name="description" content="NGIVR">
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="https://test.ngivr.sygnus.hu/error/style.css" />
+    <script src="https://test.ngivr.sygnus.hu/error/jquery-3.3.1.slim.min.js"></script>
+    <script>
+        $(() => {
+            const logoSygnus = $('#logo-sygnus')
+            const logoDuovill = $('#logo-duovill')
+            if (location.hostname.toLocaleLowerCase().includes('duovill')) {
+                document.title = "DuóVill"
+                logoDuovill.show()
+            } else {
+                document.title = "Sygnus"
+                logoSygnus.show()
+            }
+        })
+    </script>
+</head>
+
+<body>
+
+<div>
+    <img style="display: none;" id="logo-sygnus" src="https://test.ngivr.sygnus.hu/error/logo-sygnus.png" alt="Sygnus">
+    <img style="display: none; max-height: 250px; height: auto;" id="logo-duovill" src="https://test.ngivr.sygnus.hu/error/logo-duovill.png" alt="DuóVill">
+</div>
+
+<br/>
+<div style="border-top: 1px solid gray"></div>
+<br/>
+
+<div>
+    A rendszer karbantartás miatt ideiglenesen nem elérhető.
+</div>
+
+<br/>
+<br/>
+
+</body></html>

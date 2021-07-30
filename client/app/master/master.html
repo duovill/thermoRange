@@ -1,0 +1,48 @@
+<div>
+  <!--Törzsadat menű-->
+  <div ng-show="!fullSizeRequired" class="col-md-5 col-xs-12"
+       ng-class="{'padding-left-0-right-4': $mdMedia('gt-sm'), 'padding-sides-0': !$mdMedia('gt-sm')}">
+    <div class="portlet box red">
+      <div class="portlet-title">
+        <div class="caption">
+          <i class="fa fa-list-ul"></i>
+          Törzsadatok
+        </div>
+      </div>
+      <!--md-progress-linear class="md-accent md-hue-1"  md-mode="indeterminate"></md-progress-linear-->
+      <div class="portlet-body">
+        <div class="row">
+          <div class="col-md-12">
+            <div>
+              <div class="table-responsive">
+                <table class="table table-striped table-hover datatable">
+                  <thead>
+                  <tr>
+                    <th>Adatok</th>
+                    <th>Művelet</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr ng-repeat="masterData in masterDatas">
+                    <td>{{masterData.name}}</td>
+                    <td>
+                        <ngivr-button ui-sref="{{'.' + masterData.route}}" style="min-height: 24px; font-size: 12px;" >Szerkesztés</ngivr-button>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    ng-class="{'col-md-12': fullSizeRequired == 1, 'col-md-7 col-xs-12':fullSizeRequired !== 1  ,'padding-left-4-right-0': $mdMedia('gt-sm'), 'padding-sides-0': !$mdMedia('gt-sm')}">
+    <div ui-view=""></div>
+  </div>
+</div>
+
+
+

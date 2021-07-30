@@ -1,0 +1,31 @@
+<md-dialog aria-label="" style="min-width: 450px">
+    <md-toolbar>
+        <div class="md-toolbar-tools portlet-title">
+            <h2>Tárolási lista letöltése</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="close()">
+                <md-icon class="fa fa-close" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <div style="margin: 6px;">
+            <ngivr-order-excel-filter hide-button="true" hide-fields="{status: true}"></ngivr-order-excel-filter>
+        </div>
+
+    </md-dialog-content>
+
+    <md-dialog-actions>
+        <ngivr-button ng-click="close()">
+            <ng-md-icon icon="close"></ng-md-icon>
+            <md-tooltip>Bezár</md-tooltip>
+            Bezár
+        </ngivr-button>
+
+        <ngivr-button-excel-export ngivr-url='/api/statistics/dispoList' ngivr-server-query="listQuery" big="true"
+                                   transformer-function="triggerBuildListQuery" ngivr-add-date="1"
+                                   button-name="'Letöltés'"
+                                   ngivr-filename="fileName"></ngivr-button-excel-export>
+    </md-dialog-actions>
+
+</md-dialog>

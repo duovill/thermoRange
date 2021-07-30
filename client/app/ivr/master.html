@@ -1,0 +1,544 @@
+<div ng-controller="MasterDataController">
+	<!--Törzsadat menű-->
+	<div class="col-md-5 col-xs-12" >
+	    <div class="portlet box red">
+	        <div class="portlet-title">
+	            <div class="caption">
+	                <i class="fa fa-list-ul"></i>
+	                Törzsadatok
+	            </div>
+	            <div class="actions">
+	                <!--md-button aria-label="0"  ng-click="newMasterData()"><i class="fa fa-plus"></i> <span> </span></md-button-->
+	            </div>
+	        </div>
+	        <!--md-progress-linear class="md-accent md-hue-1"  md-mode="indeterminate"></md-progress-linear-->
+	        <div class="portlet-body">
+	            
+	            	<div class="table-scrollable">
+						<table class="table table-hover" >
+							<thead>
+								<tr>
+									<th>Adatok</th>
+									<th>Művelet</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="masterData in masterDatas ">
+									<td>{{masterData.name}}</td>
+									<td>
+										<button ng-click="open(masterData.id)" class="label label-sm label-danger" >Szerkesztés</button>
+									</td>
+									
+								</tr>
+							</tbody>
+						</table>
+		        	</div>
+	    		
+			</div>
+		</div>
+	</div>
+	<!--Felhasználók menű-->
+	<div data-ng-include="'views/users.html'">
+	</div>
+	<!--div  ng-show="menuItem=='1'" class="col-md-7 col-xs-12" >
+		<div   class="portlet box red">
+	        <div class="portlet-title">
+	            <div class="caption">
+	                <i class="fa fa-list-ul"></i>
+	                Felhasználók
+	            </div>
+
+	            <div class="actions">
+	                <md-button aria-label="0"  ng-click="newUser()"><i class="fa fa-plus"></i> <span>Új felhasználó hozzáadása </span></md-button>
+	            </div>
+	        </div>
+	        <md-progress-linear class="md-accent md-hue-1"  md-mode="indeterminate"></md-progress-linear>
+	        <div class="portlet-body">
+	            <div class="row">
+	            	<div ng-show="editUserShow" class="portlet-body form">
+						<form role="form">
+							<div class="form-body">
+								<div class="form-group form-md-line-input">
+									<input type="text" class="form-control" id="form_control_1" ng-model="isNewUser ? '' : user.fullName">
+									<label for="form_control_1">Teljes név</label>
+								</div>
+								<div class="form-group form-md-line-input">
+									<input type="text" class="form-control" id="form_control_1" ng-model="isNewUser ? '' : user.userName">
+									<label for="form_control_1">Felhasználói név</label>
+								</div>
+								<div class="form-group form-md-line-input">
+									<input type="text" class="form-control" id="form_control_1" ng-model="isNewUser ? '' : user.nickName">
+									<label for="form_control_1">Becenév</label>
+								</div>
+								<div class="form-group form-md-line-input ">
+									<select  class="form-control" id="form_control_1">
+										<option ng-disabled="isNewUser" value="{{user.userType}}">{{user.userType}}</option>
+										<option value="">Adminisztrátor</option>
+										<option value="">Logisztikus</option>
+										<option value="">Kereskedő</option>
+										<option value="">Option 4</option>
+									</select>
+									<label for="form_control_1">Felhasználói típus</label>
+								</div>
+								<div class="form-group form-md-line-input">
+									<input type="text" class="form-control" id="form_control_1" ng-model="isNewUser ? '' : user.maxEur">
+									<label for="form_control_1">Szerződési összeghatár (EUR)</label>
+								</div>
+								<div class="form-group form-md-line-input">
+									<input type="text" class="form-control" id="form_control_1" ng-model="isNewUser ? '' : user.maxHuf">
+									<label for="form_control_1">Szerződési összeghatár (HUF)</label>
+								</div>
+								<div class="md-checkbox " ng-class="success">
+									<input type="checkbox" id="checkbox1" class="md-check" ng-model="user.userStatus" ng-checked="true">
+									<label for="checkbox1">
+									<span></span>
+									<span class="check"></span>
+									<span class="box"></span>
+									Állapot: <strong>{{ user.userStatus ? 'Engedélyezett' : 'Tiltott' }}</strong></label>
+								</div>
+	                            
+								<div class="form-actions noborder">
+									<button type="button" class="btn blue">Mentés</button>
+									<button type="button" class="btn default" ng-click="cancelEdit()">Mégse</button>
+								</div>
+							</div>	
+						</form>
+					</div>
+		        </div>
+		    <div class="form-group form-md-line-input">
+		        		<input type="text" class="form-control" ng-model="query" placeholder="Keresés">
+		        	</div>	
+	        <div class="table-scrollable">
+				<table class="table table-hover" >
+					<thead>
+						<tr>
+							<th>Teljes név</th>
+							<th>Felhasználói név</th>
+							<th>Becenév</th>
+							<th>Felhasználói típus</th>
+							<th>Státusz</th>
+							<th>EUR</th>
+							<th>HUF</th>
+							<th>Műveletek</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="user in users | filter:query">
+							<td>{{user.fullName}}</td>
+							<td>{{user.userName}}</td>
+							<td>{{user.nickName}}</td>
+							<td>{{user.userType}}</td>
+							<td>{{ user.userStatus ? 'Engedélyezett' : 'Tiltott' }}</td>
+							<td>{{user.maxEur}}</td>
+							<td>{{user.maxHuf}}</td>
+							<td>
+								<md-button class="md-icon-button md-primary icon-button-table" aria-label="0" ng-click="">
+                                    <i class="fa fa-close"></i>
+                                </md-button>
+								<md-button  class="md-icon-button md-primary icon-button-table"  aria-label="0" ng-click="editUser(user)">
+	                                <i class="fa fa-wrench"></i>
+	                            </md-button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+    		</div>
+    		</div>
+		</div>
+	</div-->
+	
+	<!--Partnerek menű-->
+	<div ng-show="menuItem=='2'"class="col-md-7 col-xs-12">
+	    <div class="portlet box red">
+	        <div class="portlet-title">
+		        <div class="caption">
+		            <i class="fa fa-list-ul"></i>
+		            Partnerek
+		        </div>
+	            <div class="actions">
+		               <md-button aria-label="0"  ng-click="newPartner()"><i class="fa fa-plus"></i> <span>Új partner hozzáadása </span></md-button>
+		        </div>
+		    </div>
+	        <md-progress-linear class="md-accent md-hue-1" ng-if="!editor.loaded" md-mode="indeterminate"></md-progress-linear>
+	        <div class="portlet-body">
+
+	            <div class="row">
+		            	<div ng-show="editPartnerShow" class="portlet-body form">
+							<form role="form">
+								<div class="form-body">
+									<div class="form-group form-md-line-input ">
+										<select  class="form-control" id="form_control_1" ng-model="partner.partnerType">
+											<option ng-disabled="isNewUser" value="{{partner.partnerType}}">{{partner.partnerType}}</option>
+											<option value="">Cég</option>
+											<option value="">Bróker</option>
+											<option value="">Üzletkötő</option>
+											<option value="">Őstermelő</option>
+										</select>
+										<label for="form_control_1">Partner típus</label>
+									</div>
+									<div class="form-group form-md-line-input">
+										<input type="text" class="form-control" id="form_control_1" ng-model="isNewPartner ? '' : partner.name">
+										<label for="form_control_1">Név</label>
+									</div>
+									<div  class="form-group form-md-line-input">
+										<input type="text" class="form-control" id="form_control_1" ng-model="isNewPartner ? '' : partner.vatNumber">
+										<label for="form_control_1">Adószám</label>
+									</div>
+									<div class="form-group form-md-line-input">
+										<input type="text" class="form-control" id="form_control_1" ng-model="isNewPartner ? '' : partner.address">
+										<label for="form_control_1">Cím</label>
+									</div>
+									
+									<div ng-show="partner.partnerType=='Őstermelő'" class="form-group form-md-line-input">
+										<input type="text" class="form-control" id="form_control_1" ng-model="isNewPartner ? '' : partner.vatId">
+										<label for="form_control_1">Adóazonosító jel</label>
+									</div>
+									<div ng-show="partner.partnerType=='Őstermelő'" class="form-group form-md-line-input">
+										<input type="text" class="form-control" id="form_control_1" ng-model="isNewPartner ? '' : partner.taj">
+										<label for="form_control_1">TAJ-szám</label>
+									</div>
+									<div ng-show="partner.partnerType=='Őstermelő'" class="form-group form-md-line-input">
+										<input type="text" class="form-control" id="form_control_1" ng-model="isNewPartner ? '' : partner.regNumber">
+										<label for="form_control_1">Regisztrációs szám</label>
+									</div>
+									<div ng-show="partner.partnerType=='Őstermelő'" class="form-group form-md-line-input">
+										<input type="text" class="form-control" id="form_control_1" ng-model="isNewPartner ? '' : partner.mother">
+										<label for="form_control_1">Anyja neve</label>
+									</div>
+									<div ng-show="partner.partnerType=='Őstermelő'" class="form-group form-md-line-input">
+										<input type="text" class="form-control" id="form_control_1" ng-model="isNewPartner ? '' : partner.birthPlace">
+										<label for="form_control_1">Születési hely</label>
+									</div>
+									<div ng-show="partner.partnerType=='Őstermelő'" class="form-group form-md-line-input">
+										<input type="text" class="form-control" id="form_control_1" ng-model="isNewPartner ? '' : partner.birthDate">
+										<label for="form_control_1">Születési idő</label>
+									</div>
+									<div class="form-group form-md-line-input">
+										<input type="text" class="form-control" id="form_control_1" ng-model="isNewPartner ? '' : partner.kontoNumber">
+										<label for="form_control_1">Bankszámlaszám</label>
+									</div>
+									<div class="form-group form-md-line-input ">
+										<select  class="form-control" id="form_control_1">
+											<option ng-disabled="isNewPartner" value="{{partner.signRisk}}">{{partner.signRisk}}</option>
+											<option value="">Pozitív</option>
+											<option value="">Semleges</option>
+											<option value="">Negatív</option>
+										</select>
+										<label for="form_control_1">Aláírási kockázat</label>
+									</div>
+									<div class="form-group form-md-line-input ">
+										<select  class="form-control" id="form_control_1">
+											<option ng-disabled="isNewPartner" value="{{partner.fulfillRisk}}">{{partner.fulfillRisk}}</option>
+											<option value="">Pozitív</option>
+											<option value="">Semleges</option>
+											<option value="">Negatív</option>
+										</select>
+										<label for="form_control_1">Teljesítési kockázat</label>
+									</div>
+									<div class="form-group form-md-line-input">
+										<input type="text" class="form-control" id="form_control_1" ng-model="isNewPartner ? '' : partner.comment">
+										<label for="form_control_1">Megjegyzés</label>
+									</div>
+									<div class="md-checkbox " ng-class="success">
+										<input type="checkbox" id="checkbox2" class="md-check" ng-model="partner.partnerStatus" ng-checked="true">
+										<label for="checkbox2">
+										<span></span>
+										<span class="check"></span>
+										<span class="box"></span>
+										Állapot: <strong>{{ partner.partnerStatus ? 'Engedélyezett' : 'Tiltott' }}</strong></label>
+									</div>
+		                            
+									<div class="form-actions noborder">
+										<button type="button" class="btn blue">Mentés</button>
+										<button type="button" class="btn default" ng-click="cancelEdit()">Mégse</button>
+									</div>
+								</div>	
+							</form>
+						</div>
+			    </div>
+			    <div class="form-group form-md-line-input">
+			    	<input type="text" class="form-control" ng-model="query" placeholder="Keresés">
+			    </div>	
+	                            <div class="table-scrollable">
+
+	                                <table class="table table-striped table-hover datatable">
+	                                    <thead>
+	                                    <tr>
+	                                        <th ng-click="sortPartners='name' ; sortReverse = !sortReverse" class="sortable">
+		                                        <span ng-show="sortPartners == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+		        								<span ng-show="sortPartners == 'name' && sortReverse" class="fa fa-caret-up"></span>Név
+	        								</th>
+	                                        <th ng-click="sortPartners='address' ; sortReverse = !sortReverse" class="sortable">
+		                                        <span ng-show="sortPartners == 'address' && !sortReverse" class="fa fa-caret-down"></span>
+		        								<span ng-show="sortPartners == 'address' && sortReverse" class="fa fa-caret-up"></span>Cím
+	        								</th>
+	                                        <th ng-click="sortPartners='vatNumber' ; sortReverse = !sortReverse" class="sortable">
+		                                        <span ng-show="sortPartners == 'vatNumber' && !sortReverse" class="fa fa-caret-down"></span>
+		        								<span ng-show="sortPartners == 'vatNumber' && sortReverse" class="fa fa-caret-up"></span>Adószám
+	        								</th>
+	                                        <th ng-click="sortPartners='partnerType' ; sortReverse = !sortReverse" class="sortable">
+		                                        <span ng-show="sortPartners == 'partnerType' && !sortReverse" class="fa fa-caret-down"></span>
+		        								<span ng-show="sortPartners == 'partnerType' && sortReverse" class="fa fa-caret-up"></span>Típus
+	        								</th>
+	                                        <th ng-click="sortPartners='partnerState' ; sortReverse = !sortReverse" class="sortable">
+		                                        <span ng-show="sortPartners == 'partnerState' && !sortReverse" class="fa fa-caret-down"></span>
+		        								<span ng-show="sortPartners == 'partnerState' && sortReverse" class="fa fa-caret-up"></span>Státusz
+	        								</th>
+	                                        <th >Műveletek</th>
+	                                    </tr>
+	                                    </thead>
+	                                    <tbody ng-repeat="partner in partners | filter: query | orderBy:sortPartners:sortReverse | limitTo:numPerPage:(currentPage - 1) * numPerPage">
+	                                        <tr >
+	                                            <td>{{partner.name}}</td>
+	                                            <td>{{partner.address}}</td>
+	                                            <td>{{partner.vatNumber}}</td>
+	                                            <td>{{partner.partnerType}}</td>
+	                                            <td>{{partner.partnerStatus ? 'Engedélyezett' : 'Tiltott' }}</td>
+	                                            <td>
+													<md-button class="md-icon-button md-primary icon-button-table" aria-label="0" ng-click="">
+					                                    <i class="fa fa-close"></i>
+					                                </md-button>
+													<md-button  class="md-icon-button md-primary icon-button-table"  aria-label="0" ng-click="editPartner(partner)">
+						                                <i class="fa fa-wrench"></i>
+						                            </md-button>
+												</td>
+	                                        </tr>
+	                                    </tbody>
+	                                </table>
+	                            	<div class="text-center pagination-bottom">
+										<uib-pagination
+								            ng-model="currentPage"
+								            total-items="partners.length"
+								            max-size="maxSize"
+								            boundary-links="true">
+								        </uib-pagination>
+								        <h6>{{partners.length}}</h6>
+									</div>
+	                        </div>
+	                           	     
+	        </div>
+	    </div>
+	</div>
+<!--Termények menű-->
+	<div  ng-show="menuItem=='3'" class="col-md-7 col-xs-12" >
+		<div   class="portlet box red">
+	        <div class="portlet-title">
+	            <div class="caption">
+	                <i class="fa fa-list-ul"></i>
+	                Termények
+	            </div>
+
+	            <div class="actions">
+	                <md-button aria-label="0"  ng-click="newProduct()"><i class="fa fa-plus"></i> <span>Új termény hozzáadása </span></md-button>
+	            </div>
+	        </div>
+	        <md-progress-linear class="md-accent md-hue-1"  md-mode="indeterminate"></md-progress-linear>
+	        <div class="portlet-body">
+	            <div class="row">
+	            	<div ng-show="editProductShow" class="portlet-body form">
+						<form role="form">
+							<div class="form-body">
+								<div class="form-group form-md-line-input">
+									<input type="text" class="form-control" id="form_control_1" ng-model="isNewProduct ? '' : product.name">
+									<label for="form_control_1">Termény neve</label>
+								</div>
+								<div class="form-group form-md-line-input">
+									<input type="text" class="form-control" id="form_control_1" ng-model="isNewProduct ? '' : product.vtsz">
+									<label for="form_control_1">Vámtarifaszám</label>
+								</div>
+								<div class="form-group form-md-line-input ">
+									<select  class="form-control" id="form_control_1">
+										<option ng-disabled="isNewProduct" value="{{product.group}}">{{product.group}}</option>
+										<option value="">1</option>
+										<option value="">2</option>
+										<option value="">3</option>
+										<option value="">4</option>
+									</select>
+									<label for="form_control_1">Terménycsoport</label>
+								</div>
+								<div class="form-group form-md-line-input">
+									<div class=" col-md-6">
+
+										<input type="text" class="form-control" id="form_control_2" ng-model="isNewProduct ? '' : product.eurFrom">
+										<label for="form_control_2">Szerződési összeghatár (EUR)</label>
+									</div>
+									<div class=" col-md-6">
+										<input type="text" class="form-control" id="form_control_3" ng-model="isNewProduct ? '' : product.hufFrom">
+										<label for="form_control_3">Szerződési összeghatár (HUF)</label>
+									</div>
+								</div>
+								<div class="md-checkbox " ng-class="success">
+									<input type="checkbox" id="checkbox1" class="md-check" ng-model="user.userStatus" ng-checked="true">
+									<label for="checkbox1">
+									<span></span>
+									<span class="check"></span>
+									<span class="box"></span>
+									Állapot: <strong>{{ user.userStatus ? 'Engedélyezett' : 'Tiltott' }}</strong></label>
+								</div>
+	                           
+								<div class="form-actions noborder">
+									<button type="button" class="btn blue">Mentés</button>
+									<button type="button" class="btn default" ng-click="cancelEdit()">Mégse</button>
+								</div>
+							</div>
+						</form>
+					</div>
+		        </div>
+		    <div class="form-group form-md-line-input">
+		        		<input type="text" class="form-control" ng-model="query" placeholder="Keresés">
+		        	</div>	
+	        <div class="table-scrollable">
+				<table class="table table-hover" >
+					<thead>
+						<tr>
+							<th ng-click="sortProducts='name' ; sortReverse = !sortReverse" class="sortable">
+		                                        <span ng-show="sortProducts == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+		        								<span ng-show="sortProducts == 'name' && sortReverse" class="fa fa-caret-up"></span>Név</th>
+							<th ng-click="sortProducts='vtsz' ; sortReverse = !sortReverse" class="sortable">
+		                                        <span ng-show="sortProducts == 'vtsz' && !sortReverse" class="fa fa-caret-down"></span>
+		        								<span ng-show="sortProducts == 'vtsz' && sortReverse" class="fa fa-caret-up"></span>Vámtarifaszám</th>
+							<th ng-click="sortProducts='group' ; sortReverse = !sortReverse" class="sortable">
+		                                        <span ng-show="sortProducts == 'group' && !sortReverse" class="fa fa-caret-down"></span>
+		        								<span ng-show="sortProducts == 'group' && sortReverse" class="fa fa-caret-up"></span>Terménycsoport</th>
+							<th ng-click="sortProducts='visible' ; sortReverse = !sortReverse" class="sortable">
+		                                        <span ng-show="sortProducts == 'visible' && !sortReverse" class="fa fa-caret-down"></span>
+		        								<span ng-show="sortProducts == 'visible' && sortReverse" class="fa fa-caret-up"></span>Láthatóság</th>
+							<th>Műveletek</th>
+							
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="product in products | filter:query | orderBy:sortProducts:sortReverse ">
+							<td>{{product.name}}</td>
+							<td>{{product.vtsz}}</td>
+							<td>{{product.group}}</td>
+							<td>{{ product.visible ? 'Látható' : 'Nem látható' }}</td>
+							<td>
+								<md-button class="md-icon-button md-primary icon-button-table" aria-label="0" ng-click="">
+                                    <i class="fa fa-close"></i>
+                                </md-button>
+								<md-button  class="md-icon-button md-primary icon-button-table"  aria-label="0" ng-click="editProduct(product)">
+	                                <i class="fa fa-wrench"></i>
+	                            </md-button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+    		</div>
+    		</div>
+		</div>
+	</div>
+<!--Paritások menű-->
+	<div ng-show="menuItem=='4'"class="col-md-7 col-xs-12">
+	    <div class="portlet box red">
+	        <div class="portlet-title">
+		        <div class="caption">
+		            <i class="fa fa-list-ul"></i>
+		            Paritások
+		        </div>
+	            <div class="actions">
+		               <md-button aria-label="0"  ng-click="newParity()"><i class="fa fa-plus"></i> <span>Új paritás hozzáadása </span></md-button>
+		        </div>
+		    </div>
+	        <md-progress-linear class="md-accent md-hue-1" ng-if="!editor.loaded" md-mode="indeterminate"></md-progress-linear>
+	        <div class="portlet-body">
+
+	            <div class="row">
+		            	<div ng-show="editParityShow" class="portlet-body form">
+							<form role="form">
+								<div class="form-body">
+									
+									<div class="form-group form-md-line-input">
+										<input type="text" class="form-control" id="form_control_1" ng-model="isNewParity ? addParity.name : parity.name">
+										<label for="form_control_1">Paritás neve</label>
+									</div>
+									
+									<div class="md-checkbox " ng-class="success">
+										<input type="checkbox" id="checkbox3" class="md-check" ng-model="isNewParity ? addParity.transportCost : parity.transportCost" ng-checked="true">
+										<label for="checkbox3">
+										<span></span>
+										<span class="check"></span>
+										<span class="box"></span>
+										Fuvarköltség: <strong>{{ parity.transportCost ? 'Van' : 'Nincs' }}</strong></label>
+									</div>
+		                            <div class="md-checkbox " ng-class="success">
+										<input type="checkbox" id="checkbox4" class="md-check" ng-model="isNewParity ? addParity.visible : parity.visible" ng-checked="true">
+										<label for="checkbox4">
+										<span></span>
+										<span class="check"></span>
+										<span class="box"></span>
+										Láthatóság: <strong>{{ parity.visible ? 'Látható' : 'Rejtett' }}</strong></label>
+									</div>
+									<div class="form-actions noborder">
+										<button type="button" class="btn blue" ng-click="saveEdit(addParity)">Mentés</button>
+										<button type="button" class="btn default" ng-click="cancelEdit()">Mégse</button>
+									</div>
+								</div>	
+							</form>
+						</div>
+			    </div>
+			    <div class="form-group form-md-line-input">
+			    	<input type="text" class="form-control" ng-model="query" placeholder="Keresés">
+			    </div>	
+	                            <div class="table-scrollable">
+
+	                                <table class="table table-striped table-hover datatable">
+	                                    <thead>
+	                                    <tr>
+	                                        <th ng-click="sortParities='name' ; sortReverse = !sortReverse" class="sortable">
+		                                        <span ng-show="sortParities == 'name' && !sortReverse" class="fa fa-caret-down"></span>
+		        								<span ng-show="sortParities == 'name' && sortReverse" class="fa fa-caret-up"></span>Név
+	        								</th>
+	                                        <th ng-click="sortParities='transportCost' ; sortReverse = !sortReverse" class="sortable">
+		                                        <span ng-show="sortParities == 'transportCost' && !sortReverse" class="fa fa-caret-down"></span>
+		        								<span ng-show="sortParities == 'transportCost' && sortReverse" class="fa fa-caret-up"></span>Fuvarköltség
+	        								</th>
+	                                        <th ng-click="sortParities='visible' ; sortReverse = !sortReverse" class="sortable">
+		                                        <span ng-show="sortParities == 'visible' && !sortReverse" class="fa fa-caret-down"></span>
+		        								<span ng-show="sortParities == 'visible' && sortReverse" class="fa fa-caret-up"></span>Láthatóság
+	        								</th>
+	                                        
+	                                        <th >Műveletek</th>
+	                                    </tr>
+	                                    </thead>
+	                                    <tbody ng-repeat="parity in parities | filter: query | orderBy:sortParities:sortReverse ">
+	                                        <tr >
+	                                            <td>{{parity.name}}</td>
+	                                            <td>{{parity.transportCost ? 'Van' : 'Nincs'}}</td>
+	                                            <td>{{parity.visible ? 'Látható' : 'Rejtett'}}</td>
+	                                            
+	                                            <td>
+													<md-button class="md-icon-button md-primary icon-button-table" aria-label="0" ng-click="">
+					                                    <i class="fa fa-close"></i>
+					                                </md-button>
+													<md-button  class="md-icon-button md-primary icon-button-table"  aria-label="0" ng-click="editParity(parity)">
+						                                <i class="fa fa-wrench"></i>
+						                            </md-button>
+												</td>
+	                                        </tr>
+	                                    </tbody>
+	                                </table>
+	                            	<div class="text-center pagination-bottom">
+										<uib-pagination
+								            ng-model="currentPage"
+								            total-items="partners.length"
+								            max-size="maxSize"
+								            boundary-links="true">
+								        </uib-pagination>
+								        <h6>{{partners.length}}</h6>
+									</div>
+	                        </div>
+	                           	     
+	        </div>
+	    </div>
+	</div>
+<!--Paritások menű vége-->
+<!--Devizák menű -->
+<div  data-ng-include="'views/currency.html'">
+</div>
+
+<!--Devizák menű vége-->
+</div>
+	
+
+

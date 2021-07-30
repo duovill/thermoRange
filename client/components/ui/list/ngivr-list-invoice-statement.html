@@ -1,0 +1,349 @@
+<!-- <ngivr-list ngivr-schema="ticket" ngivr-ref="this" ngivr-query="ngivrQuery"> -->
+<ngivr-list ngivr-ref="this" ngivr-query="ngivrQuery" ngivr-schema-dynamic="schema" id="stockLog_{{::$ctrl.$id}}">
+
+    <ngivr-list-buttons>
+        <ngivr-button-excel-export ngivr-add-date="1" ngivr-filename="$ctrl.filename" style="padding-right: 5px"
+                                   ngivr-url="{{ngivrUrl}}"
+                                   ngivr-server-query="{ ngivrQuery: query, ngivrFilename: ref.ngivrFilename}"></ngivr-button-excel-export>
+    </ngivr-list-buttons>
+    <ngivr-list-searcher>
+
+        <md-input-container class="md-block md-select-card">
+            <md-tooltip md-direction="top">Partner, partner adószáma a bizonylaton, termék és megjegyzés mezőkben
+                keres
+            </md-tooltip>
+            <label>Kereső</label>
+            <input ng-model="$ctrl.textSearch" ng-change="$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+
+
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+
+        <div layout="column" layout-gt-md="row">
+
+            <md-input-container flex="25" class="md-block md-select-card">
+                <label>Partner</label>
+                <ngivr-autocomplete-partner ng-model="ref.partner"
+                                            partner-changed="ref.$ctrl.search(query)"></ngivr-autocomplete-partner>
+            </md-input-container>
+
+            <md-input-container flex="25" class="md-block md-select-card">
+                <label>{{ngivr.strings.field.product}}</label>
+                <ngivr-autocomplete-general-product ng-model="ref.product"
+                                                    product-changed="ref.$ctrl.search(query)"></ngivr-autocomplete-general-product>
+
+            </md-input-container>
+            <div layout="column" layout-gt-md="row" flex="50" flex-gt-md="50">
+
+                <md-input-container class="md-block md-select-card" flex="50">
+                    <label>Dátumtól</label>
+                    <!-- <input type="text" mask="2029.19.39" restrict="reject" ng-model="$ctrl.from" ng-change="$ctrl.search(query)" /> -->
+                    <ngivr-input-date ng-model="ref.from" ng-change="ref.$ctrl.search(query)"/>
+                </md-input-container>
+
+                <md-input-container class="md-block md-select-card" flex="50">
+                    <label>Dátumig</label>
+                    <!-- <input type="text" mask="2029.19.39" restrict="reject" ng-model="$ctrl.to" ng-change="$ctrl.search(query)" /> -->
+                    <ngivr-input-date ng-model="ref.to" ng-change="ref.$ctrl.search(query)"/>
+                </md-input-container>
+
+            </div>
+
+        </div>
+
+
+        <div class="" hl-sticky="" container="stockLog_{{$ctrl.$id}}" offset-top="{{$ctrl.topOffset}}"
+             sticky-class="isl-sticky-properties">
+            <div class="isl-table-row isl-table-row-header"
+                 ng-style="{'padding-left': $mdMedia('gt-md') ? 'inherit' : '2px', 'padding-right': $mdMedia('gt-md') ? 'inherit' : '2px'}">
+                <div class="isl-wrapper isl-first-to-eighth">
+
+                    <div class="isl-wrapper isl-attributes isl-group-1-2-3-4">
+                        <div class="isl-wrapper isl-group-1-2">
+                            <div class="isl-column isl-col-1">
+                                <div layout="column">
+
+                                    {{doc.incoming ? 'Iktatószám' : 'Bizonylatszám'}}
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.number" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                            <div class="isl-column isl-col-2">
+                                <div layout="column">
+
+                                    Partner
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.partner" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="isl-wrapper isl-group-3-4">
+                            <div class="isl-column isl-col-3">
+                                <div layout="column">
+
+                                    Szerződésszám
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.contractNumber" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                            <div class="isl-column isl-col-4">
+                                <div layout="column">
+
+                                    P. szerződészám
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.partnerContractNumber" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="isl-wrapper isl-group-5-6-7-8">
+                        <div class="isl-wrapper isl-group-5-6">
+                            <div class="isl-column isl-col-5">
+                                <div layout="column">
+
+                                    Termény
+
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.product" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+
+                            </div>
+                            <div class="isl-column isl-col-6">
+                                <div layout="column">
+
+                                    Összérték
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.sum" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="isl-wrapper isl-group-7-8">
+                            <div class="isl-column isl-col-7">
+                                <div layout="column">
+
+                                    Fenntarthatóság
+
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.sustainability" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                            <!--<div class="isl-column isl-col-8">Termény</div>-->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="isl-wrapper isl-nineth-to-sixteenth">
+                    <div class="isl-wrapper isl-group-9-10-11-12">
+                        <div class="isl-wrapper isl-group-9-10">
+                            <div class="isl-column isl-col-9">
+                                <div layout="column">
+
+                                    Telj. dátuma
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.goodsSent" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                            <div class="isl-column isl-col-10">
+                                <div layout="column">
+
+                                    Kiáll. dátuma
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.dateOfCreate" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="isl-wrapper isl-group-11-12">
+                            <div class="isl-column isl-col-11">
+                                <div layout="column">
+
+                                    Els.z dátuma
+
+                                </div>
+                            </div>
+                            <div class="isl-column isl-col-12">
+                                <div layout="column">
+                                    Fiz. határidő
+                                    <!--Paritás-->
+
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="isl-wrapper isl-group-13-14-15-16">
+                        <div class="isl-wrapper isl-group-13-14">
+                            <div class="isl-column isl-col-13">
+                                <div layout="column">
+                                    Paritás
+                                    <!--Partner számlaszáma-->
+
+
+                                </div>
+                            </div>
+                            <div class="isl-column isl-col-14"></div>
+                        </div>
+                        <!--<div class="isl-wrapper isl-group-15-16">-->
+                        <!--<div class="isl-column isl-col-15"></div>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+                <!-- <div class="container--unsticky"></div> -->
+            </div>
+            <!-- <div class="container--unsticky"></div> -->
+
+
+        </div>
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+
+        <div class="ngivr-list-tickets-invoice-statement"
+             ng-class="{ 'ngivr-list-tickets-invoice-statement-highlight': detailedInvoices.includes(doc._id) }">
+            <div class="isl-table-row"
+                 ng-style="{'padding-left': $mdMedia('gt-md') ? 'inherit' : '2px', 'padding-right': $mdMedia('gt-md') ? 'inherit' : '2px'}">
+                <div class="isl-wrapper isl-first-to-eighth">
+                    <div class="isl-wrapper isl-attributes isl-group-1-2-3-4">
+                        <div class="isl-wrapper isl-group-1-2">
+                            <div class="isl-column isl-col-1">
+                                <div layout="row" ng-click="showDetails(doc._id)">
+                                    <div flex>
+                                        <ng-md-icon ng-if="!detailedInvoices.includes(doc._id)"
+                                                    icon="chevron_right"></ng-md-icon>
+                                        <ng-md-icon ng-if="detailedInvoices.includes(doc._id)"
+                                                    icon="expand_more"></ng-md-icon>
+                                        <span ng-style="{'background-color': doc.type === 'storno' ? 'red' : doc.type === 'correction' ? 'orange' : 'initial',
+                                                        'color' :doc.type === 'storno' || doc.type === 'correction' ? 'white' : 'initial' }">{{doc.number ? doc.number : doc.referenceNumber}}</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="isl-column isl-col-2">{{doc.buyer ? doc.buyer[0].name : doc.incomingSeller ?
+                                doc.incomingSeller[0].name : doc.seller.name}}
+                            </div>
+                        </div>
+                        <div class="isl-wrapper isl-group-3-4">
+                            <div class="isl-column isl-col-3">{{doc.relatedContract.contractNumber || '---'}}</div>
+                            <div class="isl-column isl-col-4">{{doc.relatedContract.partnerContractNumber || '---'}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="isl-wrapper isl-group-5-6-7-8">
+                        <div class="isl-wrapper isl-group-5-6">
+                            <div class="isl-column isl-col-5">{{!doc.incoming && (doc.type === 'product' || doc.type ===
+                                'correction' ||
+                                doc.type === 'storno' || doc.compensationPercent) ? doc.items[0].product.name : '---'}}
+                            </div>
+                            <div class="isl-column isl-col-6"
+                                 ng-style="{'text-align': $mdMedia('gt-md') ? 'right' : 'left'}">{{(doc.vatBase?
+                                doc.vatBase :
+                                doc.netto ? doc.netto : doc.incomingNetto ? doc.incomingNetto : '---') |
+                                currency : doc.currency : (doc.currency === 'HUF' ? 0 : 2)}}
+                            </div>
+                        </div>
+                        <div class="isl-wrapper isl-group-7-8">
+                            <div class="isl-column isl-col-7">{{doc.relatedContract ? doc.relatedContract.sustainability
+                                === 'Nem fenntartható' ? 'Nem' : doc.relatedContract.sustainability : '---'}}
+                            </div>
+                            <!--<div class="isl-column isl-col-8"></div>-->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="isl-wrapper isl-nineth-to-sixteenth">
+                    <div class="isl-wrapper isl-group-9-10-11-12">
+                        <div class="isl-wrapper isl-group-9-10">
+                            <div class="isl-column isl-col-9">{{((doc.goodsSent ? doc.goodsSent : doc.fulfillmentDate) |
+                                date:
+                                'yyyy.MM.dd') || '---'}}
+                            </div>
+                            <div class="isl-column isl-col-10">{{((doc.created ? doc.created : doc.dateOfInvoice) |
+                                date: 'yyyy.MM.dd')
+                                || '---'}}
+                            </div>
+                        </div>
+                        <div class="isl-wrapper isl-group-11-12">
+                            <div class="isl-column isl-col-11">{{(doc.deadlineDate | date: 'yyyy.MM.dd') || '---'}}
+                            </div>
+                            <div class="isl-column isl-col-12">
+                                {{((doc.paymentDate ? doc.paymentDate : doc.lastDayOfPayment) | date : 'yyyy.MM.dd') ||
+                                '---'}}
+                                <!--{{doc.relatedContract ? doc.relatedContract.parity : '-&#45;&#45;'}}-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="isl-wrapper isl-group-13-14-15-16">
+                        <div class="isl-wrapper isl-group-13-14">
+                            {{doc.relatedContract ? doc.relatedContract.parity :
+                            '---'}}
+                            <!--<div ng-if="doc.incoming || doc.compensationPercent" class="isl-column isl-col-13">-->
+                            <!--{{doc.accountNumber ? doc.accountNumber :-->
+                            <!--doc.bankAccountNumber ?-->
+                            <!--doc.bankAccountNumber : doc.incomingBankAccountNumber ? doc.incomingBankAccountNumber :-->
+                            <!--'-&#45;&#45;'}}-->
+                            <!--</div>-->
+                            <div class="isl-column isl-col-14">
+                                <div layout="row">
+
+
+                                    <ngivr-icon-fa ng-disabled="disabled2" ngivr-tooltip="Megtekintés"
+                                                   ngivr-icon-fa="fa-eye" style="bottom:4px"
+                                                   ng-click="disabled2 || showDetailsPopup(null, doc)"/>
+
+                                    &nbsp;&nbsp;
+
+                                    <ngivr-icon-fa
+                                        ngivr-tooltip="Megtekintés, {{ doc.ngivrPdf.length > 0 ? doc.ngivrPdf.length + ' pdf' : 'nincs pdf' }}"
+                                        ngivr-icon-fa="fa-file-pdf-o" style="bottom:4px"
+                                        ng-click="openPdfList({doc: doc })"
+                                        ng-if="doc.incomingInvoiceNumber"></ngivr-icon-fa>
+
+
+                                    <ngivr-button-pdf-existing-popup ng-if="!doc.incoming" ngivr-style="bottom:4px"
+                                                                     ngivr-schema="{{doc.incomingInvoiceNumber ? 'IncomingInvoice' : doc.compensationPercent !== undefined ? 'DeliveryCertificate' : 'OutgoingInvoice'}}"
+                                                                     ngivr-id="{{ doc._id }}"></ngivr-button-pdf-existing-popup>
+
+                                    <div ng-if="!doc.incoming && !doc.compensationPercent" style="margin-left: 10px">
+                                        <ngivr-nav-indicator doc="doc"></ngivr-nav-indicator>
+                                        <!--<md-tooltip md-direction="top">{{getInfo(doc)}}</md-tooltip>-->
+                                        <!--<span class="label " ng-click="resendToNAV(doc)"-->
+                                        <!--ng-class="{'label-danger' : doc.NAVOnlineInvoicing.result === 'failed', 'label-success': doc.NAVOnlineInvoicing.result === 'success', 'label-warning': doc.NAVOnlineInvoicing.result === 'timeout' }">NAV</span>-->
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!--<div class="isl-wrapper isl-group-15-16">-->
+                        <!--<div class="isl-column isl-col-15">-->
+                        <!---->
+                        <!--</div>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+
+            <!--
+            *****************
+            Részletek
+            *****************
+            -->
+            <div ng-if="detailedInvoices.includes(doc._id)" style="margin-left: 25px; margin-right: 25px">
+                <ngivr-invoice-details></ngivr-invoice-details>
+            </div>
+
+        </div>
+
+    </ngivr-list-template>
+
+</ngivr-list>

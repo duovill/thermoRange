@@ -1,0 +1,82 @@
+@import "../../../assets/sass/variables";
+@import "../../../assets/sass/ngivr-disabled";
+@import "ngivr-button";
+
+ngivr-icon-fa {
+  position: relative;
+}
+
+ngivr-icon-fa > .md-button {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+ngivr-icon-fa > .md-button:focus {
+  background-color: $button-flat-bg !important;
+}
+ngivr-icon-fa > .md-button:hover {
+    box-shadow: 0 0 0 4px rgba(black, 0.2) !important;
+}
+
+ngivr-icon-fa > .md-button.ngivr-icon-fa-color-accent:hover {
+  background-color: $color-primary !important;
+    box-shadow: 0 0 0 4px rgba($color-primary, 0.5) !important;
+  color: white !important;
+}
+
+ngivr-icon-fa > .ngivr-icon-fa-color-accent {
+  background-color: $color-primary;
+  color: white;
+}
+
+ngivr-icon-fa > .ngivr-icon-fa-color-green-plane {
+  background-color: $color-success;
+  color: black;
+  border-radius: 50%;
+}
+
+ngivr-icon-fa > .ngivr-icon-fa-color-yellow-plane {
+  background-color: #dfba49;
+  color: black;
+  border-radius: 50%;
+}
+
+ngivr-icon-fa > .ngivr-icon-fa-color-grey-plane {
+  background-color: rgba(0,0,0,0.12);
+  color: black;
+  border-radius: 50%;
+}
+
+ngivr-icon-fa > .ngivr-icon-fa-color-accent:hover {
+  transform: rotate(360deg);
+}
+
+ngivr-icon-fa > .md-button > i.fa {
+  position: absolute;
+  top: 6px;
+  left: 3px;
+}
+
+ngivr-icon-fa > button.ngivr-icon-fa-mobile > i.fa {
+  left: -3px !important;
+}
+
+ngivr-icon-fa > button.btn:disabled {
+  @extend .ngivr-disabled;
+}
+
+ngivr-icon-fa.ngivr-icon-fa-tree {
+  $dimension: 16px;
+  button {
+    width: $dimension !important;
+    height: $dimension !important;
+    min-width: $dimension !important;
+    min-height: $dimension !important;
+    i.fa {
+      top: 2px !important;
+      left: -3px !important;
+    }
+  }
+}

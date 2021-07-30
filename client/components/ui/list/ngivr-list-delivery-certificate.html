@@ -1,0 +1,54 @@
+<ngivr-list ngivr-schema="deliveryCertificate" ngivr-ref="this" ngivr-query="ngivrQuery">
+
+  <ngivr-list-searcher>
+    <md-input-container class="md-block">
+      <label>{{ ngivr.strings.title.search}}</label>
+      <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+             ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+    </md-input-container>
+  </ngivr-list-searcher>
+
+  <ngivr-list-template>
+    <md-card class="card-expandable" style="min-height: 49px">
+      <md-card-content>
+        <div layout="row"
+             ng-click="toggleDeliveryCertificate(item.type, item.group,  doc, $index)">
+          <div flex="10" class="label label-table"
+               ng-class="{'label-danger' : doc.type === 'storno', 'label-default': doc.type !== 'storno'}"
+               style="margin-right: 10px;  padding-top: 5px; padding-bottom: 3px; padding-left: 3px; padding-right: 3px; font-size: 8px">
+            {{doc.type === 'storno' ? 'Sztornó' : doc.type === 'bonification' ? 'Bonifikáció' : 'Normál'}}
+          </div>
+          <div class="incoming-invoice-partner" flex="20" ngivr-ellipsis
+               ng-bind="doc.seller.name">
+            <md-tooltip md-direction="top">{{ doc.seller.name }}</md-tooltip>
+          </div>
+          <div flex="20" ngivr-ellipsis ng-bind="doc.type === 'bonification' ?  doc.items[0].product.name : doc.relatedContract.sustainability === 'Nem fenntartható' ? doc.items[0].product.name : doc.relatedContract.sustainability + ' fennt. ' + doc.items[0].product.name">
+            <md-tooltip md-direction="top">{{ doc.type === 'bonification' ?  doc.items[0].product.name : doc.relatedContract.sustainability === 'Nem fenntartható' ? doc.items[0].product.name : doc.relatedContract.sustainability + ' fenntartható ' + doc.items[0].product.name }}</md-tooltip>
+          </div>
+          <!-- <div flex="20" ng-bind="hedgeContract.expiry | date: 'yyyy.MM.dd'"></div> -->
+          <div flex="15" style="text-align: right">
+            <span ng-bind="doc.netto | currency: doc.currency"><md-tooltip
+              md-direction="top">{{ 'Nettó összeg' }}</md-tooltip></span>
+          </div>
+          <div flex="15" style="text-align: center">
+            <md-tooltip md-direction="top">{{ 'Fizetési határdő' }}</md-tooltip>
+            <span>{{doc.lastDayOfPayment | date: 'yyyy.MM.dd'}}</span>
+          </div>
+          <div flex="10" ng-bind="doc.number" style="text-align: right">
+            <md-tooltip md-direction="top">{{ 'Felvásárlási jegy sorszáma' }}</md-tooltip>
+          </div>
+          <div flex ng-bind="doc.createdAt | date: 'yyyy.MM.dd'" style="text-align: center">
+            <md-tooltip md-direction="top">{{ 'Kiállítás dátuma' }}</md-tooltip>
+          </div>
+
+        </div>
+
+          <!--
+          saved into .html.saved
+          -->
+
+      </md-card-content>
+    </md-card>
+
+  </ngivr-list-template>
+</ngivr-list>

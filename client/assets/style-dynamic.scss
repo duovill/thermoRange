@@ -1,0 +1,813 @@
+@import "../assets/style.css";
+
+@import "../assets/metronic/sass/global/_variables";
+@import "../assets/metronic/sass/admin/layout2/themes/light";
+
+//injector-sass-start
+@import "../assets/sass/_layout.scss";
+@import "../assets/sass/_mixins.scss";
+@import "../assets/sass/_variables.scss";
+@import "../assets/sass/000-THEME.scss";
+@import "../assets/sass/md-autocomplete.scss";
+@import "../assets/sass/md-button.scss";
+@import "../assets/sass/ng-messages.scss";
+@import "../assets/sass/ngivr_ticket_number_display.scss";
+@import "../assets/sass/ngivr-accordion-toolbar.scss";
+@import "../assets/sass/ngivr-dialog.scss";
+@import "../assets/sass/ngivr-disabled.scss";
+@import "../assets/sass/ngivr-error-block.scss";
+@import "../assets/sass/ngivr-global-overlay.scss";
+@import "../assets/sass/ngivr-link.scss";
+@import "../assets/sass/ngivr-overlay-lock.scss";
+@import "../assets/sass/ngivr-position.scss";
+@import "../assets/sass/ngivr-row-columns.scss";
+@import "../assets/sass/ngivr-row-head.scss";
+@import "../assets/sass/ngivr-tab-pure.scss";
+@import "../assets/sass/ngivr-tab.scss";
+@import "../components/directive/form/ngivr-form.scss";
+@import "../components/directive/list/ngivr-list.scss";
+@import "../components/ui/button/ngivr-button-clipboard.scss";
+@import "../components/ui/button/ngivr-button.scss";
+@import "../components/ui/button/ngivr-icon-fa.scss";
+@import "../components/ui/button/ngivr-icon-static.scss";
+@import "../components/ui/button/ngivr-input-switch.scss";
+@import "../components/ui/input/ngivr-input-date.scss";
+@import "../components/ui/list/ngivr-list-invoice-statement.scss";
+@import "../components/ui/list/ngivr-list-invoice-statistics.scss";
+@import "../components/ui/list/ngivr-list-paid-delivery-certificates.scss";
+@import "../components/ui/list/ngivr-list-reconcilation.scss";
+@import "../components/ui/list/ngivr-list-ship-ticket.scss";
+@import "../components/ui/list/ngivr-list-stock-log.scss";
+@import "../components/ui/list/ngivr-list-sweep.scss";
+@import "../components/ui/list/ngivr-list-tickets-per-depots.scss";
+@import "../components/ui/list/ngivr-list-tickets-without-invoice.scss";
+@import "../components/ui/list/ngivr-list-tracking-cargo-plans-deliveries-popup.scss";
+@import "../components/ui/list/ngivr-list-tracking-vehicles.scss";
+@import "../components/ui/ngivr-divider.scss";
+@import "../components/ui/ngivr-form-validation-display.scss";
+@import "../components/ui/ngivr-google-chart.scss";
+@import "../components/ui/ngivr-overlay-simple.scss";
+@import "../components/ui/ngivr-portlet.scss";
+@import "../app/_thermo/measuring-instrument/display/thermo-measuring-instrument-display-container.scss";
+@import "../app/master/htmlTemplates/ngivr-master-html-template.scss";
+@import "../app/master/other-document/ngivr-other-document-template-form-field.scss";
+@import "../app/master/other-document/ngivr-other-document-template-form.scss";
+@import "../app/master/synchronizer/ngivr-form-synchronizer.scss";
+//injector-sass-end
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+input.webkit-autofill,
+input.webkit-autofill:focus,
+input.webkit-autofill:active,
+input.webkit-autofill:hover
+{
+    transition: all 50000s ease-in-out 0s;
+    transition-property: background-color, color;
+    //    background-color: mat-color($mat-yellow, 500);
+}
+
+body {
+    min-height: 100vh;
+
+    .page-container {
+        min-height: calc(100vh - 101px);
+    }
+}
+
+@media (max-width: 991px) {
+    .page-container {
+        background: transparent;
+    }
+}
+@media (max-width: 690px)
+{
+    body {
+        .page-container {
+            min-height: calc(100vh - 169px);
+        }
+    }
+}
+
+
+#ngivr-clipboard-hidden {
+    border: none;
+}
+
+
+.ngivr-tab-badge {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: block;
+    color: white;
+    background-color: $color-warning;
+}
+
+
+.page-spinner-bar > div,
+.block-spinner-bar > div {
+    background: rgba(black, 0.8);
+}
+
+body,
+.page-footer
+{
+    /*
+    background-color: #839595;
+    */
+    background: #e1e5ec;
+}
+.page-header.navbar .page-top,
+.page-footer
+{
+    /*
+        background: #839595;
+     */
+    background: #6e79d8;
+}
+.page-header.navbar,
+.page-header.navbar .page-logo,
+.portlet-title
+{
+    /*
+        background: #3c4ce7 !important;
+
+     */
+    background: #3c4ce7 !important;
+}
+
+.page-sidebar {
+    background: #8790db;
+}
+
+@media (min-width: 768px)
+{
+    .page-header.navbar .page-top
+    {
+        /*
+      background: #839595;
+   */
+        background: #6e79d8;
+    }
+
+    li.nav-item:hover
+    {
+        background: #e1e5ec;
+    }
+}
+
+
+md-tabs md-ink-bar {
+    color: lighten($color-primary, 20%) !important;
+    background-color: lighten($color-primary, 20%) !important;
+}
+
+md-switch.md-checked .md-thumb
+{
+    background-color: $color-primary;
+}
+
+md-switch.md-checked .md-bar
+{
+    background-color: rgba($color-primary, 0.2) !important;
+}
+
+
+input:not([type]):focus:not([readonly]), input[type=text]:focus:not([readonly]), input[type=password]:focus:not([readonly]), input[type=email]:focus:not([readonly]), input[type=url]:focus:not([readonly]), input[type=time]:focus:not([readonly]), input[type=date]:focus:not([readonly]), input[type=datetime-local]:focus:not([readonly]), input[type=tel]:focus:not([readonly]), input[type=number]:focus:not([readonly]), input[type=search]:focus:not([readonly]), textarea.materialize-textarea:focus:not([readonly])
+{
+    border-bottom: 1px solid gray !important;
+    box-shadow: none;
+}
+
+md-input-container.md-default-theme:not(.md-input-invalid).md-input-focused .md-input, md-input-container:not(.md-input-invalid).md-input-focused .md-input
+{
+    border-color: gray !important;
+}
+
+md-select:not([disabled]):focus .md-select-value
+{
+    border-bottom-color: gray !important;
+}
+
+md-select.md-default-theme .md-select-value.md-select-placeholder, md-select .md-select-value.md-select-placeholder,
+md-input-container.md-default-theme label, md-input-container label, md-input-container.md-default-theme .md-placeholder, md-input-container .md-placeholder,
+.has-feedback .form-control::-webkit-input-placeholder
+{
+
+}
+
+
+/* latin */
+@font-face {
+    font-family: 'Digital';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Orbitron Regular'), local('Orbitron-Regular'), url(fonts/orbitron.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+.md-container-md-select-fix {
+
+  $base: 10px;
+
+  // > 600
+  margin-top: $base !important;
+
+  // <= 600
+  @media screen and (min-width: $screen-small) {
+    margin-top: $base !important;
+  }
+  // <= 960
+  @media screen and (min-width: $screen-medium) {
+    margin-top: $base  !important;
+  }
+  // <= 1280
+  @media screen and (min-width: $screen-large) {
+    margin-top: $base   !important;
+  }
+
+  // <= 1920
+  @media screen and (min-width: $screen-huge) {
+    margin-top: $base !important;
+  }
+}
+
+.deleted-overthrough > div {
+  position: relative;
+}
+
+.deleted-overthrough > div:not(.deleted-overthrough-keep):after {
+  position: absolute;
+  z-index: 9999;
+  content: " ";
+  top: 0%;
+  left: 0;
+  height: 100%;
+  background-color: rgba($color-error, 0.3) /*#e74c3c*/;
+  width: 100%;
+}
+
+.deleted-overthrough input, .deleted-overthrough select, .deleted-overthrough textarea, .deleted-overthrough * {
+  border:0 !important;
+  background-image: none !important;
+}
+
+.deleted-overthrough label {
+  color: rgba(0,0,0,0.25) !important;
+}
+
+.success-overthrough > div {
+  position: relative;
+}
+
+.success-overthrough > div:not(.success-overthrough-keep):after {
+  position: absolute;
+  z-index: 9999;
+  content: " ";
+  top: 0%;
+  left: 0;
+  height: 100%;
+  background-color: rgba($color-success, 0.3) ;
+  width: 100%;
+}
+
+.success-overthrough input, .success-overthrough select, .success-overthrough textarea, .success-overthrough * {
+  border:0 !important;
+  background-image: none !important;
+}
+
+.success-overthrough label {
+  color: rgba(0,0,0,0.25) !important;
+}
+
+md-icon.fa {
+  font-family: FontAwesome;
+}
+
+.icon-delete {
+  color: $color-error !important;
+}
+
+md-dialog md-icon.fa {
+  margin-top: 5px;
+}
+
+//md-dialog .fa {
+//  margin-top: 10px;
+//}
+
+button:disabled .icon-delete {
+  color: gray !important;
+}
+
+md-switch {
+  position: static !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+md-checkbox {
+  visibility: visible !important;
+  position: relative !important;
+  opacity: 1 !important;
+  left: 0 !important;
+}
+
+.label-vehicles .label-grey {
+  width: auto !important;
+}
+
+.label-red-fix.label-red {
+  margin-bottom: 0;
+}
+
+md-card-content div.card-left .badge {
+  margin-top: 5px;
+}
+
+@keyframes ngivr-validation-pending {
+  from {transform:rotate(0deg);}
+  to {transform:rotate(360deg);}
+}
+.ngivr-validation-pending:before {
+  font-family: FontAwesome;
+  content: '\f110 ';
+  position:absolute;
+  top: 0;
+  left: -18px;
+  animation: ngivr-validation-pending 4s infinite linear;
+}
+
+.ngivr-validation-pending {
+  position:relative;
+  margin-left: 18px;
+  color: gray;
+}
+
+.ngivr-fixed {
+  position:fixed;
+}
+
+
+.ngivr-button-inside {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+[disabled] label:not(.active),
+[disabled] input,
+[disabled] textarea,
+input[type=number]:disabled,
+[disabled] md-select-value,
+[disabled] .md-label,
+[disabled] label:not(.active),
+input[disabled]
+{
+  font-weight: bold;
+  background-image: none !important;
+  background-color: transparent !important;
+  color: black !important;
+  border: none !important;
+  border-bottom: 0;
+}
+
+select {
+  display: inline !important;
+  @extend .ngivr-input-raw;
+}
+
+[disabled] .md-select-icon
+{
+  display: none;
+}
+
+.ngivr-warning {
+    background-color: $state-warning-bg !important;
+    color: $state-warning-text !important;
+    opacity: 1 !important;
+}
+
+.ngivr-warning-orange {
+    background-color: $state-warning-bg !important;
+    color: $state-warning-text !important;
+    opacity: 1 !important;
+}
+
+.ngivr-growl-warning {
+    background-color: $state-warning-bg !important;
+    color: $state-warning-text !important;
+    opacity: 1 !important;
+}
+
+.ngivr-growl-error {
+    color: $state-danger-bg !important;
+    background-color: $state-danger-text !important;
+    opacity: 1 !important;
+}
+
+
+.ngivr-button-delete {
+  background-color: $color-warning !important;
+}
+
+.ngivr-sortable {
+  font-weight: bold;
+}
+
+*:focus {
+  outline: 0;
+}
+
+.md-card-raw {
+  box-shadow: none;
+}
+
+[ng-click] {
+  cursor: pointer;
+}
+
+.ngivr-tooltip-big {
+  font-size: 110%;
+}
+
+.ngivr-tooltip-big .md-content {
+  height: auto;
+}
+
+.ngivr-tooltip-row {
+  clear: both;
+}
+
+.ngivr-tooltip-label {
+  float: left;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.ngivr-tooltip-label:first-letter {
+  text-transform: capitalize;
+}
+
+.ngivr-tooltip-data {
+  float: right;
+}
+
+.fa-stack-size {
+  height: $size-font-awesome-stack;
+  width: $size-font-awesome-stack;
+}
+
+.fa-stack {
+  @extend .fa-stack-size;
+  top: -2px;
+}
+
+.ngivr-ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+/*
+.ngivr-ellipsis:hover {
+  text-overflow: clip;
+  white-space: normal;
+  word-break: break-all;
+}
+*/
+
+.ngivr-center {
+  vertical-align: center !important;
+  text-align: center !important;
+}
+
+.ngivr-center-block {
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+}
+
+button.md-icon {
+  min-width: 36px;
+}
+
+/*
+TODO HACK ANGULAR MATERIAL
+*/
+md-input-container div[ng-messages].ng-hide {
+  display: none !important;
+  height: 0;
+}
+
+.ngivr-button-row-left {
+  padding-right: 5px;
+}
+
+.ngivr-row-hoverable {
+  padding: 5px;
+}
+
+.ngivr-row-hoverable:hover {
+  background-color: rgba(0,0,0,0.1);
+}
+
+/*#ngivr-menu-main-user #user-menu {
+  padding-bottom: 24px !important;
+}*/
+
+md-input-container .md-errors-spacer {
+  float: none;
+  min-height: 0px;
+  min-width: 0px;
+}
+
+.ngivr-strong {
+  font-weight: bold;
+  color: black;
+}
+
+.ngivr-input-raw, .ngivr-input-raw:focus,
+input.ngivr-input-raw,
+input.ngivr-input-raw[type]
+{
+  display: inline !important;
+  padding: 3px !important;
+  margin: 3px !important;
+  margin-bottom: 0px !important;
+  width: auto !important;
+  height: auto !important;
+  border: solid 1px $color-info !important;
+  border-bottom: solid 1px $color-info !important;
+}
+
+.btn-grey
+{
+  background-color: #a9a9a9;
+}
+
+.btn-grey:hover
+{
+  background-color: #7F7F7F !important;
+  color: #ffffff !important;
+}
+
+.btn-red
+{
+  background-color: $color-warning;
+}
+
+.btn-red:hover
+{
+  background-color: $color-warning !important;
+  color: #ffffff !important;
+}
+
+.ngivr-info {
+  font-color: $color-info;
+  font-size: 85%;
+}
+
+#newDispo
+{
+  padding: 3px;
+
+  md-card-actions .md-button {
+    margin-left: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-top: 30px;
+  }
+}
+
+.col-slim-padding-right-4 {
+  padding-right: 4px;
+}
+
+.col-slim-padding-left-4 {
+  padding-left: 4px;
+}
+
+.card-expandable
+{
+  background-color: #ffffff;
+  border-radius: 2px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+  margin-bottom: 8px !important;
+  min-height: 66px;
+}
+.card-expandable td
+{
+    padding: 0
+}
+
+.padding-sides-0
+{
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.padding-left-0-right-4
+{
+  padding-left: 0;
+  padding-right: 4px;
+}
+
+.padding-left-4-right-0
+{
+  padding-left: 4px;
+  padding-right: 0;
+}
+
+.padding-sides-4
+{
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+.margin-top-2
+{
+  margin-top: 2px;
+}
+
+.margin-top-4
+{
+  margin-top: 4px;
+}
+
+.label-as-badge {
+  border-radius: 1em;
+}
+
+.table-head {
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  font-weight: bold;
+}
+
+.btn-very-small
+{
+  font-size: 8px;
+  width: 30px;
+  min-height: 10px !important;
+  height: 20px !important;
+  line-height: 1px;
+}
+
+.label-blue {
+  background-color: $color-blue;
+}
+
+.label-black {
+  background-color: $color-black;
+}
+
+.md-chips .md-chip-input-container{
+  width: 100%;
+}
+
+.table-head-reconcilation {
+  text-align: center;
+  border-color: rgb(221, 221, 221);
+  border-style: solid;
+  border-width: 1px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 10px;
+  padding-top: 10px
+}
+
+.table-row-reconcilation {
+  text-align: center;
+
+  border-bottom-color: rgb(221, 221, 221);
+  border-right-color: rgb(221, 221, 221);
+  border-left-color: rgb(221, 221, 221);
+
+  border-left-width: 1px;
+  border-right-width: 1px;
+  border-bottom-width: 1px;
+
+  border-bottom-style: solid;
+  border-top-style: none;
+  border-left-style: solid;
+  border-right-style: solid;
+
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-bottom: 10px;
+  padding-top: 10px
+}
+
+.card-last-column
+{
+  width: 30px;
+  height: 30px;
+  border-radius: 50px;
+  float: right;
+  margin-top: 3px;
+  margin-left: 5px;
+  position: absolute;
+}
+
+span.badge  {
+    color: $color-black;
+}
+
+md-toolbar {
+    min-height: 48px;
+}
+
+.list-group-item {
+    padding-left: 5px;
+    padding-right: 5px;
+
+}
+
+.type-indicator {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    position: absolute;
+}
+.type-indicator span
+{
+    text-align: center;
+    font-weight: 300;
+    color: white;
+    font-size: 15pt;
+    display: block;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.ngivr-list-header-column {
+    background-color: rgb(232, 232, 232);
+    font-weight: bold;
+}
+
+.md-toolbar-tools-small {
+    font-size: 15px;
+}
+
+md-tooltip {
+    height: auto !important
+}
+
+md-checkbox {
+    margin-bottom: 0
+}
+
+div.center-in-table {
+    display:flex;
+    align-items:center;
+
+}
+
+.vehicle-paper-plane {
+    position: relative;
+    width: 24px;
+    height: 24px;
+    min-width: 24px;
+    min-height: 24px;
+    border-radius: 50%;
+}
+
+div > .vehicle-paper-plane > i {
+    position: absolute;
+    top: 6px;
+    right: 5px;
+}
+
+.green-plane {
+    background-color: $color-success;
+
+}
+
+.yellow-plane {
+    background-color: #dfba49;
+}
+
+.grey-plane {
+    background-color: rgba(0,0,0,0.12);
+
+}
+
+button.md-button.fw-btn-2, button.md-button.fw-btn-3, button.md-button.fw-btn-4, button.md-button.fw-btn-5, button.md-button.fw-btn-6, button.md-button.fw-btn-7, button.md-button.fw-btn-8, button.md-button.fw-btn-9 {
+    margin: 0px !important;
+}
+
+.md-dialog-container, .md-virtual-repeat-container, .md-select-menu-container, .md-panel-outer-wrapper {
+//    z-index: 1100 !important;
+}
+/// a jovoben a valtozasik (mivel ez a smink) - menjen a /client/assets/sass/000-THEME.scss -be

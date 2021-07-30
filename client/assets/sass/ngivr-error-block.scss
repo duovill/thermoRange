@@ -1,0 +1,11 @@
+@import "variables";
+
+.ngivr-error-block [ng-message]:before {
+  content: '* ';
+}
+
+.ngivr-error-block [ng-message] {
+  padding: 3px;
+  color: $color-error;
+}
+

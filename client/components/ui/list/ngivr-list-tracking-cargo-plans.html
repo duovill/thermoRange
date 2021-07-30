@@ -1,0 +1,148 @@
+<ngivr-list ngivr-schema="cargoPlan" ngivr-ref="this" ngivr-query="ngivrQuery">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+
+
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+        <md-input-container class="md-block" ng-if="ngivrQuery.search.$and[0].transportType === 'truck'">
+            <label>Állapot szerint</label>
+            <md-select ng-model="ref.filter.isClosed" md-on-close="ref.$ctrl.search(query)">
+                <md-option value="all">Összes</md-option>
+                <md-option value="closed">Lezárt</md-option>
+                <md-option value="notClosed">Nyitott</md-option>
+            </md-select>
+        </md-input-container>
+        <div flex>
+            <ngivr-button style="width: 100% !important; right: 4px"
+                          ng-click="addNominationTab(ngivrQuery.search.$and[0].transportType ||ngivrQuery.search.transportType)"
+                          ng-disabled="">
+                <ng-md-icon icon="add">
+                </ng-md-icon>
+                {{ ref.$ctrl.getCaption(ngivrQuery.search.$and[0].transportType ||ngivrQuery.search.transportType)}}
+                <!--        {{ngivr.strings.button.newNominationReplace.replace('{type}', ngivrQuery.search.nominationType)}}-->
+            </ngivr-button>
+        </div>
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+        <md-card class="card-padding" style="clear: both;" ng-style="{'margin-top' : ($index === 0 ? '5px' : '-7px')}">
+
+
+            <md-card-content ng-click="addNominationTab(ngivrQuery.search.$and[0].transportType, doc)">
+
+                <div ng-if="doc.transportType === 'shipOn'">
+                    <div
+                        class="card-left fa fa-ship">
+                    </div>
+                    <div class="card-right">
+                        <table>
+                            <tr>
+                                <td><span ng-bind="doc.name"> <md-tooltip
+                                    md-direction="top">{{ngivr.strings.tooltip.nominationName}}</md-tooltip></span></td>
+                                <td colspan="2"><span>{{ ref.$ctrl.getCargoType(doc.transportType)}}</span></td>
+                                <!--<td><span ng-bind="(doc.sellContracts[0].toLoadQuantity | number) + ' mt'"></span></td>-->
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span ng-bind="(doc.plannedQuantity | number : 3) + ' mt'"> <md-tooltip
+                                        md-direction="top">{{ngivr.strings.tooltip.plannedQuantity}}</md-tooltip></span>
+                                </td>
+                                <td>
+                                    <span ng-bind="(doc.performedQuantity | number : 3)+ ' mt'"> <md-tooltip
+                                        md-direction="top">{{ngivr.strings.tooltip.performedQuantity}}</md-tooltip></span>
+                                </td>
+                                <td>
+                                    <span ng-bind="doc.date | date: 'yyyy.MM.dd'"> <md-tooltip md-direction="top">{{ngivr.strings.tooltip.date}}</md-tooltip></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="text-align: right;">
+                                    <span ng-if="doc.allShipClosed" class="badge badge-default ship-label pull-left">Lezárt</span>
+
+                                    <span ng-if="doc.splittedContract" class="badge badge-default ship-label pull-left"
+                                          style="background-color: green">Felosztott</span>
+                                    <span ng-if="!doc.splittedContract" class="badge badge-default ship-label pull-left"
+                                          style="background-color: red">Felosztatlan</span>
+                                    <ngivr-button style="zoom: 0.85;" ng-click="ref.$ctrl.deliveriesPopup($event, doc)">
+                                        Szállítások
+                                    </ngivr-button>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </div>
+
+                <div ng-if="doc.transportType === 'truck'">
+                    <div
+                        class="card-left fa fa-truck">
+                    </div>
+                    <div class="card-right">
+                        <table>
+                            <tr>
+                                <td><span ng-bind="doc.name"></span></td>
+                                <td><span>{{ ref.$ctrl.getCargoType(doc.transportType)}}</span></td>
+                                <td><span ng-bind="(doc.sellContracts[0].toLoadQuantity | number) + ' mt'"></span></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <span ng-bind="doc.sellContracts[0].partner"></span>
+                                </td>
+                                <td>
+                                    <span ng-bind="doc.sellContracts[0].contractNumber"></span>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </div>
+                </div>
+
+                <div ng-if="doc.transportType === 'shipFrom'">
+                    <div
+                        class="card-left fa fa-anchor">
+                    </div>
+                    <div class="card-right">
+                        <table>
+                            <tr>
+                                <td><span ng-bind="doc.name"></span></td>
+                                <td colspan="2"><span>{{ ref.$ctrl.getCargoType(doc.transportType)}}</span></td>
+                                <!--<td><span ng-bind="(doc.sellContracts[0].toLoadQuantity | number) + ' mt'"></span></td>-->
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span>{{ doc.plannedQuantityShip }} mt</span>
+                                </td>
+                                <td>
+                                    <span>{{ doc.performedQuantityShip }} mt</span>
+                                </td>
+                                <td>
+                                    <span>{{ doc.date | date:"yyyy.MM.dd."}}</span>
+                                </td>
+                            </tr>
+                            <!--              <tr>
+                                            <td colspan="3">
+                                              <span ng-bind="doc.comment"></span>
+                                            </td>
+                                          </tr>-->
+                            <tr>
+                                <td colspan="3" style="text-align: right;">
+                                    <span ng-if="doc.allShipClosed" class="badge badge-default ship-label pull-left">Lezárt</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+            </md-card-content>
+
+        </md-card>
+
+    </ngivr-list-template>
+
+</ngivr-list>

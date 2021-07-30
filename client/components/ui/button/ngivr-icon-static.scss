@@ -1,0 +1,29 @@
+@import "../../../assets/sass/variables";
+@import "../../../assets/sass/ngivr-disabled";
+
+ngivr-icon-static > button,
+ngivr-icon-static > button:focus
+{
+  background-color: $color-icon-background;
+  border-radius: 5px;
+  box-shadow: none;
+  border: 0px;
+  width: 50px;
+}
+
+ngivr-icon-static > button:hover
+{
+  background-color: darken($color-icon-background, 10);
+}
+
+ngivr-icon-static > button > img {
+  max-height: 30px;
+}
+
+ngivr-icon-static button > button.ngivr-icon-static-send {
+  width: 70px;
+}
+
+ngivr-icon-static > button:disabled {
+  @extend .ngivr-disabled;
+}

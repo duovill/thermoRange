@@ -1,0 +1,33 @@
+.ngivr-list-paginator-button {
+  min-width: inherit;
+  min-height: 20px;
+}
+
+.ngivr-list-paginator-button-mobile *
+{
+  font-size: 24px !important;
+  line-height: 24px !important;
+}
+
+.ngivr-list-button-mobile ngivr-icon-fa button * {
+  font-size: 18px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+}
+
+.ngivr-list-button-mobile ngivr-icon-fa button .fa {
+  top: 6px;
+  left: -3px;
+}
+
+ngivr-list, ngivr-list-header, ngivr-list-paginator {
+  display: block;
+}
+
+ngivr-list {
+  margin: 5px;
+}
+
+ngivr-list-paginator {
+  margin-bottom: 15px;
+}

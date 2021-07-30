@@ -1,0 +1,7 @@
+{
+    "compact": false,
+    "sourceMap": false,
+    "presets": [
+        "@babel/preset-env"
+    ]
+}

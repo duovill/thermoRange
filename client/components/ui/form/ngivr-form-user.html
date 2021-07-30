@@ -1,0 +1,154 @@
+<ngivr-form ngivr-schema="user" ngivr-id="ngivrId" ng-model="model" ng-disabled="formLocked"
+            ngivr-close="ngivrClose()">
+
+    <ngivr-form-body>
+        <div layout="row">
+            <div flex="50" flex-xs="100">
+                <md-input-container class="md-block">
+                    <label>{{ngivr.strings.field.userName}}</label>
+                    <input required ng-model="model.name" name="userName"
+                           ngivr-validation-unique="{schema: 'user', schemaField: 'name'}"/>
+                </md-input-container>
+
+                <div ng-messages="$parent[$parent.formName].userName.$error">
+                    <div ng-message="ngivrValidationUnique">{{ngivr.strings.form.validation.notUnique}}</div>
+                </div>
+
+                <div ng-messages="$parent[$parent.formName].userName.$error"
+                     ng-show="ngivr.form.message.show($parent[$parent.formName], 'userName')"
+                     style="height: auto !important;">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div layout="row">
+            <div flex="50" flex-xs="100">
+                <md-input-container class="md-block">
+                    <label>{{ngivr.strings.field.fullName}}</label>
+                    <input required ng-model="model.fullName" type="text" name="fullName"/>
+                </md-input-container>
+
+                <div ng-messages="$parent[$parent.formName].fullName.$error"
+                     ng-show="ngivr.form.message.show($parent[$parent.formName], 'fullName')"
+                     style="height: auto !important;">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div layout="row">
+            <div flex="50" flex-xs="100">
+                <md-input-container class="md-block">
+                    <label>{{ngivr.strings.field.nickName}}</label>
+                    <input required ng-model="model.nickName" type="text" name="nickName"/>
+                </md-input-container>
+
+                <div ng-messages="$parent[$parent.formName].nickName.$error"
+                     ng-show="ngivr.form.message.show($parent[$parent.formName], 'nickName')"
+                     style="height: auto !important;">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div layout="row">
+            <div flex="50" flex-xs="100">
+                <md-input-container class="md-block">
+                    <label>{{ngivr.strings.field.email}}</label>
+                    <input required ng-model="model.emailAdress" type="text" name="email"/>
+                </md-input-container>
+
+                <div ng-messages="$parent[$parent.formName].email.$error"
+                     ng-show="ngivr.form.message.show($parent[$parent.formName], 'email')"
+                     style="height: auto !important;">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div layout="row">
+            <div flex="50" flex-xs="100">
+                <md-input-container class="md-block">
+                    <label>{{ngivr.strings.field.phone}}</label>
+                    <input ng-model="model.phone" type="text" mask="0036-99-999-9999" clean="true" restrict="reject"
+                           name="phone"
+                           title="0036-99-999-9999"/>
+                </md-input-container>
+            </div>
+        </div>
+
+        <div layout="row">
+            <div flex="50" flex-xs="100">
+                <md-input-container class="md-block md-select-margin">
+                    <label>{{ngivr.strings.field.type}}</label>
+                    <md-select md-no-ink name="type" ng-model="model.role" required>
+                        <md-option ng-repeat="i in types" value="{{ i }}">{{ getRoleText(types[$index])}}</md-option>
+                    </md-select>
+                </md-input-container>
+
+                <div ng-messages="$parent[$parent.formName].type.$error"
+                     ng-show="ngivr.form.message.show($parent[$parent.formName], 'type')"
+                     style="height: auto !important;">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div layout="row">
+            <div flex="50" flex-xs="100">
+                <md-input-container class="md-block">
+                    <label>{{ngivr.strings.field.password}}</label>
+                    <input ng-required="!model._id" ng-model="model.password" type="text" name="password"/>
+                </md-input-container>
+
+                <div ng-messages="$parent[$parent.formName].password.$error"
+                     ng-show="ngivr.form.message.show($parent[$parent.formName], 'password')"
+                     style="height: auto !important;">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div layout="row">
+            <div flex="50" flex-xs="100">
+                <md-input-container class="md-block">
+                    <label>{{ngivr.strings.field.passwordAgain}}</label>
+                    <input ng-required="!model._id || model.password" ng-model="model.passwordAgain" type="text"
+                           name="passwordAgain"
+                           ng-disabled="!model.password" ngivr-validation-is-same="model.password"/>
+                </md-input-container>
+
+                <div ng-messages="$parent[$parent.formName].passwordAgain.$error" style="height: auto !important;">
+                    <div ng-message="ngivrValidationIsSame">{{ngivr.strings.form.validation.passwordNotSame}}</div>
+                </div>
+
+                <div ng-messages="$parent[$parent.formName].passwordAgain.$error"
+                     ng-show="ngivr.form.message.show($parent[$parent.formName], 'passwordAgain')"
+                     style="height: auto !important;">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                </div>
+            </div>
+        </div>
+
+        <md-input-container class="md-block">
+            <label>Telephely</label>
+            <ngivr-autocomplete-site name="site" ng-model="model.site"></ngivr-autocomplete-site>
+        </md-input-container>
+
+        <div layout="column">
+            <md-input-container>
+                <md-checkbox name="showGraph" aria-label="0" ng-model="model.showGraph" class="md-primary" ng-disabled="!$parent.enabled">
+                    <span>Grafikont láthatja</span>: <b>{{model.showGraph ? 'Igen' : 'Nem'}}</b>
+                </md-checkbox>
+            </md-input-container>
+
+            <md-input-container>
+                <md-checkbox name="appr" aria-label="0" ng-model="model.approved" class="md-primary" ng-disabled="!$parent.enabled">
+                    <span>Állapot</span>: <b>{{model.approved ? 'Engedélyezett' : 'Tiltott'}}</b>
+                </md-checkbox>
+            </md-input-container>
+        </div>
+
+    </ngivr-form-body>
+</ngivr-form>

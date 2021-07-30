@@ -1,0 +1,136 @@
+<ngivr-list ngivr-schema="outgoingInvoice" ngivr-ref="this" ngivr-query="ngivrQuery">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ $root.ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-template>
+        <md-card class="card-expandable card-padding-0" style="clear: both;">
+            <!--								<md-card-content ng-click="expand(doc, doc._id)">-->
+            <md-card-content style="padding: 5px" ng-click="$parent.ref.$ctrl.loadInvoice(doc)">
+                <div class="card-left card-green">
+                    <span ng-bind="getType(doc.type, doc.relatedInvoice, doc.origType)"></span>
+                    <span
+                        ng-if="doc.type === 'storno'"
+                        class="label label-danger label-table"
+                        style="margin-left: 5px; margin-top: 10px; padding-top: 3px; padding-bottom: 3px; padding-left: 3px; padding-right: 3px; font-size: 8px">Szt</span>
+                    <span
+                        ng-if="doc.type === 'correction'"
+                        class="label label-danger label-table"
+                        style="margin-left: 5px; margin-top: 10px; padding-top: 3px; padding-bottom: 3px; padding-left: 3px; padding-right: 3px; font-size: 8px">K</span>
+
+                    <!--<span-->
+                    <!--ng-if="doc.relatedInvoice && doc.relatedInvoice.type === 'storno'"-->
+                    <!--class="label label-danger label-table"-->
+                    <!--style="margin-left: 5px; margin-top: 10px; padding-top: 3px; padding-bottom: 3px; padding-left: 3px; padding-right: 3px; font-size: 8px">Sz</span>-->
+
+                    <!--<span-->
+                    <!--ng-if="doc.relatedInvoice && doc.relatedInvoice.type === 'correction'"-->
+                    <!--class="label label-danger label-table"-->
+                    <!--style="margin-left: 5px; margin-top: 10px; padding-top: 3px; padding-bottom: 3px; padding-left: 3px; padding-right: 3px; font-size: 8px">Ko</span>-->
+                    <md-checkbox ng-if="showDetails" ng-click="doc.selected = !doc.selected"
+                                 style="margin-left: 5px; margin-top: 10px" aria-label="0"></md-checkbox>
+
+                </div>
+                <div class="card-right">
+                    <table>
+                        <tr>
+                            <td colspan="2">
+                                <md-tooltip md-direction="top">Számlaszám</md-tooltip>
+                                <span ng-bind="doc.number"></span></td>
+                            <td>
+
+                            <td colspan="2">
+
+                                <md-tooltip md-direction="top">Dátum</md-tooltip>
+                                <span>{{doc.createdAt | date: 'yyyy.MM.dd'}}</span></td>
+
+                            <td colspan="2" style="text-align: center">
+                                <md-button
+                                    ng-if="doc.type !== 'storno' && doc.type !== 'correction' && !doc.correctionInvoiceNumber && !doc.stornoInvoiceNumber && (doc.FEJID || !ngivr.settings.mustSendToWinner)"
+                                    class="waves-effect waves-whitesmoke btn-very-small btn btn-grey"
+                                    ng-disabled="isDisabledButtons(doc)"
+                                    ng-click="$parent.ref.$ctrl.startStorno(doc, $event)">
+                                    Sztornó
+                                </md-button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <md-tooltip md-direction="top">Nettó összeg</md-tooltip>
+                                <span>{{doc.sum | currency : doc.currency : (doc.currency === 'HUF' ? 0 : 2)}}</span>
+                            <td colspan="3">
+                                <md-tooltip md-direction="top">Nettó maradvány</md-tooltip>
+                                <span>{{doc.depositRemain | currency : doc.currency}}</span>
+                            <td>
+
+                                <div ng-if="showDetails" layout="row">
+                                    <div flex="90">
+                                        <md-tooltip ng-if="doc.selected" md-direction="top">Beszámítandó összeg
+                                        </md-tooltip>
+                                        <input ng-disabled="!doc.selected" type="number" max="doc.depositRemain"
+                                               ng-model="doc.sumToInvoice"
+                                               style="margin-bottom: 0px;">
+                                    </div>
+                                    <div flex>
+                                        <ngivr-icon-fa ngivr-tooltip="Tétel hozzáadása" ng-if="doc.sumToInvoice"
+                                                       ngivr-icon-fa="fa-plus"
+                                                       ng-click="$parent.ref.$ctrl.addDepositToInvoice(doc)"/>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                        </tr>
+                        <tr class="card-third-row">
+                            <td colspan="3" ng-if="doc.NAVOnlineInvoicing.transactionId || doc.FEJID">
+                                <md-tooltip md-direction="top">Vevő</md-tooltip>
+                                <span ng-bind="doc.buyer[0].name"></span></td>
+                            </td>
+
+                            <td>
+                                <ngivr-nav-indicator doc="doc" not-send="true"></ngivr-nav-indicator>
+                                <!--<md-tooltip md-direction="top">{{getInfo(doc)}}</md-tooltip>-->
+                                <!--<span class="label label-table"-->
+                                <!--ng-class="{'label-danger' : doc.NAVOnlineInvoicing.result === 'failed', 'label-success': doc.NAVOnlineInvoicing.result === 'success', 'label-warning': doc.NAVOnlineInvoicing.result === 'timeout' }">NAV</span>-->
+
+                            </td>
+                            <td>
+                                <md-tooltip ng-if="ngivr.settings.mustSendToWinner" md-direction="top">{{(doc.FEJID ?
+                                    'Sikeres' : 'Sikertelen') + ' WinNER átadás'}}
+                                </md-tooltip>
+                                <span class="label label-table" ng-if="ngivr.settings.mustSendToWinner"
+                                      ng-class="{'label-danger' : (doc.winner ? !doc.winner.success : !doc.FEJID), 'label-success': (doc.winner ? doc.winner.success : doc.FEJID) }">Winner</span>
+
+                            </td>
+
+                            <td colspan="2" style="text-align: center">
+                                <md-button
+                                    ng-if="doc.type !== 'storno' && !doc.correctionInvoiceNumber && !doc.stornoInvoiceNumber && (doc.FEJID || !ngivr.settings.mustSendToWinner)"
+                                    class="waves-effect waves-whitesmoke btn-very-small btn btn-grey"
+                                    ng-disabled="isDisabledButtons(doc)"
+                                    ng-click="$parent.ref.$ctrl.startCorrection(doc, $event)">
+                                    Helyesbítő
+                                </md-button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" ng-if="doc.NAVOnlineInvoicing.transactionId || doc.FEJID">
+                                <md-tooltip md-direction="top">Kapcsolódó számla</md-tooltip>
+                                <span>{{doc.relatedInvoice.number}}</span>
+                            </td>
+
+                        </tr>
+
+                    </table>
+                </div>
+            </md-card-content>
+
+        </md-card>
+
+    </ngivr-list-template>
+
+</ngivr-list>

@@ -1,0 +1,299 @@
+<!--
+***********************************************
+JELENLEGI DOKUMETNUMOK
+***********************************************
+-->
+<ngivr-portlet ngivr-title="Sablon" ngivr-icon-fa="fa-file-text">
+
+  <ngivr-portlet-action>
+    <md-button aria-label="Új" class="md-icon" ng-click="command.new()">
+      <ng-md-icon icon="add"></ng-md-icon>
+      <md-tooltip md-direction="bottom">Új</md-tooltip>
+    </md-button>
+
+
+    <!--
+    ***********************************************
+    MENTETT DOKUMENTUMOK
+    ***********************************************
+    -->
+    <md-menu ng-if="setting.htmlTemplates.length">
+      <md-button aria-label="{{ ngivr.strings.htmlTemplate.title.loading }}" class="md-icon"
+                 ng-click="$mdMenu.open($event)">
+        <md-tooltip md-direction="bottom">{{ ngivr.strings.htmlTemplate.title.loading }}</md-tooltip>
+        <ng-md-icon icon="folder_open"></ng-md-icon>
+      </md-button>
+      <md-menu-content width="1">
+        <md-menu-item ng-repeat="htmlTemplateCurrent in setting.htmlTemplates | orderBy: 'name'">
+          <md-button ng-click="command.template.load(htmlTemplateCurrent)">
+            {{htmlTemplateCurrent.name}}
+          </md-button>
+        </md-menu-item>
+      </md-menu-content>
+    </md-menu>
+
+  </ngivr-portlet-action>
+
+  <ngivr-portlet-body>
+    <md-input-container class="md-block">
+      <label>Dokumentum neve</label>
+      <input ng-model="template.name" name="name" ngivr-validation-mongoose required/>
+
+    </md-input-container>
+
+    <div ng-messages="htmlTemplateForm.name.$error" ng-show="ngivr.form.message.show(htmlTemplateForm, 'name')">
+      <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+      <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message(htmlTemplateForm, 'name')}}</div>
+    </div>
+
+    <md-input-container class="md-block">
+
+      <label>{{ ngivr.strings.title.schema }}</label>
+
+
+      <md-select md-no-ink ng-model="template.mainSchema" name="mainSchema">
+        <md-option ng-repeat="type in command.schema.types" ng-value="type.value"
+                   ng-selected="type.value == template.mainSchema" ng-click="command.schema.type(type)">
+          {{ type.name}} - {{ type.value}}
+        </md-option>
+      </md-select>
+
+    </md-input-container>
+
+    <md-input-container class="md-block">
+      <label>Kód név</label>
+      <input ng-model="template.partialName" name="partialName" ngivr-validation-mongoose required/>
+    </md-input-container>
+
+
+    <div ng-messages="htmlTemplateForm.partialName.$error"
+         ng-show="ngivr.form.message.show(htmlTemplateForm, 'partialName')">
+      <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+      <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message(htmlTemplateForm, 'partialName')}}
+      </div>
+    </div>
+
+      <md-input-container class="md-block">
+          <label>{{ ngivr.strings.title.label }}</label>
+          <input ng-model="template.label" name="label" ngivr-validation-mongoose/>
+      </md-input-container>
+
+      <div ng-messages="htmlTemplateForm.label.$error" ng-show="ngivr.form.message.show(htmlTemplateForm, 'label')">
+          <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message(htmlTemplateForm, 'label')}}</div>
+      </div>
+
+
+      <md-input-container class="md-block">
+          <label>Másodpéldány cimke</label>
+          <input ng-model="template.labelDuplicate" name="labelDuplicate" ngivr-validation-mongoose/>
+      </md-input-container>
+
+      <div ng-messages="htmlTemplateForm.labelDuplicate.$error" ng-show="ngivr.form.message.show(htmlTemplateForm, 'labelDuplicate')">
+          <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message(htmlTemplateForm, 'labelDuplicate')}}</div>
+      </div>
+
+    <md-input-container class="md-block">
+      <label>{{ ngivr.strings.title.language }}</label>
+      <ngivr-select-language ng-model="template.language" name="language" ngivr-validation-mongoose/>
+    </md-input-container>
+
+    <div ng-messages="htmlTemplateForm.label.$error" ng-show="ngivr.form.message.show(htmlTemplateForm, 'label')">
+      <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+      <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message(htmlTemplateForm, 'label')}}</div>
+    </div>
+
+    <div layout="row" flex>
+      <div flex="50">
+        <md-input-container class="md-block" style="margin-top: 0px; margin-bottom: 0px;">
+          <label>{{ template.shown ? ngivr.strings.htmlTemplate.title.shownTemplateList :
+            ngivr.strings.htmlTemplate.title.hiddenTemplateList }}</label>
+
+          <md-switch ng-model="template.shown" aria-label="{{ ngivr.strings.htmlTemplate.title.shown }}">
+          </md-switch>
+        </md-input-container>
+
+      </div>
+      <div flex="50">
+        <md-input-container class="md-block" style="margin-top: 0px; margin-bottom: 0px;">
+          <label>{{ template.enableInstanceCounter ? ngivr.strings.htmlTemplate.title.enableInstanceCounterOn :
+            ngivr.strings.htmlTemplate.title.enableInstanceCounterOff }}</label>
+
+          <md-switch ng-model="template.enableInstanceCounter"
+                     aria-label="{{ template.enableInstanceCounter ? ngivr.strings.htmlTemplate.title.enableInstanceCounterOn : ngivr.strings.htmlTemplate.title.enableInstanceCounterOff }}">
+          </md-switch>
+        </md-input-container>
+
+      </div>
+    </div>
+
+    <div layout="row" flex>
+      <div flex="50">
+        <md-input-container style="margin-top: 0px; margin-bottom: 0px;">
+          <label> {{ ngivr.strings.htmlTemplate.message[template.orientation] }}</label>
+
+          <md-switch
+            name="orientation"
+            ng-model="template.orientation"
+            aria-label="ngivr.strings.htmlTemplate.message.orientation"
+            ng-false-value="{{'\'' + ngivr.strings.htmlTemplate.enum.orientation[0].value + '\''}}"
+            ng-true-value="{{'\'' + ngivr.strings.htmlTemplate.enum.orientation[1].value + '\''}}">
+          </md-switch>
+
+          <div ng-messages="htmlTemplateForm.orientation.$error"
+               ng-show="ngivr.form.message.show(htmlTemplateForm, 'orientation')">
+            <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message(htmlTemplateForm, 'orientation')}}
+            </div>
+          </div>
+        </md-input-container>
+
+      </div>
+      <div flex="50">
+        <md-input-container style="margin-top: 0px; margin-bottom: 0px;">
+          <label>{{ template.format }}</label>
+
+          <md-switch
+            name="format"
+            ng-model="template.format"
+            aria-label="ngivr.strings.htmlTemplate.message.format"
+            ng-false-value="{{'\'' + ngivr.strings.htmlTemplate.enum.format[0].value + '\''}}"
+            ng-true-value="{{'\'' + ngivr.strings.htmlTemplate.enum.format[1].value + '\''}}">
+          </md-switch>
+
+          <div ng-messages="htmlTemplateForm.format.$error"
+               ng-show="ngivr.form.message.show(htmlTemplateForm, 'format')">
+            <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message(htmlTemplateForm, 'partialName')}}
+            </div>
+          </div>
+        </md-input-container>
+
+      </div>
+    </div>
+
+
+
+
+
+    <md-input-container class="md-block">
+      <label>{{ ngivr.strings.htmlTemplate.title.copies}}</label>
+
+      <input ng-model="template.copies" name="copies" type="number" min="1" step="1" ngivr-validation-mongoose
+             required/>
+    </md-input-container>
+
+
+    <div ng-messages="htmlTemplateForm.copies.$error" ng-show="ngivr.form.message.show(htmlTemplateForm, 'copies')">
+      <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+      <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message(htmlTemplateForm, 'copies')}}</div>
+    </div>
+
+
+    <div layout="row" flex>
+      <div flex="50">
+        <md-input-container class="md-block">
+          <label>{{ ngivr.strings.htmlTemplate.title.fixedWidth}}</label>
+
+          <input ng-model="template.fixedWidth" name="fixedWidth" type="number" min="0" step="1"
+                 ngivr-validation-mongoose required/>
+        </md-input-container>
+
+
+        <div ng-messages="htmlTemplateForm.fixedWidth.$error"
+             ng-show="ngivr.form.message.show(htmlTemplateForm, 'fixedWidth')">
+          <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+          <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message(htmlTemplateForm, 'fixedWidth')}}</div>
+        </div>
+
+      </div>
+      <div flex="50">
+        <md-input-container class="md-block">
+          <label>{{ ngivr.strings.htmlTemplate.title.fixedHeight}}</label>
+
+          <input ng-model="template.fixedHeight" name="fixedHeight" type="number" min="0" step="1"
+                 ngivr-validation-mongoose required/>
+        </md-input-container>
+
+
+        <div ng-messages="htmlTemplateForm.fixedHeight.$error"
+             ng-show="ngivr.form.message.show(htmlTemplateForm, 'fixedHeight')">
+          <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+          <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message(htmlTemplateForm, 'fixedHeight')}}</div>
+        </div>
+
+      </div>
+    </div>
+
+
+
+
+    <md-chips ng-model="template.qrVars" md-autocomplete-snap="width" md-require-match="true"
+              md-transform-chip="command.qr.chipTransform($chip)"
+              md-autocomplete-snap>
+      <md-autocomplete
+        placeholder="QR komponens"
+        md-selected-item="command.qr.searchCurrent"
+        md-search-text="command.qr.searchQrVariableText"
+        md-items="variable in command.schema.queryVariableSearch(command.qr.searchQrVariableText)"
+        md-item-text="variable.path">
+        <md-item-template>
+                    <span>
+                      {{variable.path}}
+                    </span>
+        </md-item-template>
+        .
+        <md-not-found>
+          {{ ngivr.strings.message.noResult}}
+        </md-not-found>
+      </md-autocomplete>
+      <md-chip-template>
+              <span>
+                {{$chip}}
+              </span>
+      </md-chip-template>
+    </md-chips>
+
+    <md-input-container class="md-block md-select-card">
+      <label>{{ ngivr.strings.htmlTemplate.message.qrAlignment }}</label>
+      <md-select md-no-ink ng-model="template.qrAlignment">
+        <md-option ng-repeat="alignment in command.qr.alignments" ng-value="alignment.value">
+          {{alignment.name}}
+        </md-option>
+      </md-select>
+    </md-input-container>
+
+
+    <div ng-messages="htmlTemplateForm.shown.$error" ng-show="ngivr.form.message.show(htmlTemplateForm, 'shown')">
+      <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+    </div>
+
+    <div ng-messages="htmlTemplateForm.html.$error" ng-show="ngivr.form.message.show(htmlTemplateForm, 'html')"
+         class="ngivr-error-block">
+      <div ng-message="required">{{ngivr.strings.htmlTemplate.validation.requiredTemplateEditor}}</div>
+      <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message(htmlTemplateForm, 'html')}}</div>
+    </div>
+
+    <div ng-messages="htmlTemplateForm.mainSchema.$error"
+         ng-show="ngivr.form.message.show(htmlTemplateForm, 'mainSchema')" class="ngivr-error-block">
+      <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message(htmlTemplateForm, 'mainSchema')}}</div>
+    </div>
+
+    <div style="text-align: right">
+
+
+      <ngivr-button
+        ng-if="template._id"
+        ng-click="command.remove(template._id)"
+      >
+        <ng-md-icon icon="clear"></ng-md-icon>
+        {{ ngivr.strings.button.remove}}
+      </ngivr-button>
+
+      &nbsp;
+
+      <ngivr-button type="submit">
+        <ng-md-icon icon="save"></ng-md-icon>
+        {{ngivr.strings.button.save}}
+      </ngivr-button>
+    </div>
+  </ngivr-portlet-body>
+</ngivr-portlet>
+

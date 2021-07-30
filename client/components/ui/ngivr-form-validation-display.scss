@@ -1,0 +1,44 @@
+ngivr-form-validation-display {
+    @import "../../assets/sass/_variables.scss";
+
+    .ngivr-form-validation-display {
+        padding: $ng-message-border-radius;
+        border-radius: $ng-message-border-radius;
+        margin: $ng-message-border-radius;
+        background-color: $ng-message-bg;
+        color: $ng-message-color;
+
+        .ngivr-form-validation-display-item {
+            margin-top: 5px;
+            cursor: pointer;
+        }
+        .ngivr-form-validation-display-item-divider {
+            margin-top: 5px;
+        }
+    }
+}
+
+@keyframes ngivr-form-validation-display-position-animation {
+    from {
+        border-style: solid;
+        border-width: 2px;
+        border-color: darken($ng-message-bg, 50%);
+        border-radius: $ng-message-border-radius;
+    }
+    to {
+        border-style: solid;
+        border-width: 2px;
+        border-color: $ng-message-bg;
+        border-radius: $ng-message-border-radius;
+    }
+}
+
+.ngivr-form-validation-display-position {
+//    position: absolute;
+//    display: block;
+//    background-color: black;
+//    color: white;
+//    z-index: 100000;
+//    opacity: 0.2;
+    animation: ngivr-form-validation-display-position-animation 0.5s infinite;
+}

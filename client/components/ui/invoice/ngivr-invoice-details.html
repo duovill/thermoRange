@@ -1,0 +1,428 @@
+<!--
+          ****************
+          Kiállítás vagy kelt
+          ****************
+          -->
+<div layout="row" class="margin-top-10" layout-wrap>
+    <div flex="20" flex-xs="100">
+
+                    <span class="first-child"><b ng-bind="'Típus: '"></b><span
+                        ng-bind="doc.compensation ? 'Áru/' + typeList[doc.type] : doc.number ? setType(doc) : registryStatusList[doc.registryStatus] + '/' + typeList[doc.type] "></span></span>
+    </div>
+    <div flex="20" flex-xs="100">
+                  <span class="first-child"><b ng-bind="'Bizonylat kelte: '"></b><span
+                      ng-bind="doc.number ? (doc.createdAt | date: 'yyyy.MM.dd') : doc.dateOfInvoice | date: 'yyyy.MM.dd' "></span></span>
+    </div>
+
+    <div flex="20" flex-xs="100">
+                  <span class="first-child"><b ng-bind="doc.number ? 'Kiállította: ' : 'Iktatta:'"></b><span
+                      ng-bind="doc.history[0].userName"></span></span>
+    </div>
+
+    <div flex="20" flex-xs="100">
+                  <span ng-if="doc.incomingInvoiceNumber" class="first-child"><b ng-bind="'Iktatás dátuma: '"></b><span
+                      ng-bind="doc.createdAt | date: 'yyyy.MM.dd'"></span></span>
+    </div>
+
+    <div flex="20" flex-xs="100">
+        <div class="detail-row">
+                    <span ng-if="doc.incomingInvoiceNumber" class="first-child"><b ng-bind="'Érkezés: '"></b><span
+                        ng-bind="(doc.incomingDate | date: 'yyyy.MM.dd') + '/' + incomingTypesList[doc.incomingModeOfArrival]"></span></span>
+            <br/>
+        </div>
+    </div>
+
+</div>
+
+<!--
+***********************
+Fizetési információk
+***********************
+-->
+<div layout="row" class="margin-top-10" layout-wrap>
+
+    <!--
+     ***************
+     Teljesítés
+     ***************
+     -->
+    <div flex="20" flex-xs="50" flex-md="33">
+                    <span class="first-child"><b ng-bind="'Teljesítés dátuma: '"></b><span
+                        ng-bind="doc.fulfillmentDate ? (doc.fulfillmentDate | date: 'yyyy.MM.dd') : doc.goodsSent | date: 'yyyy.MM.dd'"></span></span>
+    </div>
+
+    <!--
+    ******************
+    Fizetési hat.idő
+    ******************
+    -->
+    <div flex="20" flex-xs="50" flex-md="33">
+                    <span class="first-child"><b ng-bind="'Fizetési határidő: '"></b><span
+                        ng-bind="doc.paymentDate ? (doc.paymentDate | date : 'yyyy.MM.dd') : doc.lastDayOfPayment | date: 'yyyy.MM.dd'"></span></span>
+    </div>
+
+    <!--
+    *******************
+    Elszámolás d.
+    *******************
+    -->
+    <div flex="20" flex-xs="50" flex-md="33">
+                    <span class="first-child"><b ng-bind="'Elszámolás dátuma: '"></b><span
+                        ng-bind="doc.deadlineDate ? (doc.deadlineDate | date: 'yyyy.MM.dd') : '---'"></span></span>
+    </div>
+
+    <!--
+    *********
+    Fiz.mód
+    *********
+    -->
+
+    <div flex="20" flex-xs="50" flex-md="33">
+                    <span class="first-child"><b ng-bind="'Fizetési mód: '"></b><span
+                        ng-bind="doc.payMode ? doc.payMode.FIZMOD_NEV : doc.incomingPayMode.FIZMOD_NEV"></span></span>
+    </div>
+
+    <!--
+    ************
+    Bankszámla
+    ************
+    -->
+
+    <div flex flex-xs="100"  flex-md="66"
+         ng-if="doc.incomingPayMode.FIZMOD_NEV === 'Átutalás' || doc.payMode.FIZMOD_NEV === 'Átutalás'">
+        <div layout="column">
+            <div flex>
+              <span><b ng-bind="'Bankszámlaszám: '"></b><span ng-if="$mdMedia('gt-xs')"
+                                                              ng-bind="doc.number && doc.compensation ? doc.bankAccountNumber : doc.accountNumber ?  doc.accountNumber : doc.incomingBankAccountNumber"></span></span>
+            </div>
+            <div flex ng-if="!$mdMedia('gt-xs')">
+              <span
+                  ng-bind="doc.number && doc.compensation ? doc.bankAccountNumber : doc.accountNumber ?  doc.accountNumber : doc.incomingBankAccountNumber"></span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<!--
+*********************
+Összesített adatok
+*********************
+-->
+<div layout="row" class="margin-top-10" layout-wrap>
+    <!--
+    ***********
+    Bruttó
+    ***********
+    -->
+    <div flex="33" flex-xs="100">
+        <div layout="row">
+            <div flex>
+              <span class="first-child"><b ng-bind="'Bruttó érték: '"></b><span ng-if="$mdMedia('gt-xs')"
+                                                                                ng-bind="getSum(doc, 'brutto') | currency: doc.currency"></span></span>
+            </div>
+            <div flex ng-if="!$mdMedia('gt-xs')">
+                <div style="text-align: right"
+                     ng-bind="getSum(doc, 'brutto') | currency: doc.currency"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--
+    *******************
+    Adó / Kompencáció
+    *******************
+    -->
+    <div flex="33" flex-xs="100">
+        <div layout="row">
+            <div flex>
+              <span class="first-child"><b
+                  ng-bind="doc.number && doc.compensation ? 'Kompenzációs felár: ' : 'Adótartalom: '"></b><span
+                  ng-if="$mdMedia('gt-xs')"
+                  ng-bind="getSum(doc, 'vatValue')| currency: doc.currency"></span></span>
+            </div>
+            <div flex ng-if="!$mdMedia('gt-xs')">
+                <div style="text-align: right"
+                     ng-bind="getSum(doc, 'vatValue')| currency: doc.currency"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--
+    *********
+    Netto
+    *********
+    -->
+    <div flex="33" flex-xs="100">
+        <div layout="row">
+            <div flex>
+              <span class="first-child"><b ng-bind="'Nettó érték: '"></b><span ng-if="$mdMedia('gt-xs')"
+                                                                               ng-bind="getSum(doc, 'netto') | currency: doc.currency"></span></span>
+            </div>
+            <div flex ng-if="!$mdMedia('gt-xs')">
+                <div style="text-align: right"
+                     ng-bind="getSum(doc, 'netto') | currency: doc.currency"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--
+    **********
+    HUF ÁFA
+    **********
+    -->
+    <div ng-if="doc.currency !== 'HUF' " flex="33" flex-xs="100">
+        <div layout="row">
+            <div flex>
+              <span class="first-child"><b ng-bind="'Forint áfatartalom: '"></b><span ng-if="$mdMedia('gt-xs')"
+                                                                                      ng-bind="doc.vatInHuf ? (doc.vatInHuf | currency: doc.currency) : '---'"></span></span>
+            </div>
+            <div flex ng-if="!$mdMedia('gt-xs')">
+                <div style="text-align: right"
+                     ng-bind="doc.vatInHuf ? (doc.vatInHuf | currency: doc.currency) : '---'"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!--
+    **********
+    Árfolyam
+    **********
+    -->
+    <div ng-if="doc.currency !== 'HUF' " flex="33" flex-xs="100">
+        <div layout="row">
+            <div flex>
+                <span class="first-child"><b ng-bind="'Alkalmazott árfolyam: '"></b><span ng-if="$mdMedia('gt-xs')"
+                                                                                          ng-bind="(doc.rateData.rate | number: 2) + ' / ' + (doc.rateData.date | date: 'yyyy.MM.dd')"></span></span>
+            </div>
+            <div flex ng-if="!$mdMedia('gt-xs')">
+                <div style="text-align: right"
+                     ng-bind="(doc.rateData.rate | number: 2) + ' / ' + (doc.rateData.date | date: 'yyyy.MM.dd')">
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!--<div layout="row">-->
+<!--&lt;!&ndash;-->
+<!--*****************************-->
+<!--ÁFA kulcs / Komp. százalék-->
+<!--*****************************-->
+<!--&ndash;&gt;-->
+<!--<div flex="20">-->
+<!--<span class="first-child"><b ng-bind="doc.compensation ? 'Kompenzációs kulcs: ' : 'ÁFA kulcs: '"></b><span-->
+<!--ng-bind="doc.compensation ? doc.compensationPercent  + '%' : doc.vat ?  !isNaN(doc.vat) ? doc.vat : doc.vat + '%' : !isNaN(doc.vat) ? doc.vat : doc.vat + '%'"></span></span>-->
+<!--</div>-->
+<!--</div>-->
+
+<div layout="row" ng-if="doc.incomingKATA" class="margin-top-10">
+    <div class="detail-row">
+        <span class="first-child"><b ng-bind="'KATA'"></b></span>
+        <br/>
+    </div>
+</div>
+
+<div layout="row" ng-if="doc.incomingCashAccounting" class="margin-top-10">
+    <div class="detail-row">
+        <span class="first-child"><b ng-bind="'Pénzforgalmi szemléletű ÁFA-elszámolás'"></b></span>
+        <br/>
+    </div>
+</div>
+
+
+<!--
+***************
+Tételek
+***************
+-->
+<div ng-if="doc.items && doc.items.length" style="margin-top: 10px">
+
+    Tételek
+    <div layout="row" style="font-weight: bold" layout-wrap>
+        <div flex="15" flex-xs="50" flex-order-xs="1" flex-md="20">
+            Megnevezés
+        </div>
+        <div flex="{{doc.itemized ? 5 : 10}}" flex-xs="50" flex-order-xs="3" flex-md="20">
+            VTSZ
+        </div>
+        <div flex="10" style="text-align: right" flex-xs="50" flex-order-xs="2" flex-md="20">
+            Mennyiség
+        </div>
+        <div ng-if="doc.itemized || !$mdMedia('gt-xs') || $mdMedia('md')" ng-style="{'text-align': $mdMedia('gt-xs') ? 'center' : 'left'}"
+             flex="15" flex-xs="50" flex-order-xs="5" flex-md="20">
+            Rendszám(ok)
+        </div>
+        <div flex="10" ng-style="{'text-align' : $mdMedia('gt-xs') ? 'right' : 'left'}" flex-xs="50" flex-order-xs="9" flex-md="20">
+            {{'Egységár' + ' (' + (doc.currency) + ')'}}
+        </div>
+        <div flex="15" ng-style="{'text-align': $mdMedia('md') ? 'left' : 'right'}" flex-xs="50" flex-order-xs="4" flex-md="20">
+            {{(doc.compensation ? 'Felv. érték' : 'Netto') + ' (' + (doc.currency) + ')'}}
+        </div>
+        <div flex="10" ng-style="{'text-align' : $mdMedia('xs') || $mdMedia('md')  ? 'left' : 'right'}" flex-xs="50" flex-order-xs="7" flex-md="20">
+            {{doc.compensation ? 'Kompenzációs kulcs' : 'ÁFA kulcs'}}
+        </div>
+        <div flex="10" style="text-align: right" flex-xs="50" flex-order-xs="6" flex-md="20">
+            {{(doc.compensation ? 'Komp. felár' : 'ÁFA tartalom') + ' (' + (doc.currency) + ')'}}
+        </div>
+        <div flex="10" ng-style="{'text-align': $mdMedia('md') ? 'center' : 'right'}" flex-xs="50" flex-order-xs="8" flex-md="20">
+            {{'Kedvezmény' + ' (' + (doc.currency) + ')'}}
+        </div>
+        <div flex="10" style="text-align: right" flex-xs="50" flex-order-xs="10" flex-md="20">
+            {{'Brutto' + ' (' + (doc.currency) + ')'}}
+        </div>
+    </div>
+    <md-divider></md-divider>
+
+
+    <div ng-repeat="item in doc.items">
+
+        <div layout="row" layout-wrap>
+            <!--
+            ****************
+            Megnevezés
+            ****************
+            -->
+            <div flex="15" flex-xs="50" flex-order-xs="1" flex-md="20">
+                {{doc.relatedContract.sustainability ==='Nem fenntartható' || !doc.relatedContract ? item.product.name :
+                (doc.relatedContract.sustainability + ' fenntartható ' + item.product.name)}}
+
+            </div>
+            <!--
+            ***********
+            VTSZ
+            ***********
+            -->
+            <div flex="{{doc.itemized ? 5 : 10}}" flex-xs="50" flex-order-xs="3" flex-md="20">
+                {{item.product.vtsz}}
+            </div>
+
+            <!--
+            ************************
+            Menny., Menny. egység
+            ************************
+            -->
+            <div flex="10" style="text-align: right" flex-xs="50" flex-order-xs="2" flex-md="20">
+                {{(item.amount | number: 3) + ' ' + item.unit}}
+            </div>
+            <!--
+            ********************
+            Rendszámok
+            ********************
+            -->
+            <div ng-if="doc.itemized || !$mdMedia('gt-xs') || $mdMedia('md')"
+                 ng-style="{'text-align': $mdMedia('gt-xs') ? 'center' : 'left'}" flex="15" flex-xs="50" flex-md="20"
+                 flex-order-xs="5">
+                {{!item.plateNumber1 ? '---' : item.plateNumber1 !== '' ? item.plateNumber1 + (item.plateNumber2 ? '/' +
+                item.plateNumber2 : '') :
+                'Tulajdonátruházás'}}
+            </div>
+            <!--
+            ***************
+            Egységár
+            ***************
+            -->
+            <div flex="10" ng-style="{'text-align': $mdMedia('gt-xs') ? 'right': 'left'}" flex-xs="50" flex-md="20"
+                 flex-order-xs="9">
+                {{item.pricePerUnit | number : 0}}
+            </div>
+            <!--
+            ****************
+            Összes nettó
+            ****************
+            -->
+            <div flex="15" ng-style="{'text-align': $mdMedia('md') ? 'left' : 'right'}" flex-xs="50" flex-order-xs="4" flex-md="20">
+                {{item.totalPrice | number : 0}}
+            </div>
+            <!--
+            ***********
+            Adókulcs
+            ***********
+            -->
+            <div flex="10" ng-style="{'text-align' : $mdMedia('xs') || $mdMedia('md')  ? 'left' : 'right'}" flex-xs="50" flex-md="20"
+                 flex-order-xs="7">
+                {{item.compensationPercent ? item.compensationPercent + '%' :
+                isNaN(item.vat) ? item.vat : item.vat + '%'}}
+
+            </div>
+            <!--
+            *******************
+            Adótartalom
+            *******************
+            -->
+            <div flex="10" style="text-align: right" flex-xs="50" flex-order-xs="6" flex-md="20">
+                {{doc.compensation ? (item.totalPrice * 0.12 | number : 0) : !isNaN(item.vat) ? '---' : (item.totalPrice
+                *
+                Number(item.vat) / 100 | number : 0)}}
+            </div>
+            <!--
+            **************
+            Kedvezmény
+            **************
+            -->
+            <div flex="10" ng-style="{'text-align': $mdMedia('md') ? 'center' : 'right'}" flex-xs="50" flex-order-xs="8" flex-md="20">
+                {{item.discountValue ? item.discountValue : '---'}}
+            </div>
+            <!--
+            ****************
+            Összes bruttó
+            ****************
+            -->
+            <div flex="10" style="text-align: right" flex-xs="50" flex-order-xs="10" flex-md="20">
+                {{doc.compensation ? (item.totalPrice * (1 + 12 / 100) | number : 0) : !isNaN(item.vat) ?
+                (item.totalPrice | number: doc.currency === 'HUF' ? 0 : 2) :
+                (item.totalPrice * (1 + Number(item.vat) / 100) | number : doc.currency === 'HUF' ? 0 : 2) }}
+            </div>
+        </div>
+        <!--
+        *******************
+        Tétel megjegyzés
+        *******************
+        -->
+        <div layout="row" ng-if="item.comment" class="margin-top-10">
+            <div class="detail-row">
+                  <span class="first-child"><b ng-bind="'Megjegyzés: '"></b><br><span style="white-space: pre-line"
+                                                                                      ng-bind="item.comment"></span></span>
+                <br/>
+            </div>
+        </div>
+        <md-divider></md-divider>
+    </div>
+
+</div>
+
+
+<div ng-if="doc.type !== 'normal'" class="margin-top-10">
+    <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Kapcsolódó bizonylatszám: '"></b><span
+                        ng-bind="doc.relatedInvoiceNumber"></span></span>
+        <br/>
+    </div>
+</div>
+
+<div layout="row" ng-if="doc.comments[0]" class="margin-top-10">
+    <div class="detail-row">
+                  <span class="first-child"><b ng-bind="'Megjegyzés: '"></b><br><span style="white-space: pre-line"
+                                                                                      ng-bind="doc.comments[0]"></span></span>
+        <br/>
+    </div>
+</div>
+
+<div ng-if="doc.type === 'normal' && doc.relatedInvoices" class="margin-top-10">
+    <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Kapcsolódó bizonylatszám(ok): '"></b><span
+                        ng-bind="doc.relatedInvoiceNumber"></span></span>
+        <br/>
+        <span ng-repeat="number in doc.relatedInvoices" class="first-child" style="margin-left:1em"><b
+            ng-bind="number.type === 'correction' ? 'Korrekciós' : 'Sztornó'"></b> <span
+            ng-bind="': ' + number.invoiceNumber"></span><br/></span>
+    </div>
+</div>
+

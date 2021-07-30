@@ -1,0 +1,34 @@
+<ngivr-portlet ngivr-title="{{ $root.ngivr.strings.otherDocuments.title.title }}" ngivr-icon-fa="fa-file-text">
+    <ngivr-portlet-action>
+        <ngivr-button ng-click="$root.$state.go('master')" ngivr-type="portal">
+            <ng-md-icon icon="arrow_back"></ng-md-icon>
+            {{ $root.ngivr.strings.title.master }}
+        </ngivr-button>
+    </ngivr-portlet-action>
+
+    <ngivr-portlet-body class="ngivr-portlet-clean">
+
+            <md-tabs md-selected="tab.current">
+
+                <md-tab md-on-select="tab.select(0)">
+                    <md-tab-label >
+                        {{ $root.ngivr.strings.otherDocuments.title.instance }}
+                    </md-tab-label>
+                </md-tab>
+
+                <md-tab  md-on-select="tab.select(1)">
+                    <md-tab-label>
+                        {{ $root.ngivr.strings.otherDocuments.title.template }}
+                    </md-tab-label>
+                </md-tab>
+
+
+            </md-tabs>
+
+            <ui-view class="ngivr-tab-content">
+                {{ $root.ngivr.strings.message.choose }}
+            </ui-view>
+
+    </ngivr-portlet-body>
+
+</ngivr-portlet>

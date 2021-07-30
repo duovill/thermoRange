@@ -1,0 +1,120 @@
+<ngivr-list ngivr-schema="ticket" ngivr-url="/api/tickets/outtickets-without-invoice-grouped-by-contracts"
+            ngivr-query="ngivrQuery"
+            ngivr-ref="this"
+            hide-default-sort-options="true" ngivr-sort="sort">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-template>
+
+        <div class="ngivr-list-tickets-without-invoice"
+             ng-class="{ 'ngivr-list-tickets-without-invoice-highlight': detailedContracts.includes(doc._id.contractId) }">
+            <ngivr-overlay-simple ng-if="overlay !== 0"></ngivr-overlay-simple>
+            <div layout="row" class="ngivr-list-tickets-without-invoice-title"
+                 ng-class="{ 'ngivr-list-tickets-without-invoice-title-highlight': detailedContracts.includes(doc._id.contractId) }">
+                <div flex="45" ng-click="showTickets(doc._id.contractId)"
+                     class="ngivr-list-tickets-without-invoice-title-hoverable">
+                    <ng-md-icon ng-if="!detailedContracts.includes(doc._id.contractId)"
+                                icon="chevron_right"></ng-md-icon>
+                    <ng-md-icon ng-if="detailedContracts.includes(doc._id.contractId)" icon="expand_more"></ng-md-icon>
+                    <span>
+                      {{ doc._id.contractNumber }}
+                      <md-tooltip md-direction="top">{{ngivr.strings.tooltip.contractNumber}}</md-tooltip>
+                    </span>
+                </div>
+                <div flex="45">
+                  <span>
+                    {{ doc._id.contractProduct.name }}
+                    <md-tooltip md-direction="top">{{ngivr.strings.tooltip.product}}</md-tooltip>
+                  </span>
+                </div>
+                <div flex style="text-align: right;">
+                    <md-checkbox style="margin-bottom: 0"
+                                 ng-click="isSelected(doc._id.contractId) ? deselectAllTicketsInContract(doc, query) : selectAllTicketsInContract(doc, query) "
+                                 ng-disabled="!isSelectable(doc._id.contractId, null, doc.tickets)"
+                                 ng-checked="isSelected(doc._id.contractId)" aria-label="Szerződés">
+                    </md-checkbox>
+                </div>
+            </div>
+
+            <div layout="row" class="ngivr-list-tickets-without-invoice-title"
+                 ng-class="{ 'ngivr-list-tickets-without-invoice-title-highlight': detailedContracts.includes(doc._id.contractId) }"
+                 style="padding-left: 26px;">
+                <div flex="65">
+                    <span>
+                        <md-tooltip md-direction="top">{{ngivr.strings.field.partner}}</md-tooltip>
+                        {{ doc._id.partner[0].name }}
+                    </span>
+                </div>
+                <div flex style="text-align: right">
+                    <span>
+                      <md-tooltip md-direction="top">{{ngivr.strings.firstFulfillmentDate}}</md-tooltip>
+                      {{ doc.firstFulfillmentDate | date: 'yyyy.MM.dd' }}
+                    </span>
+                </div>
+
+            </div>
+
+            <div ng-repeat="ticket in doc.tickets" ng-if="detailedContracts.includes(doc._id.contractId)">
+                <md-divider style="margin-bottom: 5px;"></md-divider>
+
+                <div layout="row" style="margin-left: 26px">
+                    <div flex="85">
+            <span>
+            <md-tooltip md-direction="top">{{ngivr.strings.tooltip.number}}</md-tooltip>
+            {{ ticket.ledger.subTicketName ? ticket.ledger.subTicketName : ticket.ticketName}}
+            </span>
+                    </div>
+                    <div flex style="text-align: right;">
+                        <md-checkbox
+                            ng-click="isSelected(ticket.ledger._id, 'ticket') ? deselectTicket(ticket, query) : selectTicket({ticket: ticket, idx: $index, pIdx: $parent.$index, query: query, contract: doc._id, ticketLength: doc.tickets.length})"
+                            ng-checked="isSelected(ticket.ledger._id, 'ticket')"
+                            aria-label="{{ ngivr.strings.ticketName }}" style="margin-bottom: 0"
+                            ng-disabled="!isSelectable(ticket.ticketId, 'ticket')">
+                        </md-checkbox>
+                    </div>
+                </div>
+                <div layout="row" style="margin-left: 26px">
+                    <div flex="60">
+            <span>
+              <md-tooltip md-direction="top">{{ngivr.strings.plateNumber}}</md-tooltip>
+              {{ ticket.ticketType === 'possessionTransfer' ? 'Birtokátruházó' : ticket.plateNumber1 + '/' + ticket.plateNumber2 }}
+            </span>
+                    </div>
+                    <div flex="40">
+            <span>
+              <md-tooltip md-direction="top">{{ngivr.strings.fulfillmentDate}}</md-tooltip>
+              {{ ticket.fulfillmentDate | date: 'yyyy.MM.dd' }}
+            </span>
+                    </div>
+                </div>
+                <div layout="row" style="margin-left: 26px">
+                    <div flex="60">
+            <span>
+              <md-tooltip md-direction="top">{{ngivr.strings.loadedWeight}}</md-tooltip>
+              {{ (ticket.ledger.loadedWeight | number : 3) + ' mt' }}
+            </span>
+                    </div>
+                    <div flex="40">
+            <span>
+              <md-tooltip md-direction="top">{{ngivr.strings.unloadedWeight}}</md-tooltip>
+              {{ (ticket.ledger.unloadedWeight | number : 3) + ' mt' }}
+            </span>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="ngivr-list-tickets-without-invoice-divider"
+             ng-if="!detailedContracts.includes(doc._id.contractId) && !detailedContracts.includes(docNext._id.contractId)"></div>
+
+    </ngivr-list-template>
+
+</ngivr-list>

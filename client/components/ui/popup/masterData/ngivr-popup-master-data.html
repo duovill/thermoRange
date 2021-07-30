@@ -1,0 +1,35 @@
+<md-dialog aria-label="" ng-style="{'min-width': schema === 'partner' || schema === 'depot' ? '900px' : '50px'}">
+
+
+
+    <md-dialog-content>
+        <ngivr-portlet ngivr-title="{{ngivr.strings[schema].field.title}}" ngivr-icon-fa="fa fa-list-ul">
+            <!--portlet-action-->
+            <ngivr-portlet-action>
+                <md-button ng-show="!showEditor" ng-click="showForm()"><i class="fa fa-plus"></i>
+                    <md-tooltip md-direction="bottom">{{ngivr.strings.tooltip.add[schema]}}</md-tooltip>
+                    {{ngivr.strings.button.addNew[schema]}}
+
+                </md-button>
+                <md-button  ng-click="cancel()"><i class="fa fa-close"></i>
+                    <md-tooltip md-direction="bottom">Ablak bezárásal</md-tooltip>
+                    Bezár
+                </md-button>
+            </ngivr-portlet-action>
+            <!--portlet-body-->
+            <ngivr-portlet-body >
+                <!--editor-->
+                <div ng-if="showEditor" style="margin: 5px">
+                    <ngivr-form-products ng-if="schema === 'product'" ngivr-id="selectedId" ngivr-close="cancelEdit()"></ngivr-form-products>
+                    <ngivr-form-partner ng-if="schema === 'partner'" ngivr-id="selectedId" ngivr-close="cancelEdit()"></ngivr-form-partner>
+                    <ngivr-form-depots ng-if="schema === 'depot'" ngivr-id="selectedId" ngivr-close="cancelEdit()"></ngivr-form-depots>
+                </div>
+                <!--list-->
+                <ngivr-list-products ng-if="schema === 'product'" ></ngivr-list-products>
+                <ngivr-list-partner ng-if="schema === 'partner'" ></ngivr-list-partner>
+                <ngivr-list-depots-master ng-if="schema === 'depot'" ></ngivr-list-depots-master>
+            </ngivr-portlet-body>
+        </ngivr-portlet>
+    </md-dialog-content>
+
+</md-dialog>

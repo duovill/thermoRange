@@ -1,0 +1,79 @@
+<ngivr-list ngivr-schema="contract" ngivr-ref="this" ngivr-query="ngivrQuery">
+    <ngivr-list-searcher style="margin-bottom: 4px">
+        <md-input-container class="md-block">
+            <label>{{ $root.ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+        <md-input-container class="md-block ">
+            <label>{{ ngivr.strings.field.status }}</label>
+            <ngivr-select-contract-status ng-model="ref.status" name="status" change-status="ref.$ctrl.search(query)"
+                                          required
+                                          ngivr-validation-mongoose/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-template>
+        <md-card class="card-padding" style="clear: both;">
+
+            <md-card-content ng-click="loadContractFromList(doc)">
+                <div class="card-left {{ doc.buy ? 'card-green' : 'card-red' }}">
+                    <span ng-bind="doc.buy ? 'V' : 'E'"></span>
+                    <span ng-if="doc.newEventsByOwner + doc.newEventsBySytem + doc.newMessagesByOwner> 0"
+                          class="badge badge-danger">{{doc.newEventsByOwner + doc.newEventsBySytem + doc.newMessagesByOwner}}</span>
+                </div>
+                <div class="card-right">
+                    <table>
+                        <tr>
+                            <td colspan="2">
+                                <md-tooltip md-direction="top">Szerződészám</md-tooltip>
+                                <span ng-bind="doc.contractNumber"></span>
+                                <ngivr-button-clipboard-copy ng-model="doc.contractNumber"
+                                                             hint="{{doc.buy ? 'contractNumberV' : 'contractNumberE'}}"></ngivr-button-clipboard-copy>
+                            </td>
+                            <td>
+                                <md-tooltip md-direction="top">Termény</md-tooltip>
+                                <span
+                                    ng-bind="doc.normal ? doc.product[0].name : doc.optionProductGroupName + ' (Opciós)'"></span>
+                            </td>
+                            <td style="text-align: right">
+                                <md-tooltip md-direction="top">Eredeti mennyiség</md-tooltip>
+                                <span class="margin-right-10" ng-bind="(doc.quantity | number : 3) + ' mt'"></span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <md-tooltip md-direction="top">Partner</md-tooltip>
+                                <span ng-bind="doc.partner[0].name"></span>
+                            </td>
+                            <td>
+                                <md-tooltip md-direction="top">Szállítási határidők</md-tooltip>
+                                {{(doc.termFrom | date: 'yy.MM.dd') + '-' + (doc.termTo | date: 'yy.MM.dd')}}
+                            </td>
+                            <td style="text-align: right">
+                                <md-tooltip md-direction="left">Hátralévő mennyiség</md-tooltip>
+                                <span class="margin-right-10" ng-bind="(doc.remain | number: 3) + ' mt'"> </span></td>
+                        </tr>
+                        <tr class="card-third-row">
+                            <td colspan="2">
+                                <md-tooltip md-direction="top">Szerződés státusza</md-tooltip>
+                                <ng-include src="'app/tracking/templates/contract-status.html'"></ng-include>
+                            </td>
+                            <td>
+                                <md-tooltip md-direction="left">{{doc.normal ? ngivr.strings.field.contractPrice :
+                                    ngivr.strings.field.avgPrice}}
+                                </md-tooltip>
+                                {{doc.normal ? doc.price : doc.optionAvgPrice | currency : doc.currency : 0}}
+                            </td>
+                            <td style="text-align: right">
+                                <md-tooltip md-direction="down">Diszponálható mennyiség</md-tooltip>
+                                <span class="margin-right-10"
+                                      ng-bind="(ngivrOrder.calculateFreeToDispo(doc) | number: 3) + ' mt'"></span></td>
+                        </tr>
+                    </table>
+                </div>
+            </md-card-content>
+        </md-card>
+
+    </ngivr-list-template>
+
+</ngivr-list>

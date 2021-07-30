@@ -1,0 +1,330 @@
+<md-dialog aria-label="List dialog">
+    <md-toolbar style="height: 48px">
+        <div class="md-toolbar-tools portlet-title">
+            <h2>Raktár kimutatás</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="cancel()">
+                <md-icon class="fa fa-close" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content>
+        <!--
+        *************
+        Fő tabok
+        *************
+        -->
+        <md-tabs md-border-bottom md-dynamic-height md-autoselect>
+            <!--
+            ****************
+            Sygnus Készlet
+            ****************
+            -->
+            <md-tab label="Saját készlet" ng-if="currentUser.site === undefined || currentUser.site === null">
+                <!--
+                *********************
+                Összes Saját készlet
+                *********************
+                -->
+                <ngivr-portlet ngivr-title="Összes" ngivr-icon-fa="fa fa-list-ul"
+                               class="col-md-4 col-xs-12 padding-left-0-right-4">
+                    <ngivr-portlet-body class="ngivr-portlet-clean">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <span>Termény</span>
+                                    </th>
+                                    <th style="text-align: right">
+                                        <span>Mennyiség/ISCC/BÜHG</span>
+                                    </th>
+                                    <th ng-repeat="vintage in possibleVintages">
+                                        <span>{{vintage}}</span>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="product in sygnusProducts">
+                                    <td>{{product.name}}</td>
+                                    <td>
+                         <span class="badge badge-default">
+                          {{product.quantity | number: 3}}<span class="badge-separator">/</span>{{product.iscc | number: 3}}<span
+                             class="badge-separator">/</span>{{product.buhg | number: 3}}
+                         </span></td>
+                                    <td ng-repeat="vintage in possibleVintages">
+                         <span class="badge badge-default">
+                         {{product.vintages[vintage] ? product.vintages[vintage] : 0}}
+                         </span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </ngivr-portlet-body>
+                </ngivr-portlet>
+                <!--
+                ***************************************************
+                Telephelyek összes Sygnus készlete terményenként
+                ***************************************************
+                -->
+                <ngivr-portlet ngivr-title="Telephelyek" ngivr-icon-fa="fa fa-list-ul"
+                               class="col-md-4 col-xs-12 padding-left-0-right-4">
+                    <ngivr-portlet-body class="ngivr-portlet-clean">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <span>Termény</span>
+                                    </th>
+                                    <th style="text-align: right">
+                                        <span>Mennyiség</span>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="(productName, total) in ownProducts">
+                                    <td>{{productName}}</td>
+                                    <td><span class="badge badge-default">{{total | number: 3}}</span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </ngivr-portlet-body>
+                </ngivr-portlet>
+                <!--
+                *****************************************
+                ITK-k összes készlete terményenként
+                *****************************************
+                -->
+                <ngivr-portlet ngivr-title="ITK" ngivr-icon-fa="fa fa-list-ul"
+                               class="col-md-4 col-xs-12 padding-sides-0">
+                    <ngivr-portlet-body class="ngivr-portlet-clean">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <span>Termény</span>
+                                    </th>
+                                    <th style="text-align: right">
+                                        <span>Mennyiség</span>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="(productName, total) in itkProducts">
+                                    <td>{{productName}}</td>
+                                    <td><span class="badge badge-default">{{total | number: 3}}</span></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </ngivr-portlet-body>
+                </ngivr-portlet>
+
+            </md-tab>
+            <!--
+            ******************
+            Partner készlet
+            ******************
+            -->
+            <md-tab label="Partner készlet"
+                    md-on-select="getProductsInDepots(partnerQuery)">
+
+                <div layout="row" style="margin: 10px">
+                    <div flex="100">
+                        <!--
+                       *********************************
+                       Partner szűréshez autocomplete
+                       *********************************
+                       -->
+                        <md-input-container class="md-block">
+                            <label>Partner</label>
+                            <ngivr-autocomplete-partner-more ng-model="selectedPartner"
+                                                             site-id="currentUser.site ? currentUser.site._id : undefined"
+                                                             get-products-in-depots="getProductsInDepots(options)"></ngivr-autocomplete-partner-more>
+                        </md-input-container>
+                    </div>
+
+                </div>
+
+
+                <!--
+                **********************************
+                Partner készlet terményenként
+                **********************************
+                -->
+                <ngivr-portlet ngivr-title="Összesen" ngivr-icon-fa="fa fa-list-ul"
+                               ng-if="currentUser.site === undefined || currentUser.site === null"
+                               class="col-md-12 col-xs-12 padding-sides-0">
+                    <ngivr-portlet-body class="ngivr-portlet-clean">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <span>Termény</span>
+                                    </th>
+                                    <th style="text-align: right">
+                                        <span>Összesen/Foglalt/Szabad</span>
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="(productName, values) in partnerProducts">
+                                    <td>{{productName}}</td>
+                                    <td>
+                         <span class="badge badge-default">
+                         {{values.total | number : 3}}<span class="badge-separator">/</span>{{values.reserved | number : 3}}<span
+                             class="badge-separator">/</span>{{values.free | number : 3}}
+                         </span>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </ngivr-portlet-body>
+                </ngivr-portlet>
+                <!--
+                **************************************
+                Partner készlet telephelyenként
+                **************************************
+                -->
+                <ngivr-portlet ngivr-title="Saját telephelyen" ngivr-icon-fa="fa fa-list-ul"
+                               class="col-md-12 col-xs-12 padding-sides-0">
+                    <ngivr-portlet-body class="ngivr-portlet-clean">
+                        <!--
+                        *******************
+                        Telephely tabok
+                        *******************
+                        -->
+                        <md-tabs md-border-bottom md-dynamic-height md-selected="0">
+                            <md-tab ng-repeat="site in partnerSites" label="{{site.name}}"
+                                    md-on-select="onSiteSelected(site)">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                <span>Termény</span>
+                                            </th>
+                                            <th>
+                                                <span ng-if="selectedPartner">Partner</span>
+                                            </th>
+                                            <th style="text-align: right">
+                                                <span>Összesen/Foglalt/Szabad</span>
+                                            </th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr ng-repeat="product in site.products">
+                                            <td>{{product.productName}}</td>
+                                            <td>{{selectedPartner ? (selectedPartner.name + ' (' + product.serviceContractName + ')'): ''}}</td>
+                                            <td>
+                         <span class="badge badge-default">
+                         {{product.total | number : 3}}<span class="badge-separator">/</span>{{product.reserved | number: 3}}<span
+                             class="badge-separator">/</span>{{product.free | number : 3}}
+                         </span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </md-tab>
+                        </md-tabs>
+                    </ngivr-portlet-body>
+                </ngivr-portlet>
+            </md-tab>
+            <!--
+            *******************
+            Telephelyek
+            *******************
+            -->
+            <md-tab label="Telephelyek"
+                    md-on-select="selectedOwnSite = ownSites[currentIndex]">
+
+
+                <div layout="column" flex layout-gt-sm="row">
+
+                    <div layout="column" layout-gt-md="row" flex="100" flex-gt-md="50">
+
+                        <md-input-container class="md-block" flex="50">
+                            <label>Partner</label>
+                            <ngivr-autocomplete-partner-more
+                                ng-model="selected.sitePartner"></ngivr-autocomplete-partner-more>
+                        </md-input-container>
+
+                        <md-input-container class="md-block" flex="50">
+                            <label>Cikk</label>
+                            <ngivr-autocomplete-product ng-model="selected.product"></ngivr-autocomplete-product>
+                        </md-input-container>
+                    </div>
+                </div>
+
+                <div ng-if="selectedOwnSite">
+                    <md-tabs md-border-bottom md-dynamic-height md-selected="selectedIndex">
+                        <md-tab ng-repeat="site in ownSites" label="{{site.name}}"
+                                md-on-select="onOwnSiteSelected({currentTabIndex: $index, site: site, productId: selectedProduct ? selectedProduct._id : undefined, partnerId: selectedSitePartner ? selectedSitePartner._id : undefined}); loadedItkTab = false">
+
+                            <div ng-if="selectedOwnSite.name==site.name">
+                                <ngivr-list-depots ngivr-query="{query: {}, sort:{'_id.depotName': 1}}" products-sum="productsSum" site="site"
+                                                   selected-product="selected.product"
+                                                   selected-site-partner="selected.sitePartner"
+                                                   ngivr-url="ngivrUrl.ownSites"
+                                                   depots="siteDepots"></ngivr-list-depots>
+                            </div>
+                        </md-tab>
+                    </md-tabs>
+                </div>
+
+            </md-tab>
+            <!--
+            ****************
+            ITK
+            ****************
+            -->
+            <md-tab label="ITK" ng-if="currentUser.site === undefined || currentUser.site === null"
+                    md-on-select="loadItkTab({productId: selected.itkProduct ? selected.itkProduct._id : undefined, partnerId: selected.itkPartner ? selected.itkPartner._id : undefined, depotId: selectedDepotId ? selectedDepotId : undefined}); selectedOwnSite = false">
+                <div layout="row" style="margin: 10px">
+                    <div layout="column" flex layout-gt-sm="row">
+
+                        <div layout="column" layout-gt-md="row" flex="100" flex-gt-md="50">
+
+                            <md-input-container class="md-block" flex="50">
+                                <label>Partner</label>
+                                <ngivr-autocomplete-partner-more
+                                    ng-model="selected.itkPartner"></ngivr-autocomplete-partner-more>
+                            </md-input-container>
+
+                            <md-input-container class="md-block" flex="50">
+                                <label>Cikk</label>
+                                <ngivr-autocomplete-product ng-model="selected.itkProduct"></ngivr-autocomplete-product>
+                            </md-input-container>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div ng-if="loadedItkTab">
+                    <ngivr-list-depots ngivr-query="{query: {}, sort:{'_id.depotName': 1}}" products-sum="itkProductsSum"
+                                       selected-product="selected.itkProduct"
+                                       selected-site-partner="selected.itkPartner"
+                                       ngivr-url="ngivrUrl.itk"
+                                       depots="itkDepots"></ngivr-list-depots>
+                    <!--<ngivr-list-itk-depots ngivr-query="itkQuery" products-sum="itkProductsSum" ngivr-url="ngivrUrl.itk"-->
+                    <!--selected-itk-product="selected.itkProduct"-->
+                    <!--depots="itkDepots"></ngivr-list-itk-depots>-->
+                </div>
+            </md-tab>
+        </md-tabs>
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+        <ngivr-button ng-click="cancel() || ngivr.growl('close')">
+            <ng-md-icon icon="close"></ng-md-icon>
+            <md-tooltip>Bezár</md-tooltip>
+            Bezár
+        </ngivr-button>
+    </md-dialog-actions>
+</md-dialog>

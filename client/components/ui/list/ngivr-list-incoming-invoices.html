@@ -1,0 +1,60 @@
+<ngivr-list ngivr-schema="incomingInvoice" ngivr-ref="this" ngivr-query="ngivrQuery">
+
+  <ngivr-list-searcher>
+    <md-input-container class="md-block">
+      <label>{{ ngivr.strings.title.search}}</label>
+      <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+             ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+    </md-input-container>
+  </ngivr-list-searcher>
+
+  <ngivr-list-template>
+
+    <md-card class="card-expandable" style="min-height: 49px">
+      <md-card-content style="padding-left: 2px; padding-right: 2px">
+        <div layout="row"
+             ng-click="toggleInvoice(item.type, item.group,  doc, $index, $event)">
+          <div flex="10" class="label label-table"
+               ng-class="{'label-danger' : (doc.type === 'storno' || doc.cancelled), 'label-success': doc.type === 'correction', 'label-default': doc.type === 'normal'}"
+               style="margin-right: 10px;  padding-top: 5px; padding-bottom: 3px; padding-left: 3px; padding-right: 3px; font-size: 8px">
+            {{doc.type === 'correction' ? 'Korrekciós' : doc.type === 'storno' ? 'Sztornó' : doc.cancelled ?
+            'Sztornózott' : 'Normál'}}
+          </div>
+          <div class="incoming-invoice-partner" flex="15" ngivr-ellipsis
+               ng-bind="doc.incomingSeller[0].name">
+            <md-tooltip md-direction="top">{{ doc.incomingSeller[0].name }}</md-tooltip>
+          </div>
+          <!-- <div flex="20" ng-bind="hedgeContract.expiry | date: 'yyyy.MM.dd'"></div> -->
+          <div flex="15" style="text-align: right">
+            <span ng-bind="doc.incomingBrutto - doc.incomingVAT | currency: doc.currency"><md-tooltip
+              md-direction="top">{{ 'Nettó összeg' }}</md-tooltip></span>
+          </div>
+          <div flex="15" style="text-align: center">
+            <md-tooltip md-direction="top">{{ 'Fizetési határdő' }}</md-tooltip>
+            <span>{{doc.lastDayOfPayment | date: 'yyyy.MM.dd'}}</span>
+          </div>
+          <div flex="15" ng-bind="doc.referenceNumber" style="text-align: center">
+            <md-tooltip md-direction="top">{{ 'Iktatószám' }}</md-tooltip>
+          </div>
+          <div flex="15" ng-bind="doc.incomingInvoiceNumber" style="text-align: center">
+            <md-tooltip md-direction="top">{{ 'Számla sorszáma' }}</md-tooltip>
+          </div>
+          <div flex ng-bind="doc.createdAt | date: 'yyyy.MM.dd'" style="text-align: right; margin-right: 10px">
+            <md-tooltip md-direction="top">{{ 'Iktatás dátuma' }}</md-tooltip>
+          </div>
+
+        </div>
+
+
+        <!--
+         /ng-ivr/ng-ivr-project/client/components/ui/list/ngivr-list-incoming-invoices-form.html.disabled
+        -->
+
+
+      </md-card-content>
+    </md-card>
+
+
+  </ngivr-list-template>
+
+</ngivr-list>

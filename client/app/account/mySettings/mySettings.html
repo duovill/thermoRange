@@ -1,0 +1,45 @@
+<div  class="col-md-6 col-xs-12">
+  <div class="portlet box red">
+    <div class="portlet-title">
+      <div class="caption">
+        Jelenlegi gyors elérések
+      </div>
+    </div>
+    <div class="portlet-body">
+      <form class="form" name="form" ng-submit="changeQuickNavLinks(form)" novalidate>
+
+        <div ng-repeat="link in user.quickNavLinks track by $index" ng-init="sectionIndex = $index">
+          <div class="form-group">
+            <div layout="row">
+              <div flex="10">
+              </div>
+              <div flex="70">
+                <label>Gyors elérés {{sectionIndex+1}}.</label>
+                <md-input-container class="md-block md-container-md-select-fix">
+                  <label>Menüpont</label>
+                  <ngivr-select-menu ng-model="user.quickNavLinks[sectionIndex]" role="user.role" ng-disabled="false" name="menu" ngivr-validation-mongoose/>
+                </md-input-container>
+
+              </div>
+              <div flex="10" style="margin-top: 10px;">
+                <ngivr-icon-static count="23" ng-click="ngivr.growl('Törlés'); user.quickNavLinks[sectionIndex] = null;" ngivr-icon="close" ngivr-tooltip="Törlés"/>
+              </div>
+              <div flex="10">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div layout="row">
+          <div flex="10">
+          </div>
+          <div flex="70">
+            <p class="help-block"> {{ message }} </p>
+            <ngivr-button type="submit"ng-click="ngivr.growl('Mentés')"><ng-md-icon icon="save"></ng-md-icon><md-tooltip>Mentés</md-tooltip>save</ngivr-button>
+          </div>
+        </div>
+        <div layout="row" style="height: 10px;">
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

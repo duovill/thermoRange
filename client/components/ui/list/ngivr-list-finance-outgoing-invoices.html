@@ -1,0 +1,65 @@
+<ngivr-list ngivr-schema="outgoingInvoice" ngivr-ref="this" ngivr-query="ngivrQuery">
+  <ngivr-list-searcher>
+    <md-input-container class="md-block">
+      <label>{{ $root.ngivr.strings.title.search}}</label>
+      <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+             ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+    </md-input-container>
+  </ngivr-list-searcher>
+
+  <ngivr-list-template>
+    <md-card style="margin: 1px">
+      <md-card-content style="padding-left: 5px; padding-right: 10px">
+
+        <div ng-click="toggle = ! toggle">
+        <div layout="row"  style="padding-bottom: 5px;">
+          <div flex="5" style="padding-right: 30px">
+            <md-checkbox ng-click="selectInvoice(doc, $event)"
+                         ng-disabled="" ng-checked="isSelected(doc._id)" aria-label="check"
+                         style="bottom: 3px; margin-bottom: 0">
+            </md-checkbox>
+          </div>
+
+          <div flex="55" class="incoming-invoice-partner">
+            <md-tooltip md-direction="top">Partner</md-tooltip>
+            <span ng-bind="doc.buyer[0].name"></span>
+          </div>
+
+          <div flex="20" style="text-align: right">
+            <md-tooltip md-direction="top">Bruttó érték</md-tooltip>
+            <span ng-bind="doc.endSum | currency: doc.currency"></span>
+          </div>
+
+          <div flex-offset="5" flex="15">
+            <md-tooltip md-direction="top">Fizetési határidő</md-tooltip>
+            <span>{{doc.paymentDate | date: 'yyyy.MM.dd'}}</span>
+          </div>
+        </div>
+
+        <div layout="row">
+          <div flex="20" style="margin-top: 3px">
+                    <span
+                      ng-if="!doc.paid"
+                      class="label label-danger label-table"
+                      style="padding: 3px; font-size: 8px">Teljesítetlen</span>
+            <span
+              ng-if="doc.paid"
+              class="label label-success label-table"
+              style="padding: 3px; font-size: 8px">Teljesített</span>
+          </div>
+          <div flex flex-offset="65">
+            <md-tooltip md-direction="top">Bizonylatszám</md-tooltip>
+            <span ng-bind="doc.number"></span>
+          </div>
+        </div>
+        </div>
+        <div layout="row" ng-if="toggle">
+
+          <ngivr-form-finance-outgoing ngivr-id="doc._id"></ngivr-form-finance-outgoing>
+
+        </div>
+
+      </md-card-content>
+    </md-card>
+  </ngivr-list-template>
+</ngivr-list>

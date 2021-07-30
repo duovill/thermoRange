@@ -1,0 +1,17 @@
+<ngivr-portlet ngivr-title="Megjegyzés sablon" ngivr-icon-fa="fa-comment">
+  <ngivr-portlet-action>
+    <ngivr-button ng-click="$ctrl.go('master')" ngivr-type="portal">
+      <ng-md-icon icon="arrow_back"></ng-md-icon>
+      {{ ngivr.strings.title.master }}
+    </ngivr-button>
+  </ngivr-portlet-action>
+
+  <ngivr-portlet-body>
+
+    <ngivr-master-html-template-comment-list ng-if="list"></ngivr-master-html-template-comment-list>
+
+    <ngivr-master-html-template-comment-form ng-if="!list"></ngivr-master-html-template-comment-form>
+
+  </ngivr-portlet-body>
+
+</ngivr-portlet>

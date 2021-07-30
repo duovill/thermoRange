@@ -1,0 +1,52 @@
+<ngivr-list ngivr-schema="contract" ngivr-ref="this" ngivr-query="ngivrQuery">
+
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-template>
+        <md-card class="card-padding" flex="100" style="margin-left: 0; margin-right: 0; clear: both">
+            <!--								<md-card-content ng-click="expand(doc, doc._id)">-->
+            <md-card-content ui-sref="myContractsDetailes({id: doc._id})">
+                <div class="card-left {{ doc.buy ? 'card-green' : 'card-red' }}">
+                    <span ng-bind="doc.buy ? 'V' : 'E'"></span>
+                    <span ng-if="doc.newEventsByLogistics + doc.newMessagesByLogistics > 0"
+                          class="badge badge-danger">{{doc.newEventsByLogistics + doc.newMessagesByLogistics}}</span>
+                </div>
+                <div class="card-right">
+                    <table>
+                        <tr>
+                            <td><span ng-bind="doc.contractNumber"></span></td>
+                            <td><span
+                                ng-bind="doc.normal ? doc.product[0].name : doc.optionProductGroupName + ' (Opciós)'"></span>
+                            </td>
+                            <td><span ng-bind="(doc.quantity | number) + ' mt'"></span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <span>{{doc.isNewPartner ? doc.newPartner[0].name : doc.partner[0].name}}</span>
+                            </td>
+                            <td>
+                                <md-tooltip md-direction="left">{{doc.normal ? ngivr.strings.field.contractPrice :
+                                    ngivr.strings.field.avgPrice}}
+                                </md-tooltip>
+                                {{doc.normal ? doc.price : doc.optionAvgPrice | currency : doc.currency : 0}}
+                            </td>
+                        </tr>
+                        <tr class="card-third-row">
+                            <td colspan="3">
+                                <ng-include src="'app/tracking/templates/contract-status.html'"></ng-include>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </md-card-content>
+        </md-card>
+        </div>
+    </ngivr-list-template>
+
+</ngivr-list>

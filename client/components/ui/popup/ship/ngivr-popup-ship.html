@@ -1,0 +1,121 @@
+<md-dialog aria-label="">
+    <md-toolbar class="md-toolbar-tools">
+        <h2>{{model.name}}</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+            <md-icon class="fa fa-close" aria-label="Close dialog"></md-icon>
+        </md-button>
+    </md-toolbar>
+
+    <md-dialog-content>
+        <div layout="row" class="margin-top-10 margin-bottom-10">
+            <div flex="20">Hajó neve:</div>
+            <div flex="80">{{model.name}}</div>
+        </div>
+        <div layout="row" class="margin-top-10 margin-bottom-10">
+            <div flex="20">Partner:</div>
+            <div flex="80">{{model.partner[0].name}}</div>
+        </div>
+        <div layout="row" class="margin-top-10 margin-bottom-10">
+            <div flex="20">Teljesült mennyiség:</div>
+            <div flex="80">{{model.loadedQuantity}}</div>
+        </div>
+        <div layout="row" class="margin-top-10 margin-bottom-10">
+            <div flex="20">Nominálás neve:</div>
+            <div flex="80">{{model.cargoPlanName}}</div>
+        </div>
+        <div layout="row" class="margin-top-10 margin-bottom-10">
+            <div flex="20">Komment:</div>
+            <div flex="80">{{model.comment}}</div>
+        </div>
+        <div layout="row">
+            <div flex="40">
+                <ngivr-input-switch ng-model="isClosed" ng-click="closeShip(isClosed, model)"
+                                    ngivr-caption="Hajó lezárva"
+                                    ngivr-off-display="'nem'"
+                                    ngivr-on-display="'igen'" ngivr-on-value="on"
+                                    ngivr-off-value="false"></ngivr-input-switch>
+            </div>
+        </div>
+
+        <div ng-if="!model.pdfUrl">
+            <ngivr-button-pdf ngivr-preview="false" ng-model="testUrl4" ngivr-template="hajo-osszesito"
+                              ng-show="shipPaper._id" ngivr-post-generate-without-parenthesis="addUrlToShip"
+                              ngivr-fixed="true" ngivr-data="shipPaperToPrint"
+                              ngivr-schema="ShipPaper"></ngivr-button-pdf>
+        </div>
+
+        <ngivr-button ng-if="model.pdfUrl" ng-click="Common.openPdf(model.pdfUrl)">
+            <ng-md-icon icon="picture_as_pdf"></ng-md-icon>
+            Hajó összesítő
+        </ngivr-button>
+        <div layout="row" class="margin-bottom-10">
+            <ngivr-list-ticket-generator-tickets ngivr-query="selectedShipQuery" ship-id="loadedShip._id"
+                                                 flex="100"></ngivr-list-ticket-generator-tickets>
+        </div>
+    </md-dialog-content>
+</md-dialog>
+
+
+<!--<div class="col-padding-2 col-lg-6 col-xs-12 padding-sides-10">-->
+
+    <!--<div class="portlet box red">-->
+        <!--<div class="portlet-title">-->
+
+            <!--<div class="caption">-->
+                <!--<i class="fa fa-list-ul"></i> <span>{{model.name}}</span>-->
+            <!--</div>-->
+            <!--<div class="actions">-->
+                <!--<div class="actions">-->
+                    <!--<md-button aria-label="0" ng-click=""><span>Bezár</span></md-button>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="portlet-body">-->
+            <!--<div layout="row" class="margin-top-10 margin-bottom-10">-->
+                <!--<div flex="20">Hajó neve:</div>-->
+                <!--<div flex="80">{{model.name}}</div>-->
+            <!--</div>-->
+            <!--<div layout="row" class="margin-top-10 margin-bottom-10">-->
+                <!--<div flex="20">Partner:</div>-->
+                <!--<div flex="80">{{model.partner[0].name}}</div>-->
+            <!--</div>-->
+            <!--<div layout="row" class="margin-top-10 margin-bottom-10">-->
+                <!--<div flex="20">Teljesült mennyiség:</div>-->
+                <!--<div flex="80">{{model.loadedQuantity}}</div>-->
+            <!--</div>-->
+            <!--<div layout="row" class="margin-top-10 margin-bottom-10">-->
+                <!--<div flex="20">Nominálás neve:</div>-->
+                <!--<div flex="80">{{model.cargoPlanName}}</div>-->
+            <!--</div>-->
+            <!--<div layout="row" class="margin-top-10 margin-bottom-10">-->
+                <!--<div flex="20">Komment:</div>-->
+                <!--<div flex="80">{{model.comment}}</div>-->
+            <!--</div>-->
+            <!--<div layout="row">-->
+                <!--<div flex="40">-->
+                    <!--<ngivr-input-switch ng-model="isClosed" ng-click="closeShip(isClosed, model)"-->
+                                        <!--ngivr-caption="Hajó lezárva"-->
+                                        <!--ngivr-off-display="'nem'"-->
+                                        <!--ngivr-on-display="'igen'" ngivr-on-value="on"-->
+                                        <!--ngivr-off-value="false"></ngivr-input-switch>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div ng-if="!model.pdfUrl">-->
+                <!--<ngivr-button-pdf ngivr-preview="false" ng-model="testUrl4" ngivr-template="hajo-osszesito"-->
+                                  <!--ng-show="shipPaper._id" ngivr-post-generate-without-parenthesis="addUrlToShip"-->
+                                  <!--ngivr-fixed="true" ngivr-data="shipPaperToPrint"-->
+                                  <!--ngivr-schema="ShipPaper"></ngivr-button-pdf>-->
+            <!--</div>-->
+
+            <!--<ngivr-button ng-if="model.pdfUrl" ng-click="Common.openPdf(model.pdfUrl)">-->
+                <!--<ng-md-icon icon="picture_as_pdf"></ng-md-icon>-->
+                <!--Hajó összesítő-->
+            <!--</ngivr-button>-->
+            <!--<div layout="row" class="margin-bottom-10">-->
+                <!--<ngivr-list-ticket-generator-tickets ngivr-query="selectedShipQuery" ship-id="loadedShip._id"-->
+                                                     <!--flex="100"></ngivr-list-ticket-generator-tickets>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</div>-->

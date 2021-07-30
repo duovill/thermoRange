@@ -1,0 +1,58 @@
+<ngivr-list ngivr-schema="contract" ngivr-ref="this" ngivr-query="ngivrQuery">
+
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-template>
+        <md-card class="card-padding" style="margin-left: 0; margin-right: 0; clear: both;">
+            <!--<md-card-content ng-click="expand(doc, doc._id)">-->
+            <md-card-content ui-sref="myOffersDetailes({id: doc._id})">
+                <div class="card-left {{ doc.buy ? 'card-green' : 'card-red' }}">
+                    <span ng-bind="doc.buy ? 'V' : 'E'"></span>
+                    <span ng-if="doc.newEventsByLogistics + doc.newMessagesByLogistics > 0" class="badge badge-danger">{{doc.newEventsByLogistics + doc.newMessagesByLogistics}}</span>
+                </div>
+                <div class="card-right">
+                    <table>
+                        <tr>
+                            <td colspan="4"><span>{{doc.withoutPartner ? 'Partner nélkül' : doc.isNewPartner ? doc.newPartner[0].name : doc.partner[0].name  }}</span>
+                            </td>
+                            <td>{{doc.contractName}}</td>
+                        </tr>
+                        <tr>
+
+                            <td><span></span>{{doc.normal ? doc.product[0].name : 'Opciós ' +
+                                doc.optionProductGroupName}}
+                            </td>
+                            <td><span></span>{{(doc.quantity ) + ' mt'}}</td>
+                            <td align="right">
+                                <md-tooltip md-direction="left">{{doc.normal ? ngivr.strings.field.contractPrice :
+                                    ngivr.strings.field.avgPrice}}
+                                </md-tooltip>
+                                {{doc.normal ? doc.price : doc.avgPrice | currency : doc.currency : 0}}
+                            </td>
+                        </tr>
+                        <tr class="card-third-row">
+                            <td colspan="3">
+                                <span ng-if="doc.submitted && doc.editable" class="label label-danger label-table">Beküldött, szerkeszthető</span>
+                                <span ng-if="doc.submitted && !doc.editable" class="label label-warning label-table">Beküldött, nem szerkeszthető</span>
+                                <span ng-if="doc.returned" class="label label-default label-table">Visszaküldött, szerkeszthető</span>
+                                <span ng-if="doc.saved && !doc.submitted && !doc.returned"
+                                      class="label label-default label-table">Nem beküldött, szerkeszthető</span>
+                            </td>
+                            <td>
+                                <span ng-if="doc.isNewPartner" class="label label-success label-table">Új partner</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </md-card-content>
+        </md-card>
+        </div>
+    </ngivr-list-template>
+
+</ngivr-list>

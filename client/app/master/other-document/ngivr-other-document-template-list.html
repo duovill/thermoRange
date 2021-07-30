@@ -1,0 +1,40 @@
+<ngivr-list ngivr-schema="otherDocumentTemplate" ngivr-ref="this" ngivr-query="$ctrl.query">
+
+    <ngivr-list-buttons>
+        <ngivr-icon-fa ng-click="ref.$ctrl.newOtherDocumentTemplate()"
+                       ngivr-tooltip="{{ $root.ngivr.strings.otherDocuments.add.template }}"
+                       ngivr-icon-fa="fa-plus"></ngivr-icon-fa>
+    </ngivr-list-buttons>
+
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ $root.ngivr.strings.title.search}}</label>
+            <input ng-model="ref.$ctrl.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+
+    <ngivr-list-template >
+        <div layout="column" layout-gt-xs="row" layout-padding>
+            <div flex ng-click="ref.$ctrl.view({ doc: doc})">
+                <div style="font-weight:bold;">
+                    {{doc.label}}
+                </div>
+                <div>
+                    {{ doc.id }} - {{ doc.defaultField }}
+                </div>
+
+            </div>
+            <div>
+                <ngivr-icon-fa ngivr-icon-fa="fa-remove" ngivr-tooltip="{{ $root.ngivr.strings.button.delete }}" ng-click="ref.$ctrl.delete({ doc: doc})"></ngivr-icon-fa>
+                &nbsp;
+                <ngivr-icon-fa ngivr-icon-fa="fa-eye" ngivr-tooltip="{{ $root.ngivr.strings.button.show }}" ng-click="ref.$ctrl.view({ doc: doc})"></ngivr-icon-fa>
+            </div>
+        </div>
+
+        <md-divider ng-if="$index < docs.length - 1"/>
+    </ngivr-list-template>
+
+
+</ngivr-list>

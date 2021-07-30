@@ -1,0 +1,114 @@
+<md-content class="md-padding">
+    <md-card class="register-card">
+      <md-card-content>
+        <h2 class="md-title">Sign up</h2>
+        <form name="form" ng-submit="register(form)" novalidate>
+          <md-input-container>
+            <label>Név</label>
+            <input required name="name" ng-model="user.name">
+            <div ng-messages="form.name.$error">
+              <div ng-message="required">This is required.</div>
+            </div>
+          </md-input-container>
+          <md-input-container>
+            <label>Teljes név</label>
+            <input required name="fullName" ng-model="user.fullName">
+            <div ng-messages="form.fullName.$error">
+              <div ng-message="required">This is required.</div>
+            </div>
+          </md-input-container>
+          <md-input-container>
+            <label>Becenév</label>
+            <input required name="nickName" type="text" ng-model="user.nickName">
+            <div ng-messages="form.email.$error">
+              <div ng-message="required">This is required.</div>
+            </div>
+          </md-input-container>
+          <md-input-container>
+            <label>Password</label>
+            <input required type="password" name="password" ng-model="user.password">
+            <div ng-messages="form.password.$error">
+              <div ng-message="required">This is required.</div>
+            </div>
+            
+          </md-input-container>
+          <div layout="row">
+            <md-button class="md-primary" type="submit">Sign up</md-button>
+            <md-button flex type="submit" href="/signup">Login</md-button>
+          </div>
+        </form>
+      </md-card-content>
+    </md-card>
+    <div class="love-message">Generated with <md-icon md-svg-icon="action:favorite" class="md-warn"></md-icon> by <a href="https://github.com/sincraianul/generator-angular-material-fullstack">generator-angular-material-fullstack</a>.</div>
+</md-content>
+
+<!-- <div ng-include="'components/navbar/navbar.html'"></div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <h1>Sign up</h1>
+    </div>
+    <div class="col-sm-12">
+      <form class="form" name="form" ng-submit="register(form)" novalidate>
+
+        <div class="form-group" ng-class="{ 'has-success': form.name.$valid && submitted,
+                                            'has-error': form.name.$invalid && submitted }">
+          <label>Name</label>
+
+          <input type="text" name="name" class="form-control" ng-model="user.name"
+                 required/>
+          <p class="help-block" ng-show="form.name.$error.required && submitted">
+            A name is required
+          </p>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-success': form.email.$valid && submitted,
+                                            'has-error': form.email.$invalid && submitted }">
+          <label>Email</label>
+
+          <input type="email" name="email" class="form-control" ng-model="user.email"
+                 required
+                 mongoose-error/>
+          <p class="help-block" ng-show="form.email.$error.email && submitted">
+            Doesn't look like a valid email.
+          </p>
+          <p class="help-block" ng-show="form.email.$error.required && submitted">
+            What's your email address?
+          </p>
+          <p class="help-block" ng-show="form.email.$error.mongoose">
+            {{ errors.email }}
+          </p>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-success': form.password.$valid && submitted,
+                                            'has-error': form.password.$invalid && submitted }">
+          <label>Password</label>
+
+          <input type="password" name="password" class="form-control" ng-model="user.password"
+                 ng-minlength="3"
+                 required
+                 mongoose-error/>
+          <p class="help-block"
+             ng-show="(form.password.$error.minlength || form.password.$error.required) && submitted">
+            Password must be at least 3 characters.
+          </p>
+          <p class="help-block" ng-show="form.password.$error.mongoose">
+            {{ errors.password }}
+          </p>
+        </div>
+
+        <div>
+          <button class="btn btn-inverse btn-lg btn-login" type="submit">
+            Sign up
+          </button>
+          <a class="btn btn-default btn-lg btn-register" href="/login">
+            Login
+          </a>
+        </div>
+
+      </form>
+    </div>
+  </div>
+  <hr>
+</div> -->

@@ -1,0 +1,71 @@
+<ngivr-list ngivr-schema="incomingInvoice" ngivr-ref="this" ngivr-query="ngivrQuery">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ $root.ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-template>
+        <md-card class="card-padding" style="clear: both;">
+            <!--								<md-card-content ng-click="expand(doc, doc._id)">-->
+            <md-card-content ng-click="$parent.ref.$ctrl.loadInvoice(doc)">
+                <div class="card-left card-green" style="width: 30px; height: 30px;">
+                    <span style="font-size: 10pt; margin-top: 6px;">KSZ</span>
+                    <md-checkbox ng-if="showDetails" ng-click="doc.selected = !doc.selected"
+                                 style="margin-left: 5px; margin-top: 10px" aria-label="0"></md-checkbox>
+
+                </div>
+                <div class="card-right">
+                    <table>
+                        <tr>
+                            <td>
+                                <md-tooltip md-direction="top">Számlaszám</md-tooltip>
+                                <span ng-bind="doc.referenceNumber"></span></td>
+                            <td>
+                                <md-tooltip md-direction="top">Eladó</md-tooltip>
+                                <span ng-bind="doc.incomingSeller[0].name"></span></td>
+                            <td colspan="">
+                                <md-tooltip md-direction="top">Dátum</md-tooltip>
+                                <span>{{doc.createdAt | date: 'yyyy.MM.dd'}}</span>
+                        </tr>
+                        <tr>
+                            <td colspan="">
+                                <md-tooltip md-direction="top">Nettó összeg</md-tooltip>
+                                <span>{{doc.incomingNetto | currency : doc.currency}}</span>
+                            <td colspan="">
+                                <md-tooltip md-direction="top">Nettó maradvány</md-tooltip>
+                                <span>{{doc.depositRemain | currency : doc.currency}}</span>
+                            <td ng-if="showDetails">
+
+                                <div layout="row">
+                                    <div flex="90">
+                                        <md-tooltip ng-if="doc.selected" md-direction="top">Beszámítandó összeg</md-tooltip>
+                                        <input ng-disabled="!doc.selected" type="number" max="doc.depositRemain" ng-model="doc.sumToInvoice"
+                                               style="margin-bottom: 0px;">
+                                    </div>
+                                    <div flex>
+                                        <ngivr-icon-fa ngivr-tooltip="Tétel hozzáadása" ng-if="doc.sumToInvoice" ngivr-icon-fa="fa-plus"
+                                                       ng-click="$parent.ref.$ctrl.addDepositToInvoice(doc)"/>
+                                    </div>
+
+                                </div>
+                            </td>
+
+                        </tr>
+                        <tr class="card-third-row">
+                            <td colspan="">
+                                <md-tooltip md-direction="top">Megjegyzés</md-tooltip>
+                                <span>{{doc.comments[0]}}</span>
+                        </tr>
+
+
+                    </table>
+                </div>
+            </md-card-content>
+
+        </md-card>
+
+    </ngivr-list-template>
+</ngivr-list>

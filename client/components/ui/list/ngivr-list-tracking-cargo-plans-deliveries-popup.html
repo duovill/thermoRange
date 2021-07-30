@@ -1,0 +1,126 @@
+<md-dialog aria-label="" layout-fill class="ngivr-list-tracking-cargo-plans-deliveries-popup">
+
+  <md-toolbar>
+
+    <div class="md-toolbar-tools">
+
+      <ng-md-icon icon="directions_ferry"></ng-md-icon>
+
+      &nbsp; Szállítások
+
+      <span flex></span>
+
+      <md-button ng-click="$ctrl.ok()" aria-label="">
+        <ng-md-icon icon="close"></ng-md-icon>
+        {{ ngivr.strings.button.close }}
+      </md-button>
+
+    </div>
+
+  </md-toolbar>
+
+  <md-dialog-content flex style="padding: 5px; padding-left: 10px; padding-right: 10px;">
+
+    <div layout="row">
+
+      <div flex style="min-width: 200px;">
+
+        <ngivr-portlet ngivr-icon-fa="fa-newspaper-o" ngivr-portlet-style="height: 100%; margin: 2px;"
+                       class="ngivr-list-tracking-plans-deliveries-popup-disposition-ship-portlet">
+
+          <ngivr-portlet-title>
+            <div class="ngivr-portlet-title-default">
+              {{ doc.name }}
+            </div>
+            <div class="ngivr-portlet-title-total">
+              {{ cargo.total | number: 3}} mt
+            </div>
+          </ngivr-portlet-title>
+
+          <ngivr-portlet-body>
+
+            <div ng-repeat="(key, order) in cargo.orders"
+                 class="ngivr-list-tracking-plans-deliveries-popup-disposition">
+
+              <ngivr-list-divider-pre></ngivr-list-divider-pre>
+
+              <div>
+                Diszpozíció : {{ order.orderName }}
+              </div>
+
+              <div>
+                Tervezett mennyiség: {{ order.volume | number : 3 }} mt
+              </div>
+
+              <div>
+                Felrakott súly: {{ order.loadedWeight | number : 3 }} mt
+              </div>
+
+              <div>
+                Lerakott súly: {{ order.unloadedWeight | number : 3 }} mt
+              </div>
+
+              <div>
+
+                <span ng-if="order.direction === 'out' && order.direction === 'in'">
+                  Felrakóhely
+                </span>
+
+                <span ng-if="order.direction === 'external_in'">
+                  {{ order.location }}
+                </span>
+
+              </div>
+
+
+            </div>
+
+          </ngivr-portlet-body>
+
+        </ngivr-portlet>
+
+      </div>
+
+      <div flex ng-repeat="(key, place) in cargo.places" style="margin: 2px; width: 100%; min-width: 200px;">
+
+        <ngivr-portlet ngivr-portlet-style="height: 100%;"
+                       class="ngivr-list-tracking-plans-deliveries-popup-disposition-item-portlet">
+
+          <ngivr-portlet-title>
+            <div class="ngivr-portlet-title-default">
+              {{ place.name }}
+            </div>
+
+            <div class="ngivr-portlet-title-total">
+              {{ place.total | number:3 }} mt
+            </div>
+          </ngivr-portlet-title>
+
+          <ngivr-portlet-body>
+
+            <div ng-repeat="(key, order) in cargo.orders" class="ngivr-list-tracking-plans-deliveries-popup-storage">
+
+              <ngivr-list-divider-pre></ngivr-list-divider-pre>
+
+              <div ng-repeat="(key, cargoPlace) in order.places">
+
+                <div ng-if="cargoPlace._id === place._id">
+                  {{ cargoPlace.volume | number : 3 }} mt
+                </div>
+
+              </div>
+
+            </div>
+
+
+          </ngivr-portlet-body>
+
+        </ngivr-portlet>
+
+      </div>
+
+    </div>
+
+  </md-dialog-content>
+
+</md-dialog>

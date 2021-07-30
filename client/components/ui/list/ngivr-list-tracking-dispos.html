@@ -1,0 +1,112 @@
+<ngivr-list ngivr-ref="this" ngivr-query="ngivrQuery" ngivr-schema="order" ngivr-searcher-switch-in-buttons="true">
+
+    <!-- Lista fejléc -->
+    <ngivr-list-searcher>
+
+        <ngivr-order-excel-filter xq="refreshList" prod-type="prodType" query="ngivrQuery.search" hide-date-filter="true"
+                                  hide-fields="hideFields"></ngivr-order-excel-filter>
+
+    </ngivr-list-searcher>
+
+    <!-- Sablon -->
+    <ngivr-list-template>
+        <md-card class="card-padding" style="clear: both;">
+
+            <md-card-content>
+                <div class="card-left card-green ">
+                    <span>D</span>
+                    <span ng-if="contract.newEventsByOwner > 0"
+                          class="badge badge-danger">{{contract.newEventsByOwner}}</span>
+                    <span
+                        ng-if="doc.ekaer"
+                        class="label label-danger label-table"
+                        style="margin-top: 10px; padding-top: 3px; padding-bottom: 3px; padding-left: 3px; padding-right: 3px; font-size: 8px">EKÁER</span>
+                </div>
+                <div class="card-right">
+                    <table>
+                        <tr>
+                            <!--
+                            ********************
+                            Diszpozíció száma
+                            ********************
+                            -->
+                            <td><span ng-bind="doc.orderNumber"><md-tooltip md-direction="top">{{ngivr.strings.tooltip.orderNumber}}</md-tooltip></span>
+                            </td>
+                            <!--
+                            ********************
+                            Nyitás dátuma
+                            ********************
+                            -->
+                            <td><span ng-bind="doc.createdAt | date: 'yyyy.MM.dd'"><md-tooltip md-direction="top">{{ngivr.strings.tooltip.openDay}}</md-tooltip></span>
+                            </td>
+                            <!--
+                            ********************
+                            Állapot
+                            ********************
+                            -->
+                            <td><span ng-class="{'label label-danger label-table' : doc.deleted}"
+                                      ng-bind="doc.deleted ? 'Törölt' : doc.orderClosed ? 'Lezárt' : 'Nyitott' "><md-tooltip
+                                md-direction="top">{{ngivr.strings.tooltip.status}}</md-tooltip></span>
+                            </td>
+                            <td style="text-align: right"><span ng-bind="(doc.volume | number: 3) + ' mt'"><md-tooltip
+                                md-direction="top">{{ngivr.strings.tooltip.plannedVolume}}</md-tooltip></span></td>
+                            <!--
+                            ********************
+                            Betöltés
+                            ********************
+                            -->
+                            <td class="btn-toleft-toright-container">
+                                <button class="waves-effect waves-whitesmoke btn btn-toleft-toright  margin-bottom-3"
+                                        style="margin-left: 3px"
+                                        ng-click="loadDispoFromList(doc)">K
+                                </button>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <!--
+                            ********************
+                            Termény
+                            ********************
+                            -->
+                            <td><span ng-bind="doc.orderProduct[0].name"><md-tooltip md-direction="top">{{ngivr.strings.tooltip.productName}}</md-tooltip></span>
+                            </td>
+                            <!--
+                            ********************
+                            Felrakó település
+                            ********************
+                            -->
+                            <td><span
+                                ng-bind="doc.loadLocation.length && doc.loadLocation[0] !== null ? doc.loadLocation[0].name : doc.loadLocationSettlement.length && doc.loadLocationSettlement[0] !== null  ? doc.loadLocationSettlement[0].name : '---'"><md-tooltip
+                                md-direction="top">{{ngivr.strings.tooltip.loadLocation}}</md-tooltip></span>
+                            </td>
+                            <!--
+                            ********************
+                            Lerakó település
+                            ********************
+                            -->
+                            <td><span
+                                ng-bind="doc.unloadLocation.length && doc.unloadLocation[0] !== null ? doc.unloadLocation[0].name : doc.loadLocationSettlement.length && doc.loadLocationSettlement[0] !== null ? doc.loadLocationSettlement[0].name : '---'"><md-tooltip
+                                md-direction="top">{{ngivr.strings.tooltip.unloadLocation}}</md-tooltip></span>
+                            </td>
+                            <!--
+                            ********************
+                            Teljesült mennyiség
+                            ********************
+                            -->
+                            <td style="text-align: right"><span ng-bind="(doc.performed | number: 3) + ' mt'"><md-tooltip
+                                md-direction="top">{{ngivr.strings.tooltip.performed}}</md-tooltip></span></td>
+                        </tr>
+                        <tr class="card-third-row">
+
+                            <td colspan="2"><span ng-bind="doc.cargoPlanName"><md-tooltip md-direction="top">{{ngivr.strings.tooltip.cargoPlanName}}</md-tooltip></span>
+                            </td>
+                            <td colspan="3"><span ng-bind="doc.contractNumber"><md-tooltip md-direction="top">{{ngivr.strings.tooltip.contractNumber}}</md-tooltip></span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </md-card-content>
+        </md-card>
+    </ngivr-list-template>
+</ngivr-list>

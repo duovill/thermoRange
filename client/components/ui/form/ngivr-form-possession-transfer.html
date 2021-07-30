@@ -1,0 +1,272 @@
+<ngivr-form ngivr-close="ngivrClose()" ngivr-schema="ticket" ngivr-id="ngivrId" ng-model="model"
+            ngivr-lock-on-unlock="unLockOrdersAndContract()" quit-on-un-lock="true">
+    <ngivr-form-body>
+        <!--
+        **********************
+        Adatok szerződésből
+        **********************
+        -->
+        <div id="possessionTransfer" layout="row">
+            <div flex style="padding-right: 2px">
+                <ul class="list-group">
+                    <li class="list-group-item"> Partner:
+                        <span class="badge badge-default"
+                              ng-bind="content.partner[0].name"></span>
+                    </li>
+                    <li class="list-group-item"> Termény:
+                        <span class="badge badge-default" ng-bind="content.product[0].name"></span>
+                    </li>
+                    <li class="list-group-item"> Paritás helye:
+                        <span class="badge badge-default"
+                              ng-bind="content.parity[0].name == 'FOB' ? content.fobDestination : getParityPlaces(content)"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div style="margin-right: 3px">
+            <!--<div class="row">-->
+            <div class="btn-group fw-btn-group">
+                <label class="btn fw-btn-2 btn-default" ng-model="model.tab.content.sentOut"
+                           uib-btn-radio="false"
+                           ng-click="isOwnSite(true)">
+                    Saját telephely
+                </label>
+                <label class="btn fw-btn-2 btn-default" ng-model="model.tab.content.sentOut"
+                           uib-btn-radio="true"
+                           ng-click="isOwnSite(false)">
+                    ITK
+                </label>
+            </div>
+            <!--</div>-->
+        </div>
+
+        <!--saját telephelyek-->
+        <ng-include src="'app/tracking/possession-transfer-form/template/ownSites.html'"
+                    ng-if="_isOwnSite && _isOwnSite!==undefined"></ng-include>
+        <ng-include src="'app/tracking/possession-transfer-form/template/itk.html'"
+                    ng-if="!_isOwnSite && _isOwnSite!==undefined"></ng-include>
+
+
+        <div ng-if="_isOwnSite!==undefined">
+            <div layout="row">
+                <div flex="100" ng-if="!model._id">
+                    <ngivr-autocomplete-depot name="depot" ng-model="model.depot" buy="content.buy"
+                                              product="content.product" site="selectedSite"
+                                              partner-id="content.partner[0]._id"
+                                              required></ngivr-autocomplete-depot>
+                    <div ng-messages="$parent.$parent.$parent[$parent.$parent.$parent.formName].depot.$error"
+                         ng-show="ngivr.form.message.show($parent.$parent.$parent[$parent.$parent.$parent.formName], 'depot')">
+                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                    </div>
+                </div>
+                <div flex="100" ng-if="model._id">
+                    <md-input-container class="md-block">
+                        <labe>Raktár</labe>
+                        <input
+                            ng-model="model.depot.name"/>
+                    </md-input-container>
+                </div>
+            </div>
+            <div layout="row" class="margin-bottom-15 margin-top-15">
+                <md-input-container class="md-block" style="width: 100%">
+                    <label>{{'Mennyiség: ' + ( content.quantity | number : 3) + '/' + (setFreeQuantity(content) | number
+                        : 3) +
+                        '/' + (maxValues.contract | number: 3)}}</label>
+                    <md-tooltip md-direction="top">{{ngivr.strings.tooltip.ptAmount}}</md-tooltip>
+                    <input name="volume" max="{{setMaxQuantity(content)}}"
+                           type="number" required aria-label=""
+                           ng-model="model.ledger[0].loadedWeight"/>
+                    <div ng-messages="$parent.$parent[$parent.$parent.formName].volume.$error"
+                         ng-show="ngivr.form.message.show($parent.$parent[$parent.$parent.formName], 'volume')">
+                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                        <div ng-message="max">{{ngivr.strings.form.validation.max}} {{(setMaxQuantity(content)) | number
+                            : 3}}
+                        </div>
+                    </div>
+                </md-input-container>
+            </div>
+        </div>
+        <div layout="row">
+            <div flex="100">
+                <md-input-container class="md-block">
+                    <label>Teljesítés dátuma</label>
+                    <ngivr-input-date name="fulfillmentDate" ng-model="model.fulfillmentDate"
+                                      required></ngivr-input-date>
+                </md-input-container>
+                <div ng-messages="$parent[$parent.formName].fulfillmentDate.$error"
+                     ng-show="ngivr.form.message.show($parent[$parent.formName], 'fulfillmentDate')">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                </div>
+            </div>
+        </div>
+
+        <div layout="row">
+            <div flex="50" ng-if="(content.buy && _isOwnSite === false) || (!content.buy && _isOwnSite === true)">
+                <md-input-container class="md-block">
+                    <label>Tárolás határideje</label>
+                    <ngivr-input-date name="dueDate" ng-model="model.possessionTransfer.dueDate"
+                                      required></ngivr-input-date>
+                </md-input-container>
+
+                <div ng-messages="$parent.$parent[$parent.$parent.formName].dueDate.$error"
+                     ng-show="ngivr.form.message.show($parent.$parent[$parent.$parent.formName], 'dueDate')">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                </div>
+            </div>
+            <div flex="50" ng-if="!content.buy" style="margin-top: 6px;">
+                <md-input-container class="md-block md-container-md-select-fix">
+                    <label>Szolgáltatási szerződés szerint</label>
+                    <ngivr-select-service-contract ng-model="model.serviceContract" name="serviceContract"
+                                                   ng-disabled="model.possessionTransfer.number"
+                                                   cost-bearer-id="content.partner[0]._id"
+                                                   ngivr-validation-mongoose
+                                                   ng-model-options="{ getterSetter: true }"
+                                                   required/>
+                </md-input-container>
+
+                <div ng-messages="$parent.$parent[$parent.$parent.formName].serviceContract.$error"
+                     ng-show="ngivr.form.message.show($parent.$parent[$parent.$parent.formName], 'serviceContract')">
+                    <div ng-message="required">
+                        {{ngivr.strings.form.validation.required}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div>
+            <div layout="row" class="margin-top-15">
+                <div flex="50" class="padding-top-15">Tárolási díj van?</div>
+                <div flex="50" class="btn-group fw-btn-group">
+                    <label class="btn fw-btn-2 btn-default" ng-model="model.storedPrice"
+                               uib-btn-radio="true"
+                               ng-click="btnStoredPrice(true)"
+                    >
+                        Igen
+                    </label>
+                    <label class="btn fw-btn-2 btn-default" ng-model="model.storedPrice"
+                               uib-btn-radio="false"
+                               ng-click="btnStoredPrice(false)"
+                    >
+                        Nem
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!--
+        *****************************
+        birtokátruházás vétel esetén
+        *****************************
+        -->
+        <div ng-if="hasStoredPrice && content.buy">
+            <div layout="row">
+                <div flex="50">
+                    <md-input-container class="md-block">
+                        <label>Tárolási díj számításának kezdete</label>
+                        <ngivr-input-date name="feeStartDate" ng-model="model.possessionTransfer.feeStartDate"
+                                          required></ngivr-input-date>
+                        <div ng-messages="$parent.$parent[$parent.$parent.formName].feeStartDate.$error"
+                             ng-show="ngivr.form.message.show($parent.$parent[$parent.$parent.formName], 'feeStartDate')">
+                            <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                        </div>
+                    </md-input-container>
+                </div>
+                <div flex="50">
+                    <md-input-container class="md-block">
+                        <label>Tárolási díj</label>
+                        <input name="fee" type="number" required
+                               ng-model="model.possessionTransfer.fee"/>
+                        <div ng-messages="$parent.$parent[$parent.$parent.formName].fee.$error"
+                             ng-show="ngivr.form.message.show($parent.$parent[$parent.$parent.formName], 'fee')">
+                            <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+            <div layout="row">
+                <div flex="50">
+                    <md-input-container class="md-block">
+                        <label>Deviza</label>
+                        <!--<ngivr-select-currency ng-model="model.stored.currency" name="currency"  required ngivr-validation-mongoose/>-->
+                        <md-select md-no-ink name="currency"
+                                   ng-model="model.possessionTransfer.currency" required>
+                            <md-option ng-repeat="i in currencies"
+                                       value="{{ i.name}}">{{ i.name}}
+                            </md-option>
+                        </md-select>
+                        <div ng-messages="$parent.$parent[$parent.$parent.formName].currency.$error"
+                             ng-show="ngivr.form.message.show($parent.$parent[$parent.$parent.formName], 'currency')">
+                            <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                        </div>
+                    </md-input-container>
+
+                </div>
+                <div flex="50">
+                    <md-input-container class="md-block md-select-card">
+                        <label>Egység</label>
+                        <md-select md-no-ink name="feeType"
+                                   ng-model="model.possessionTransfer.feeType" required>
+                            <md-option value="tonna/hónap">tonna/hónap</md-option>
+                            <md-option value="tonna/hét">tonna/hét</md-option>
+                            <md-option value="tonna/nap">tonna/nap</md-option>
+                            <md-option value="teljes időszak">teljes időszak</md-option>
+                        </md-select>
+                        <div ng-messages="$parent.$parent[$parent.$parent.formName].feetype.$error"
+                             ng-show="ngivr.form.message.show($parent.$parent[$parent.$parent.formName], 'feeType')">
+                            <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                        </div>
+                    </md-input-container>
+                </div>
+            </div>
+        </div>
+
+        <!--
+        ******************************
+        birtokátruházás eladás esetén
+        ******************************
+        -->
+        <div ng-if="model.storedPrice && !content.buy">
+
+            <div layout="row" style="margin-bottom: 10px">
+                <div flex="50">
+                    <md-input-container class="md-block">
+                        <label>Tárolás díj számításának kezdete</label>
+                        <ngivr-input-date name="feeStartDate" ng-model="model.possessionTransfer.feeStartDate"
+                                          required></ngivr-input-date>
+                    </md-input-container>
+
+
+                    <div ng-messages="$parent.$parent[$parent.$parent.formName].feeStartDate.$error"
+                         ng-show="ngivr.form.message.show($parent.$parent[$parent.$parent.formName], 'feeStartDate')">
+                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                    </div>
+                    Szállítás: {{content.termFrom | date: 'yyyy.MM.dd'}} - {{content.termTo | date: 'yyyy.MM.dd.'}}
+                </div>
+
+            </div>
+            <!--<div layout="row" ng-if="model.depot !== undefined && model.depot.site[0].own">-->
+            <!--<div flex="100">-->
+
+
+            <!--</div>-->
+            <!--</div>-->
+        </div>
+        <!--
+        ************************
+        Megjegyzés
+        ************************
+        -->
+        <div layout="row">
+            <div flex="100">
+                <md-input-container class="md-block">
+                    <label for="comments">{{ ngivr.strings.sites.comment }}</label>
+                    <textarea id="comments" name="comments" ng-model="model.comments"></textarea>
+                </md-input-container>
+            </div>
+        </div>
+
+    </ngivr-form-body>
+</ngivr-form>

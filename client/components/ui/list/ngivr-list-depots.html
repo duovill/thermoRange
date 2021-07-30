@@ -1,0 +1,191 @@
+<ngivr-list ngivr-schema="depot" ngivr-ref="this" ngivr-query="ngivrQuery" ngivr-url="{{ngivrUrl}}" dont-clear="true" publish-sort="{message:'depotSortChanged'}"
+            ngivr-sort="sort" ngivr-searcher-switch-off="true">
+
+    <ngivr-list-buttons>
+        <ngivr-button-excel-export ngivr-add-date="1" ngivr-filename="ref.filename"
+                                   ngivr-url="{{ngivrUrl}}"
+                                   ngivr-server-query="ref.depotQuery"></ngivr-button-excel-export>
+    </ngivr-list-buttons>
+    <ngivr-list-searcher>
+        <div layout="row">
+            <!--<div flex>-->
+            <!--<md-input-container class="md-block">-->
+            <!--<label>{{ ngivr.strings.title.search}}</label>-->
+            <!--<input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"-->
+            <!--ng-model-options='{ debounce: ngivr.settings.debounce }'/>-->
+            <!--</md-input-container>-->
+            <!--</div>-->
+            <div flex>
+                <md-input-container class="md-block">
+                    <label>Raktár</label>
+                    <ngivr-autocomplete-depots-of-site ng-model="ref.depot" site-id="site._id" own="site.own">
+
+                    </ngivr-autocomplete-depots-of-site>
+
+                </md-input-container>
+            </div>
+
+        </div>
+
+
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+        <div hl-sticky offset-top="$root.hlStickyTopOffset" class="ngivr-list-header-column"
+             layout-padding>
+
+            <div layout="row" layout-wrap class="center-in-table">
+                <div flex flex-sm="25" flex-xs="50">
+                    Raktár
+                </div>
+                <div flex flex-sm="25" flex-xs="50">
+                    Termény
+                </div>
+                <div flex flex-sm="50" flex-xs="100">
+                    Partner
+                </div>
+                <div ng-style="{'text-align': $mdMedia('gt-sm') ? 'right' : 'left'}" flex flex-sm="25" flex-xs="50">
+                    Összes (mt)
+                </div>
+                <div ng-style="{'text-align': $mdMedia('gt-sm') ? 'right' : 'left'}" flex flex-sm="25" flex-xs="50">
+                    Foglalt (mt)
+                </div>
+                <div ng-style="{'text-align': $mdMedia('gt-sm') ? 'right' : 'left'}" flex flex-sm="25" flex-xs="50">
+                    Szabad (mt)
+                </div>
+                <!--<div flex layout="column" style="margin-left: 15px; margin-right: 15px">-->
+                <!--&lt;!&ndash;<div style="text-align: center;border-bottom: 1px solid #000;">Készlet</div>&ndash;&gt;-->
+                <!--<div layout="row" layout-align="space-between center">-->
+                <!--<div>Összes</div>-->
+                <!--<div>Foglalt</div>-->
+                <!--<div>Szabad</div>-->
+                <!--</div>-->
+
+                <!--</div>-->
+                <!--<div flex layout="column">-->
+                <!--<div style="text-align: center">Partner készlet</div>-->
+                <!--<div layout="row" layout-align="space-between center">-->
+                <!--<div>Összes</div>-->
+                <!--<div>Foglalt</div>-->
+                <!--<div>Szabad</div>-->
+                <!--</div>-->
+
+                <!--</div>-->
+                <div flex flex-sm="25" flex-xs="50" ng-style="{'text-align': $mdMedia('gt-sm') ? 'right' : 'left'}">
+                    Szabad kapacitás (mt)
+                </div>
+            </div>
+
+
+        </div>
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+        <div class="ngivr-list-tickets-without-invoice">
+            <div layout="row" class="center-in-table"
+                 layout-wrap>
+
+                <div flex flex-sm="25" flex-xs="50" class="ngivr-list-tickets-without-invoice-title-hoverable">
+                    <span ng-bind="doc._id.depotName"></span>
+                </div>
+                <div flex flex-sm="25" flex-xs="50">
+                    <span ng-bind="doc.partners.productName"></span>
+                </div>
+                <div flex flex-sm="50" flex-xs="100">
+                    <span ng-bind="doc.partners.partnerName"></span>
+                </div>
+                <div flex flex-sm="25" flex-xs="50" ng-style="{'text-align': $mdMedia('gt-sm') ? 'right' : 'left'}"
+                     ng-bind="doc.partners.total ? (doc.partners.total | number : 3) : '---'"></div>
+                <div flex flex-sm="25" flex-xs="50" ng-style="{'text-align': $mdMedia('gt-sm') ? 'right' : 'left'}"
+                     ng-bind="doc.partners.reserved ? (doc.partners.reserved | number : 3) : '---'"></div>
+                <div flex flex-sm="25" flex-xs="50" ng-style="{'text-align': $mdMedia('gt-sm') ? 'right' : 'left'}"
+                     ng-bind="doc.partners.free ? (doc.partners.free | number : 3) : '---'"></div>
+
+                <!--<div flex layout="row" layout-align="space-between center" style="margin-left: 15px; margin-right: 15px; text-align: right">-->
+                <!--<div ng-bind="doc.sygnus ? (doc.sygnus | number : 3) : doc.partner ? (doc.partner | number : 3) : '-&#45;&#45;'"></div>-->
+                <!--<div ng-bind="doc.sygnusReserved ? (doc.sygnusReserved | number : 3) : doc.partnerReserved ? (doc.partnerReserved | number : 3) : '-&#45;&#45;'"></div>-->
+                <!--<div ng-bind="doc.sygnusFree ? (doc.sygnusFree | number : 3) : doc.partnerFree ? (doc.partnerFree | number : 3) : '-&#45;&#45;'"></div>-->
+                <!--</div>-->
+                <!--<div flex layout="row" layout-align="space-between center" style="text-align: right">-->
+                <!--<span ng-bind="doc.partner ? (doc.partner | number : 3) : '-&#45;&#45;'"></span>-->
+                <!--<div ng-bind="doc.partners[0].reserved ? (doc.partners[0].reserved | number : 3) : '-&#45;&#45;'"></div>-->
+                <!--<div ng-bind="doc.partners[0].free ? (doc.partners[0].free | number : 3) : '-&#45;&#45;'"></div>-->
+                <!--</div>-->
+                <div flex flex-sm="25" flex-xs="50" ng-style="{'text-align': $mdMedia('gt-sm') ? 'right' : 'left'}">
+                    <!--<span ng-bind="(doc.capacity - doc.depotTotal) ? ((doc.capacity - doc.depotTotal) | number: 3) : '-&#45;&#45;'"></span>-->
+                    <span>{{(!doc.freeCapacity && doc.freeCapacity !== 0) ? 'N/A' : (doc.freeCapacity | number: 3)}}</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="ngivr-list-tickets-without-invoice-divider"></div>
+        <!--<md-card class="card-expandable" flex="100" style="margin-left: 0; margin-right: 0; clear: both">-->
+        <!--<md-card-content ng-click="selectDepot(doc)">-->
+        <!--<div layout="row" style="font-weight: bold; font-size: medium; text-align: right">-->
+        <!--<div flex="40" style="text-align: left">-->
+        <!--<span ng-bind="doc._id.depotName"></span>-->
+        <!--</div>-->
+        <!--<div flex="20">-->
+        <!--Saját (mt)-->
+        <!--</div>-->
+        <!--<div flex="20">-->
+        <!--Partner (mt)-->
+        <!--</div>-->
+        <!--<div flex="20">-->
+        <!--Összesen (mt)-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--<div ng-repeat="product in doc.products">-->
+        <!--<ngivr-divider></ngivr-divider>-->
+        <!--<div layout="row" style="font-weight: bold; font-size: small; text-align: right">-->
+        <!--<div flex="35" flex-offset="5" style="text-align: left">-->
+        <!--<span ng-bind="product.product"></span>-->
+        <!--</div>-->
+        <!--<div flex="20">-->
+        <!--<span ng-bind="product.sygnus | number : 3"></span>-->
+        <!--</div>-->
+        <!--<div flex="20">-->
+        <!--<span ng-bind="product.partner | number : 3"></span>-->
+        <!--</div>-->
+        <!--<div flex="20">-->
+        <!--<span ng-bind="product.sum | number : 3"></span>-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--<br>-->
+        <!--<div layout="row" ng-if="doc.clicked" style="font-weight: bold; text-align: right">-->
+        <!--<div flex="30" flex-offset="10" style="text-align: left">-->
+        <!--Partner-->
+        <!--</div>-->
+        <!--<div flex="20">-->
+        <!--Összes-->
+        <!--</div>-->
+        <!--<div flex="20">-->
+        <!--Foglalt-->
+        <!--</div>-->
+        <!--<div flex="20">-->
+        <!--Szabad-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--<div ng-repeat="partner in product.partners" ng-if="doc.clicked" style="text-align: right">-->
+        <!--<div layout="row">-->
+        <!--<div flex="30" flex-offset="10" style="text-align: left">-->
+        <!--<span ng-bind="partner.partnerName + (partner.serviceContractName ? (' (' + partner.serviceContractName + ')') : '')"></span>-->
+        <!--</div>-->
+        <!--<div flex="20">-->
+        <!--<span ng-bind="partner.total | number : 3"></span>-->
+        <!--</div>-->
+        <!--<div flex="20">-->
+        <!--<span ng-bind="partner.reserved | number : 3"></span>-->
+        <!--</div>-->
+        <!--<div flex="20">-->
+        <!--<span ng-bind="partner.free | number : 3"></span>-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--</div>-->
+        <!--</md-card-content>-->
+        <!--</md-card>-->
+    </ngivr-list-template>
+</ngivr-list>
+

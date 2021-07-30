@@ -1,0 +1,125 @@
+<ngivr-list ngivr-schema="contract" ngivr-ref="this" ngivr-query="ngivrQuery">
+
+    <ngivr-list-buttons>
+
+        <ngivr-button-excel-export ngivr-url="/api/xlsdocument/tracking-contracts"
+                                   ngivr-tooltip="{{tooltipAllContract}}" big="true" button-name="'Összes letöltése'"
+                                   ngivr-server-query="{ ngivrQuery: ref.allQuery, ngivrFilename: fileNameAllContractButton}"></ngivr-button-excel-export>
+        <ngivr-button-excel-export ngivr-url="/api/xlsdocument/tracking-contracts"
+                                   ngivr-server-query="{ ngivrQuery: query, ngivrFilename: ref.ngivrFilename}"></ngivr-button-excel-export>
+    </ngivr-list-buttons>
+
+    <ngivr-list-searcher>
+        <md-input-container class="md-block" style="position: 5px">
+            <label>{{ $parent.$parent.ngivr.strings.title.search}}</label>
+            <input ng-model="ref.searchValue"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+        <md-input-container class="md-block">
+            <label>Állapot szerint</label>
+
+            <md-select ng-model="ref.contractStatus" multiple>
+                <md-optgroup label="Állapot szerint">
+
+                    <md-option value="closed">Lezárt</md-option>
+                    <md-option value="open">Nyitott</md-option>
+                    <md-option value="pTransferred">Tulajdonátruházott</md-option>
+                </md-optgroup>
+            </md-select>
+
+
+        </md-input-container>
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+        <md-card class="card-padding" style="clear: both;">
+
+            <md-card-content ng-click="goToState(doc._id, doc.buy)">
+                <div class="card-left {{ doc.buy ? 'card-green' : 'card-red' }}">
+                    <span ng-bind="doc.buy ? 'V' : 'E'"></span>
+                    <span
+                        ng-if="doc.newEventsByOwner + doc.newEventsBySytem + doc.newMessagesByOwner > 0"
+                        class="badge badge-danger">{{doc.newEventsByOwner + doc.newEventsBySytem + doc.newMessagesByOwner}}</span>
+                </div>
+                <div class="card-right">
+                    <table>
+                        <tr>
+                            <td colspan="2">
+                                <md-tooltip md-direction="top">Szerződészám</md-tooltip>
+                                <span ng-bind="doc.contractNumber"></span>
+                                <ngivr-button-clipboard-copy ng-model="doc.contractNumber" ngivr-list-btn="true"
+                                                             hint="{{doc.buy ? 'contractNumberV' : 'contractNumberE'}}"></ngivr-button-clipboard-copy>
+                            </td>
+                            <td>
+                                <md-tooltip md-direction="top">Termény</md-tooltip>
+                                <span
+                                    ng-bind="doc.normal ? doc.product[0].name : doc.optionProductGroupName + ' (Opciós)'"></span>
+                            </td>
+
+                            <td style="text-align: right">
+                                <md-tooltip md-direction="top">Eredeti mennyiség</md-tooltip>
+                                <span class="margin-right-10" ng-bind="(doc.quantity | number : 3) + ' mt'"></span></td>
+                            <td class="btn-toleft-toright-container">
+                                <button class="waves-effect waves-whitesmoke btn btn-toleft-toright  margin-bottom-3"
+                                        ng-click="addTab({title: doc.contractNumber, contract: doc, side: 'left', possessionTransfer: undefined , selectedSecondTabIndex: undefined , $event: $event, })">
+                                    B
+                                </button>
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <md-tooltip md-direction="top">Partner</md-tooltip>
+                                <span ng-bind="doc.partner[0].name"></span></td>
+                            <td>
+                                <md-tooltip md-direction="top">{{'Szállítási határidők: ' + (doc.termFrom | date:
+                                    'yy.MM.dd') + '-' + (doc.termTo | date: 'yy.MM.dd')}}
+                                </md-tooltip>
+                                {{(doc.termFrom | date: 'yy.MM.dd') + '-' + (doc.termTo | date: 'yy.MM.dd')}}
+                            </td>
+                            <td style="text-align: right">
+                                <md-tooltip md-direction="left">Hátralévő mennyiség</md-tooltip>
+                                <span class="margin-right-10" ng-bind="(doc.remain | number: 3) + ' mt'"> </span></td>
+                            <td></td>
+                        </tr>
+                        <tr class="card-third-row">
+                            <td colspan="2">
+                                <md-tooltip md-direction="top">Szerződés státusza</md-tooltip>
+                                <ng-include src="'app/tracking/templates/contract-status.html'"></ng-include>
+                            </td>
+
+                            <td>
+                                <md-tooltip md-direction="left">{{doc.normal ? ngivr.strings.field.contractPrice :
+                                    ngivr.strings.field.avgPrice}}
+                                </md-tooltip>
+                                {{doc.normal ? doc.price : doc.optionAvgPrice | currency : doc.currency : (doc.currency
+                                === 'HUF' ? 0 : 2)}}
+                            </td>
+
+                            <td ng-if="!doc.normal">
+                                <ngivr-popup-generate-contract ng-model="doc"
+                                                               ngivr-disabled="ref.$ctrl.isContractLocked(doc)"
+                                                               ng-if="!doc.normal"></ngivr-popup-generate-contract>
+                            </td>
+                            <td style="text-align: right" ng-if="doc.normal">
+                                <md-tooltip md-direction="down">Diszponálható mennyiség</md-tooltip>
+                                <span class="margin-right-10"
+                                      ng-bind="(ngivrOrder.calculateFreeToDispo(doc) | number: 3) + ' mt'"></span></td>
+                            <td class="btn-toleft-toright-container">
+                                <button class="waves-effect waves-whitesmoke btn btn-toleft-toright"
+                                        ng-click="addTab({title: doc.contractNumber, contract: doc, side: 'right', possessionTransfer: undefined , selectedSecondTabIndex: undefined , $event: $event})">
+                                    J
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </md-card-content>
+        </md-card>
+
+    </ngivr-list-template>
+
+</ngivr-list>

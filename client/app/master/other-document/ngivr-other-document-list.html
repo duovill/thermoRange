@@ -1,0 +1,43 @@
+<ngivr-list ngivr-schema="otherDocument" ngivr-ref="this" ngivr-query="$ctrl.query">
+
+    <ngivr-list-buttons>
+        <ngivr-icon-fa ng-click="ref.$ctrl.newOtherDocument()"
+                       ngivr-tooltip="{{ $root.ngivr.strings.otherDocuments.add.document }}"
+                       ngivr-icon-fa="fa-plus"></ngivr-icon-fa>
+    </ngivr-list-buttons>
+
+    <ngivr-list-searcher>
+       <md-input-container class="md-block">
+            <label>{{ $root.ngivr.strings.title.search}}</label>
+            <input ng-model="ref.$ctrl.searchModel.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+
+        <ngivr-chips-other-document-template ng-model="ref.$ctrl.searchModel.otherDocumentTemplate" ngivr-chips-add="ref.$ctrl.search(query)"
+                                             ngivr-chips-remove="ref.$ctrl.search(query)"></ngivr-chips-other-document-template>
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+        <div layout="column" layout-gt-xs="row" layout-padding>
+            <div flex ng-click="ref.$ctrl.view({ doc: doc})">
+                <span style="font-weight: bold;">{{doc.templateType.label }}</span>
+                <div ng-if="doc.fieldsAndsValues[doc.templateType.defaultField].name !== undefined">
+                    {{ doc.fieldsAndsValues[doc.templateType.defaultField].name }}
+                </div>
+                <div ng-if="doc.fieldsAndsValues[doc.templateType.defaultField].name === undefined">
+                    {{ doc.fieldsAndsValues[doc.templateType.defaultField] }}
+                </div>
+            </div>
+            <div>
+                <ngivr-icon-fa ngivr-icon-fa="fa-remove" ngivr-tooltip="{{ $root.ngivr.strings.button.delete }}" ng-click="ref.$ctrl.delete({ doc: doc})"></ngivr-icon-fa>
+                &nbsp;
+                <ngivr-icon-fa ngivr-icon-fa="fa-eye" ngivr-tooltip="{{ $root.ngivr.strings.button.show }}" ng-click="ref.$ctrl.view({ doc: doc})"></ngivr-icon-fa>
+            </div>
+        </div>
+
+        <md-divider ng-if="$index < docs.length - 1"/>
+    </ngivr-list-template>
+</ngivr-list>

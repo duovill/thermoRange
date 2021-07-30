@@ -1,0 +1,195 @@
+<md-dialog aria-label="unused" class="ngivr-dialog-default-size ngivr-other-document-template-form-field">
+    <form novalidate name="ngivrOtherDocumentTemplateFieldForm" ng-submit="submit()">
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2 flex md-truncate>{{ options.type === 'new' ? $root.ngivr.strings.otherDocuments.form.field.new :
+                    $root.ngivr.strings.otherDocuments.form.field.edit }}</h2>
+                <md-button class="md-icon-button" ng-click="cancel()" aria-label="unused">
+                    <ng-md-icon icon="close"></ng-md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <md-content layout-padding>
+
+
+                    <md-input-container class="md-block">
+                        <label>{{ $root.ngivr.strings.otherDocuments.title.type }}</label>
+
+                        <md-select ng-model="model.type" name="type" required>
+                            <md-option ng-repeat="type in $root.ngivr.settings.otherDocuments.types" ng-value="type">
+                                <span style="text-transform: capitalize;">{{ $root.ngivr.strings.otherDocuments.title.types[type ] }}</span>
+                            </md-option>
+                        </md-select>
+
+                        <div ng-messages="ngivrOtherDocumentTemplateFieldForm.type.$error"
+                             ng-show="$root.ngivr.form.message.show(ngivrOtherDocumentTemplateFieldForm, 'type')">
+                            <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+
+                        </div>
+
+                    </md-input-container>
+
+
+                <div ng-if="model.type === 'mask'">
+
+                    <md-input-container class="md-block">
+
+                        <label>{{ $root.ngivr.strings.otherDocuments.label.maskFormat }}</label>
+
+                        <input type="text" name="mask" required ng-model="model.metadata['mask-format']"/>
+
+                        <div ng-messages="ngivrOtherDocumentTemplateFieldForm.mask.$error"
+                             ng-show="$root.ngivr.form.message.show(ngivrOtherDocumentTemplateFieldForm, 'mask')">
+                            <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                        </div>
+
+
+                    </md-input-container>
+
+
+                    <md-input-container class="md-block">
+
+                        <label>{{ $root.ngivr.strings.otherDocuments.label.maskFormatValidationError }}</label>
+
+                        <input type="text" name="maskFormatError" required ng-model="model.metadata['mask-format-error']"/>
+
+                        <div ng-messages="ngivrOtherDocumentTemplateFieldForm.maskFormatError.$error"
+                             ng-show="$root.ngivr.form.message.show(ngivrOtherDocumentTemplateFieldForm, 'maskFormatError')">
+                            <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                        </div>
+
+
+                    </md-input-container>
+
+
+                </div>
+
+
+                <div ng-if="model.type === 'select'">
+
+                    <md-input-container class="md-block" ng-repeat="option in model.metadata.option">
+                        <span style="float: right;">
+                               <ngivr-icon-fa ng-if="$last" ng-click="selectAddOption({$index: $index})"
+                                              ngivr-tooltip="{{ $root.ngivr.strings.otherDocuments.label.newOption }}"
+                                              ngivr-icon-fa="fa-plus"></ngivr-icon-fa>
+                               <ngivr-icon-fa ng-if="$index > 0" ng-click="selectRemoveOption({$index: $index})"
+                                              ngivr-tooltip="{{ $root.ngivr.strings.otherDocuments.label.deleteOption }}"
+                                              ngivr-icon-fa="fa-remove"></ngivr-icon-fa>
+                        </span>
+
+
+                        <label>{{ $root.ngivr.strings.otherDocuments.label.selectOption }}</label>
+
+
+                        <input type="text" name="option{{ $index }}" required ng-model="option.label"/>
+
+
+                        <div ng-messages="ngivrOtherDocumentTemplateFieldForm['option' + $index].$error"
+                             ng-show="$root.ngivr.form.message.show(ngivrOtherDocumentTemplateFieldForm, 'option' + $index)">
+                            <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                        </div>
+
+                        <div style="clear: both;"></div>
+                    </md-input-container>
+
+
+                </div>
+
+                <div ng-if="model.type === 'related'">
+
+                    <md-input-container class="md-block">
+                        <label>Kapcsoló tipus</label>
+
+                        <md-select ng-model="model.metadata.schema" name="metaDataSchema" required>
+                            <md-option ng-repeat="(key, value) in $root.ngivr.strings.schema" ng-value="key">
+                                {{ value }}
+                            </md-option>
+                        </md-select>
+
+                        <div ng-messages="ngivrOtherDocumentTemplateFieldForm.metaDataSchema.$error"
+                             ng-show="$root.ngivr.form.message.show(ngivrOtherDocumentTemplateFieldForm, 'metaDataSchema')">
+                            <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+
+                        </div>
+
+                    </md-input-container>
+
+
+                </div>
+
+                <md-input-container class="md-block">
+
+                    <label>{{ $root.ngivr.strings.otherDocuments.title.label }}</label>
+
+                    <input type="text" name="label" required ng-model="model.label"/>
+
+                    <div ng-messages="ngivrOtherDocumentTemplateFieldForm.label.$error"
+                         ng-show="$root.ngivr.form.message.show(ngivrOtherDocumentTemplateFieldForm, 'label')">
+                        <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                    </div>
+
+
+                </md-input-container>
+
+
+
+                <md-input-container class="md-block">
+
+                    <label>{{ $root.ngivr.strings.otherDocuments.title.id }}</label>
+
+                    <input type="text" name="id" required ng-model="model.id"/>
+
+                    <div ng-messages="ngivrOtherDocumentTemplateFieldForm.id.$error"
+                         ng-show="$root.ngivr.form.message.show(ngivrOtherDocumentTemplateFieldForm, 'id')">
+                        <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                    </div>
+
+
+                </md-input-container>
+
+                <fieldset class="ngivr-other-document-template-form-field-validations">
+                    <legend>{{ $root.ngivr.strings.otherDocuments.title.validations }}</legend>
+                    <div ng-repeat="validation in validations track by validation.name"
+                         ng-if="validation.type === 'all' || validation.type === model.type">
+                        <md-checkbox ng-checked="validationExists(validation)"
+                                     ng-click="validationToggle(validation)">
+                            {{ $root.ngivr.strings.otherDocuments.validations[validation.name] }}
+
+                        </md-checkbox>
+                    </div>
+                </fieldset>
+
+
+                <md-input-container class="md-block">
+
+                    <md-checkbox ng-model="model.displayInList">
+                        {{ $root.ngivr.strings.otherDocuments.title.displayInList }}
+
+                    </md-checkbox>
+
+                </md-input-container>
+
+
+
+            </md-content>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row" layout-align="end end">
+
+
+            <ngivr-button type="submit">
+                <ng-md-icon icon="{{ options.type === 'new' ? 'add' : 'save'}}"></ng-md-icon>
+                {{ options.type === 'new' ? $root.ngivr.strings.button.new : $root.ngivr.strings.button.save }}
+            </ngivr-button>
+
+            <ngivr-button ng-click="cancel()">
+                <ng-md-icon icon="close"></ng-md-icon>
+                {{ $root.ngivr.strings.button.cancel }}
+            </ngivr-button>
+
+        </md-dialog-actions>
+
+    </form>
+</md-dialog>

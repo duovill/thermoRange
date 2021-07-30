@@ -1,0 +1,126 @@
+<span class="ngivr-list" ng-class="ngivr.config.mobile ? 'ngivr-list-button-mobile' : ''"
+      ng-swipe-left="command.swipe($event, 'left')" ng-swipe-right="command.swipe($event, 'right')">
+
+<div style="float: right; margin-right: 5px; min-height: 30px; position: relative; top: -2px;">
+    <span class="ngivr-strong ngivr-info">
+      {{ ngivr.strings.title.sort }}
+    </span>:
+    <select ng-model="sort" class="display: inline;">
+      <option ng-repeat="field in ngivrSort.items" ng-value="field['sort']" ng-if="ngivrSort.position==='before'">
+        {{ field['display'] }}
+      </option>
+      <option ng-repeat="field in ngivr.settings.query.sort.all" ng-value="field" ng-hide="hideDefaultSortOptions">
+        {{ ngivr.strings.field[field] }}
+      </option>
+      <option ng-repeat="field in ngivrSort.items" ng-value="field['sort']" ng-if="ngivrSort.position==='after'">
+        {{ field['display'] }}
+      </option>
+    </select>
+    <ngivr-icon-fa ng-click="order = order == -1 ? 1 : -1"
+                   ngivr-tooltip="{{ order == -1 ? ngivr.strings.message.descending: ngivr.strings.message.ascending }}"
+                   ngivr-icon-fa="{{ order == -1 ? 'fa-sort-amount-desc' : 'fa-sort-amount-asc' }}"></ngivr-icon-fa>
+
+</div>
+
+<div style="float: left;  margin-left: 5px; min-height: 30px;" class="ngivr-info">
+  <span ng-if="query.pages > 1" style="white-space: nowrap">
+    <span class="ngivr-strong ngivr-info">{{ ngivr.strings.title.page}}</span>:
+      <input ng-model-options='{ debounce: ngivr.settings.debounce }' style="text-align: right; "
+             class="ngivr-input-raw" ng-model="query.page" type="number" ng-min="1" min="1"
+             max="{{query.pages}}" ng-max="query.pages"/> / {{ query.pages }}
+   </span>
+ <span ng-if="query.pages > 1 && query.total > 0">
+    &nbsp;|&nbsp;
+  </span>
+  <span ng-if="query.total > 0">
+      <span style="white-space: nowrap">
+        <span class="ngivr-strong">{{ ngivr.strings.title.perPage }}</span>:
+        <select ng-model="query.limit" class="display: inline;">
+          <option ng-repeat="limit in ngivr.settings.query.limit.all" ng-value="limit">
+            {{ limit == 0 ? ngivr.strings.title.all : limit }}
+          </option>
+        </select>
+      </span>
+      <span style="white-space: nowrap">
+        <span class="ngivr-strong">{{ ngivr.strings.title.all }}</span> :
+        {{ query.total}}
+      </span>
+      &nbsp;
+  </span>
+</div>
+
+
+<ngivr-list-paginator/>
+
+<div style="float: left; margin-right: 5px; text-align: right;">
+
+    <ngivr-icon-fa
+        ng-click="command.refresh()"
+        ngivr-tooltip="{{ ngivr.strings.button.refresh }}"
+        ngivr-icon-fa="{{ ngivr.settings.fa.refresh}}"
+    ></ngivr-icon-fa>
+    &nbsp;
+    <ngivr-icon-fa
+        ng-click="command.clear()"
+        ngivr-tooltip="{{ ngivr.strings.button.default }}"
+        ngivr-icon-fa="{{ ngivr.settings.fa.default}}"
+    ></ngivr-icon-fa>
+    &nbsp;
+     <span ng-transclude="buttons" ng-if="transcludePresent('buttons') && ngivrSearcherSwitchInButtons">
+    </span>
+</div>
+
+<div style="float: right; margin-right: 5px; text-align: right; vertical-align: top;" >
+  <span ng-transclude="buttons" ng-if="transcludePresent('buttons') && !ngivrSearcherSwitchInButtons">
+    </span>
+    <span ng-if="ngivrSearcherSwitchInButtons && !ngivrSearcherSwitchOff">
+        <md-tooltip md-direction="left">{{ ngivr.strings.inputSwitch.searchMode.caption }}</md-tooltip>
+        <md-switch style="margin: 0px; display: inline-block; height: auto;"  ng-model="query.settings.searchModeStartsWith"
+                   aria-label="{{ ngivr.strings.inputSwitch.searchMode.caption }}">
+            {{  query.settings.searchModeStartsWith ? ngivr.strings.inputSwitch.searchMode.startsWith : ngivr.strings.inputSwitch.searchMode.anywhere }}
+    </md-switch>
+    </span>
+
+</div>
+
+<div style="clear: both;"></div>
+
+    <!--
+        <div>
+            transcludePresent('searcher'): {{transcludePresent('searcher')}}
+            <br/>
+            transcludePresent('header'): {{transcludePresent('header')}}
+            <br/>
+        </div>
+    -->
+
+<div layout="row" ng-if="transcludePresent('searcher') && !ngivrSearcherSwitchInButtons">
+    <div flex>
+       <div ng-transclude="searcher"></div>
+    </div>
+    <div ng-if="!ngivrSearcherSwitchOff">
+        <md-tooltip md-direction="left">{{ ngivr.strings.inputSwitch.searchMode.caption }}</md-tooltip>
+        <md-switch ng-model="query.settings.searchModeStartsWith"
+                   aria-label="{{ ngivr.strings.inputSwitch.searchMode.caption }}">
+            {{  query.settings.searchModeStartsWith ? ngivr.strings.inputSwitch.searchMode.startsWith : ngivr.strings.inputSwitch.searchMode.anywhere }}
+        </md-switch>
+    </div>
+</div>
+
+<div ng-if="transcludePresent('searcher') && ngivrSearcherSwitchInButtons" ng-transclude="searcher">
+</div>
+
+<div ng-transclude="header" ng-if="transcludePresent('header')"></div>
+
+<div style="clear: both;"></div>
+
+<div ng-repeat="doc in query.docs" ng-transclude="template"/>
+
+<span ng-if="query.total == 0">
+  {{ ngivr.strings.message.noResult }}
+</span>
+
+<ngivr-list-paginator/>
+
+</span>
+

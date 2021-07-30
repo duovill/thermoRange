@@ -1,0 +1,132 @@
+@import "../../../assets/sass/ngivr-disabled";
+@import "../../../assets/metronic/sass/global/variables-md";
+
+$ngivr-button-size: 14px;
+$ngivr-button-size-mobile: 24px;
+
+@mixin button($bg, $text, $top: 5px, $no-shadow: false) {
+    background-color: $bg !important;
+    color: rgba($text, 1) !important;
+    margin-top: $top !important;
+
+    @if $no-shadow == true {
+        box-shadow: none;
+
+    } @else if $text  != 'white' {
+
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.18) !important;
+
+    } @else {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.58) !important;
+
+    }
+    padding-left: 10px;
+    padding-right: 10px;
+    line-height: $ngivr-button-size;
+    font-size: $ngivr-button-size;
+
+}
+
+ngivr-button {
+    margin: 1px;
+}
+
+ngivr-button > button {
+
+    @keyframes ngivr-button-hover {
+        0% {
+            transform: scale(1.0);
+        }
+        50% {
+            transform: scale(1.03);
+        }
+        100% {
+            transform: scale(1.00);
+        }
+    }
+
+    &.ngivr-button {
+        @include button($color-primary, white);
+        &:disabled {
+            opacity: 0.25;
+        }
+        &:hover {
+            //@include button(darken($color-primary, 10%), white);
+
+            //  animation-name: ngivr-button-hover;
+            animation-duration: 0.2s;
+            box-shadow: 0 0 0 5px rgba($color-primary, 0.5) !important;
+
+            .fa, md-icon, ng-md-icon, svg {
+                animation-name: ngivr-rotate;
+                animation-duration: 0.5s;
+            }
+        }
+    }
+
+    &.ngivr-button-flat {
+        @include button($button-flat-bg, $button-flat-text);
+        &:disabled {
+            opacity: 0.25;
+        }
+        &:hover {
+            //animation-name: ngivr-button-hover;
+            animation-duration: 0.5s;
+            box-shadow: 0 0 0 4px rgba(black, 0.2) !important;
+        }
+    }
+
+    &.ngivr-button-portal {
+        @include button(rgba(255, 255, 255, 0), white, 0px, true);
+        &:disabled {
+            opacity: 0.25;
+        }
+        &:hover {
+            //animation-name: ngivr-button-hover;
+            animation-duration: 0.5s;
+            @include button(rgba(white, 0.2), white, 0px);
+        }
+    }
+
+    &.ngivr-button-flat-active {
+        @include button($button-flat-active-bg, $button-flat-active-text);
+        &:hover {
+            //animation-name: ngivr-button-hover;
+            animation-duration: 0.5s;
+            box-shadow: 0 0 0 4px rgba($color-primary, 0.5) !important;
+        }
+    }
+
+}
+
+button.md-button {
+    margin: 3px !important;
+}
+
+button.md-button.md-primary.md-raised {
+    margin: 3px !important;
+    &:hover {
+        box-shadow: 0 0 0 5px rgba($color-primary, 0.5) !important;
+    }
+}
+
+
+button.md-button.md-accent.md-raised {
+    margin: 3px !important;
+    &:hover {
+        box-shadow: 0 0 0 5px rgba(grey, 0.5) !important;
+    }
+}
+
+button.md-button.md-warn.md-raised {
+    margin: 3px !important;
+    &:hover {
+        box-shadow: 0 0 0 5px rgba($color-primary, 0.44) !important;
+//        box-shadow: 0 0 0 5px rgba(#FFC107, 0.5) !important;
+    }
+}
+
+.ngivr-button-small {
+    min-width: inherit;
+    min-height: 20px;
+}

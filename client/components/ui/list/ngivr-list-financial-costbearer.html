@@ -1,0 +1,15 @@
+<ngivr-list ngivr-schema="FinancialCostBearer" ngivr-ref="this" ngivr-query="ngivrQuery">
+
+  <ngivr-list-template>
+    
+    <div ui-sref="master.transportEquipmentEdit({id: doc._id})">
+        <table>
+            <tr>
+                <td>{{ doc.name }}</td>
+            </tr>
+        </table>
+    </div>
+
+  </ngivr-list-template>
+
+</ngivr-list>

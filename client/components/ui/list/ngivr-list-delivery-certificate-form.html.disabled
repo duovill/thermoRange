@@ -1,0 +1,227 @@
+  <div ng-show="doc.showDetails">
+
+          <div layout="row" class="margin-top-10">
+            <div flex="33">
+                  <span class="first-child"><b ng-bind="'Felvásárlási jegy sorszáma: '"></b><span
+                    ng-bind="doc.number"></span></span>
+            </div>
+            <div flex="33">
+              <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Típus: '"></b><span
+                      ng-bind="typeList[doc.type]"></span></span>
+                <br/>
+              </div>
+            </div>
+          </div>
+
+
+          <div layout="row" class="margin-top-10">
+            <div flex="33">
+              <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Teljesítés dátuma: '"></b><span
+                      ng-bind="doc.goodsSent | date: 'yyyy.MM.dd'"></span></span>
+                <br/>
+              </div>
+            </div>
+
+            <div flex="33">
+              <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Fizetési határidő: '"></b><span
+                      ng-bind="doc.lastDayOfPayment | date: 'yyyy.MM.dd'"></span></span>
+                <br/>
+              </div>
+            </div>
+            <div flex="33">
+              <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Létrehozva: '"></b><span
+                      ng-bind="(doc.createdAt | date: 'yyyy.MM.dd') + '/' + doc.history[0].userName"></span></span>
+                <br/>
+              </div>
+            </div>
+          </div>
+
+          <div layout="row" class="margin-top-10">
+            <div flex="33">
+              <div class="detail-row">
+                  <span class="first-child"><b ng-bind="'Bankszámlaszám: '"></b><span
+                    ng-bind="doc.bankAccountNumber"></span></span>
+                <br/>
+              </div>
+            </div>
+
+            <div flex="33">
+              <div class="detail-row">
+                  <span class="first-child"><b ng-bind="'Mennyiségi egység: '"></b><span
+                    ng-bind="doc.items[0].unit"></span></span>
+                <br/>
+              </div>
+            </div>
+
+            <div flex="33">
+              <div class="detail-row">
+                  <span class="first-child"><b ng-bind="'Deviza: '"></b><span
+                    ng-bind="doc.currency"></span></span>
+                <br/>
+              </div>
+            </div>
+          </div>
+
+
+          <div ng-if="doc.relatedDeliveryCertificateNumber" class="margin-top-10">
+            <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Kapcsolódó bizonylatszám: '"></b><span
+                      ng-bind="doc.relatedDeliveryCertificateNumber"></span></span>
+              <br/>
+
+            </div>
+          </div>
+          <br/>
+
+          <div layout="row" style="font-weight: bold">
+            <div flex="10">
+              VTSZ
+            </div>
+            <div flex="15">
+              Megnevezés
+            </div>
+            <div flex="10">
+              Szerz.szám
+            </div>
+            <div flex="5" style="text-align: right">
+              Menny.
+            </div>
+            <div ng-if="doc.itemized" flex="15" style="text-align: center">
+              Rendszám
+            </div>
+            <div flex="10" style="text-align: right">
+              Egységár
+            </div>
+            <div flex="15" style="text-align: right">
+              Felv. érték
+            </div>
+            <div flex="15" style="text-align: right">
+              Komp. felár
+            </div>
+            <div flex="15" style="text-align: right">
+              Összesen
+            </div>
+          </div>
+          <md-divider></md-divider>
+
+          <div ng-repeat="item in doc.items">
+            <div layout="row">
+              <div flex="10">
+                {{item.product.vtsz}}
+              </div>
+              <div flex="15">
+                {{doc.type !== 'bonification' ? doc.relatedContract.sustainability ==='Nem fenntartható' ?
+                item.product.name :
+                doc.relatedContract.sustainability + ' fenntartható ' + item.product.name : item.product.name}}
+              </div>
+              <div flex="10">
+                {{item.contractNumber}}
+              </div>
+              <div flex="5" style="text-align: right">
+                {{item.amount | number: 2}}
+              </div>
+              <div ng-if="doc.itemized" flex="15" style="text-align: center">
+                {{item.plateNumber1 !== '' ? item.plateNumber1 + '/' + item.plateNumber2 : 'Tulajdonátruházás'}}
+              </div>
+              <div flex="10" style="text-align: right">
+                {{item.pricePerUnit | number: 2}}
+              </div>
+              <div flex="15" style="text-align: right">
+                {{item.totalPrice | number: 2}}
+              </div>
+              <div flex="15" style="text-align: right">
+                {{item.totalPrice * 0.12 | number: 2}}
+              </div>
+              <div flex="15" style="text-align: right">
+                {{item.totalPrice * (1 + 12 / 100) | number: 2}}
+              </div>
+            </div>
+            <div layout="row" ng-if="item.comment" class="margin-top-10">
+              <div class="detail-row">
+                  <span class="first-child"><b ng-bind="'Megjegyzés: '"></b><br><span style="white-space: pre-line"
+                                                                                      ng-bind="item.comment"></span></span>
+                <br/>
+              </div>
+            </div>
+            <md-divider></md-divider>
+          </div>
+
+          </br>
+
+          <div layout="row" class="margin-top-10">
+            <div flex="33">
+              <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Összesen fizetendő: '"></b><span
+                      ng-bind="doc.netto + doc.compensation | currency: doc.currency"></span></span>
+                <br/>
+              </div>
+            </div>
+
+            <div flex="33">
+              <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Kompenzációs felár: '"></b><span
+                      ng-bind="doc.compensation | currency: doc.currency"></span></span>
+                <br/>
+              </div>
+            </div>
+
+            <div flex="33">
+              <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Felvásárlási ár: '"></b><span
+                      ng-bind="doc.netto | currency: doc.currency"></span></span>
+                <br/>
+              </div>
+            </div>
+          </div>
+
+          <div layout="row" ng-if="doc.comments[0]" class="margin-top-10">
+            <div class="detail-row">
+                  <span class="first-child"><b ng-bind="'Megjegyzés: '"></b><br><span style="white-space: pre-line"
+                                                                                      ng-bind="doc.comments[0]"></span></span>
+              <br/>
+            </div>
+          </div>
+
+          <!--<div ng-if="doc.type === 'normal' && doc.relatedInvoices" class="margin-top-10">
+            <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Kapcsolódó bizonylatszám(ok): '"></b><span
+                      ng-bind="doc.relatedInvoiceNumber"></span></span>
+              <br/>
+              <span ng-repeat="number in doc.relatedInvoices" class="first-child" style="margin-left:1em"><b
+                ng-bind="number.type === 'correction' ? 'Korrekciós' : 'Sztornó'"></b> <span
+                ng-bind="': ' + number.invoiceNumber"></span><br/></span>
+
+
+            </div>
+          </div>-->
+
+          <div layout="row"
+               layout-align="end end" layout-margin class="margin-top-10">
+
+            <md-button ng-if="doc.type === 'normal' && !doc.relatedDeliveryCertificateNumber"
+                       class="waves-effect waves-whitesmoke btn-small btn btn-grey"
+                       ng-click="startBonification(doc)"
+                       ng-disabled="ref.$ctrl.isLocked(doc)">
+              Bonifikáció
+            </md-button>
+
+            <md-button ng-if="doc.type === 'normal' && !doc.relatedDeliveryCertificateNumber"
+                       class="waves-effect waves-whitesmoke btn-small btn btn-grey"
+                       ng-click="startStorno(doc)"
+                       ng-disabled="ref.$ctrl.isLocked(doc)">
+              Sztornó
+            </md-button>
+
+            <md-button class="waves-effect waves-whitesmoke btn-small btn btn-grey"
+                       ng-click="loadDeliveryCertificate(doc)"
+                       ng-disabled="">
+              Betöltés
+            </md-button>
+
+          </div>
+
+        </div>

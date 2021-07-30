@@ -1,0 +1,27 @@
+@import "variables";
+
+.ngivr-accordion-container {
+    border: 2px solid $color-primary;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.ngivr-accordion-toolbar {
+    height: 48px !important;
+}
+
+
+.ngivr-accordion-container-status {
+    border: 2px solid $color-primary;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+
+md-toolbar.ngivr-accordion-toolbar-status {
+    max-height: 32px !important;
+
+    .md-toolbar-tools {
+        font-size: 12px !important;
+    }
+}

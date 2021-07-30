@@ -1,0 +1,8 @@
+<div id="{{ $ctrl.id }}" class="ngivr-form-validation-display" ng-if="$ctrl.display()">
+    <div ng-repeat="(key, value) in $ctrl.validations" class="ngivr-form-validation-display-item" ng-click="$ctrl.focus({ name: key })">
+        <strong>{{ value.label}}</strong>: {{ $ctrl.displayMessage({ messages: value.messages}) }}
+        <div ng-if="!$last" class="ngivr-form-validation-display-item-divider"/>
+        <md-divider ng-if="!$last"></md-divider>
+    </div>
+</div>
+<div id="{{ $ctrl.id }}-bottom"></div>

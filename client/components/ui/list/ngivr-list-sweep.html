@@ -1,0 +1,210 @@
+<ngivr-list ngivr-ref="this" ngivr-query="ngivrQuery" ngivr-schema="ticket"
+            id="sweep{{::$ctrl.$id}}">
+
+    <ngivr-list-buttons>
+        <ngivr-button-excel-export ngivr-add-date="1" ngivr-filename="$ctrl.filename"
+                                   ngivr-url='/api/statistics/invoiceStat'
+                                   ngivr-server-query="query.search"></ngivr-button-excel-export>
+    </ngivr-list-buttons>
+
+    <!--
+        <ngivr-list-searcher>
+
+            <md-input-container class="md-block md-select-card" >
+                <label>Kereső</label>
+                <input ng-model="ref.textSearch" ng-change="ref.$ctrl.search(query)"
+                       ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+            </md-input-container>
+    -->
+
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+
+        <div layout="column" layout-gt-md="row">
+            <div flex>
+                <div layout="column" layout-gt-md="row">
+                    <div flex>
+                        <md-input-container class="md-block">
+                            <label>Mozgás azonosító</label>
+                            <input ng-model="ref.ticketName" ng-change="ref.$ctrl.search(query)"/>
+                        </md-input-container>
+                    </div>
+
+                    <div flex>
+                        <md-input-container class="md-block">
+                            <label>Dátum</label>
+                            <ngivr-input-date ng-model="ref.fulfillmentDate"/>
+                        </md-input-container>
+                    </div>
+
+                    <div flex>
+                        <md-input-container class="md-block">
+                            <label>{{ngivr.strings.field.product}}</label>
+                            <ngivr-autocomplete-general-product ng-model="ref.product"
+                                                                product-changed="ref.$ctrl.search(query)"></ngivr-autocomplete-general-product>
+                        </md-input-container>
+                    </div>
+                </div>
+            </div>
+
+            <div flex>
+                <div layout="column" layout-gt-md="row">
+                    <div flex>
+                        <md-input-container class="md-block">
+                            <label>Telephely</label>
+                            <ngivr-autocomplete-site ng-model="ref.site" ng-disabled="userSite"
+                                                     site-changed="ref.$ctrl.search(query)"></ngivr-autocomplete-site>
+                        </md-input-container>
+                    </div>
+
+                    <div flex>
+                        <md-input-container class="md-block">
+                            <label>Raktár</label>
+                            <ngivr-autocomplete-depot ng-model="ref.depot"
+                                                      depot-changed="ref.$ctrl.search(query)"></ngivr-autocomplete-depot>
+                        </md-input-container>
+                    </div>
+                    <div flex>
+                        <md-input-container class="md-block">
+                            <label>Tulajdonos</label>
+                            <ngivr-autocomplete-partner ng-model="ref.owner"
+                                                        partner-changed="ref.$ctrl.search(query)"></ngivr-autocomplete-partner>
+                        </md-input-container>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="" hl-sticky="" container="stockLog_{{$ctrl.$id}}" offset-top="{{$ctrl.topOffset}}"
+             sticky-class="sweep-sticky-properties">
+            <div class="sweep-table-row sweep-table-row-header">
+                <div class="sweep-wrapper sweep-first-to-eighth">
+
+                    <div class="sweep-wrapper sweep-attributes sweep-group-1-2-3-4">
+                        <div class="sweep-wrapper sweep-group-1-2">
+                            <div class="sweep-column sweep-col-1">Mozgás azonosító</div>
+                            <div class="sweep-column sweep-col-2">Dátum</div>
+                        </div>
+                        <div class="sweep-wrapper sweep-group-3-4">
+                            <div class="sweep-column sweep-col-3">Termék</div>
+                            <div class="sweep-column sweep-col-4" style="text-align: right">Súly (mt)</div>
+                        </div>
+                    </div>
+                    <div class="sweep-wrapper sweep-group-5-6-7-8">
+                        <div class="sweep-wrapper sweep-group-5-6">
+                            <div class="sweep-column sweep-col-5" style="text-align: right">Érték (HUF)</div>
+                            <!--<div class="sweep-column sweep-col-6">Raktár</div> -->
+                        </div>
+                        <!-- <div class="sweep-wrapper sweep-group-7-8">
+                        <div class="sweep-column sweep-col-7">Mozgás iránya</div>
+                        <div class="sweep-column sweep-col-8">Diszpószám</div>
+                        </div> -->
+                    </div>
+                </div>
+
+                <div class="sweep-wrapper sweep-nineth-to-sixteenth">
+                    <div class="sweep-wrapper sweep-group-9-10-11-12">
+                        <div class="sweep-wrapper sweep-group-9-10">
+                            <div class="sweep-column sweep-col-9">Telephely</div>
+                            <div class="sweep-column sweep-col-10">Raktár</div>
+                        </div>
+                        <div class="sweep-wrapper sweep-group-11-12">
+                            <div class="sweep-column sweep-col-11">Tulajdonos</div>
+                            <div class="sweep-column sweep-col-12">Indok</div>
+                        </div>
+                    </div>
+                    <div class="sweep-wrapper sweep-group-13-14-15-16">
+                        <div class="sweep-wrapper sweep-group-13-14">
+                            <div class="sweep-column sweep-col-13"></div>
+                            <!--<div class="sweep-column sweep-col-14">Ár</div>-->
+                        </div>
+                        <!-- <div class="sweep-wrapper sweep-group-15-16">
+                          <div class="sweep-column sweep-col-15">Telephely</div>
+                        </div> -->
+                    </div>
+                </div>
+                <!-- <div class="container--unsticky"></div> -->
+            </div>
+            <!-- <div class="container--unsticky"></div> -->
+
+
+        </div>
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+        <div class="sweep-table-row" ng-style="{'background-color' : (doc.deleted ? '#e74c3c' : '#fafafa' )}">
+            <div class="sweep-wrapper sweep-first-to-eighth">
+                <div class="sweep-wrapper sweep-attributes sweep-group-1-2-3-4">
+                    <div class="sweep-wrapper sweep-group-1-2">
+                        <div class="sweep-column sweep-col-1">{{doc.ticketName + (doc.ticketType === 'openStock' ? '
+                            (Nyitó)' : '')}}
+                        </div>
+                        <div class="sweep-column sweep-col-2">{{doc.fulfillmentDate | date: 'yyyy.MM.dd'}}</div>
+                    </div>
+                    <div class="sweep-wrapper sweep-group-3-4">
+                        <div class="sweep-column sweep-col-3">{{doc.productName}}</div>
+                        <div class="sweep-column sweep-col-4" style="text-align: right">{{doc.ledger[0].loadedWeight |
+                            number: 3}}
+                        </div>
+                    </div>
+                </div>
+                <div class="sweep-wrapper sweep-group-5-6-7-8">
+                    <div class="sweep-wrapper sweep-group-5-6">
+                        <div class="sweep-column sweep-col-5" style="text-align: right">{{doc.ledger[0].stockValue ?
+                            (doc.ledger[0].stockValue | number: 0) : '---'}}
+                        </div>
+                        <!-- <div class="sweep-column sweep-col-6">{{doc.ledger.unloadedWeight}}</div> -->
+                    </div>
+                    <!-- <div class="sweep-wrapper sweep-group-7-8"> -->
+                    <!-- <div class="sweep-column sweep-col-7">{{doc.product}}</div> -->
+                    <!-- <div class="sweep-column sweep-col-8">{{doc.order[0].orderNumber}}</div> -->
+                    <!-- </div> -->
+                </div>
+            </div>
+
+            <div class="sweep-wrapper sweep-nineth-to-sixteenth">
+                <div class="sweep-wrapper sweep-group-9-10-11-12">
+                    <div class="sweep-wrapper sweep-group-9-10">
+                        <div class="sweep-column sweep-col-9">{{doc.site.name}}</div>
+                        <div class="sweep-column sweep-col-10">{{doc.depot.name}}</div>
+                    </div>
+                    <div class="sweep-wrapper sweep-group-11-12">
+                        <div class="sweep-column sweep-col-11">{{doc.ownerName}}</div>
+                        <div class="sweep-column sweep-col-12" ngivr-ellipsis>
+
+
+                            <span> {{doc.deleted ? doc.comments[1] : doc.comments[0]}}</span>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="sweep-wrapper sweep-group-13-14-15-16">
+                    <div class="sweep-wrapper sweep-group-13-14">
+                        <div class="sweep-column sweep-col-13">
+                            <div layout="row">
+                                <ngivr-popup-sweep-reason doc="doc"></ngivr-popup-sweep-reason>
+                                &nbsp;&nbsp;
+                                <ngivr-icon-fa
+                                    ng-disabled="doc.deleted"
+                                    ng-click="doc.deleted || deleteTicket(doc)"
+                                    ngivr-tooltip="Törlés"
+                                    ngivr-icon-fa="fa-trash-o"/>
+                            </div>
+
+                        </div>
+                        <!--<div class="sweep-column sweep-col-14">{{doc.totalPrice.toFixed(0)| currency: 'HUF'}}</div>-->
+                    </div>
+                    <!-- <div class="sweep-wrapper sweep-group-15-16"> -->
+                    <!-- <div class="sweep-column sweep-col-15">{{doc.siteName}}</div> -->
+                    <!-- </div> -->
+                </div>
+            </div>
+        </div>
+    </ngivr-list-template>
+
+</ngivr-list>

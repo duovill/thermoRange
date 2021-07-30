@@ -1,0 +1,244 @@
+<ngivr-list ngivr-url="/api/statistics/ticketListPerDepots" ngivr-ref="this" ngivr-query="ngivrQuery" ngivr-sort="sort"
+            id="ticketListPerDepots_{{::$ctrl.$id}}">
+
+    <ngivr-list-buttons>
+        <ngivr-button-excel-export ngivr-add-date="1" ngivr-filename="$ctrl.filename"
+                                   ngivr-url='/api/statistics/ticketListPerDepots'
+                                   ngivr-server-query="query.search"></ngivr-button-excel-export>
+    </ngivr-list-buttons>
+    <ngivr-list-searcher>
+
+        <md-input-container class="md-block md-select-card">
+            <label>Kereső</label>
+            <input ng-model="ref.textSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+
+        <div layout="column" flex layout-gt-md="row">
+
+            <div layout="column" layout-gt-md="row" flex="100" flex-gt-md="50">
+
+                <!--
+         *******************
+         Termék
+         *******************
+         -->
+                <md-input-container class="md-block">
+                    <label>{{ngivr.strings.field.product}}</label>
+                    <ngivr-autocomplete-general-product flex=50 ng-model="ref.product"
+                                                        product-changed="ref.$ctrl.search(query)"></ngivr-autocomplete-general-product>
+
+                </md-input-container>
+                <!--
+                ******************
+                Mozgásazonosító
+                ******************
+                -->
+                <md-input-container class="md-block md-select-card" flex="50">
+                    <label>Mozgásazonosító</label>
+                    <input type="text" ng-model="ref.ticketName" ng-change="ref.$ctrl.search(query)"/>
+                </md-input-container>
+
+
+            </div>
+
+            <div layout="column" layout-gt-md="row" flex="100" flex-gt-md="50">
+                <!--
+                 **************
+                 -tól
+                 **************
+                 -->
+                <md-input-container class="md-block md-select-card" flex="50">
+                    <label>Dátumtól</label>
+                    <ngivr-input-date ng-model="ref.from" ng-change="ref.$ctrl.search(query)"/>
+                </md-input-container>
+
+                <!--
+                *********
+                -ig
+                *********
+                -->
+                <md-input-container flex="20" class="md-block md-select-card" flex="50">
+                    <label>Dátumig</label>
+                    <ngivr-input-date ng-model="ref.to" ng-change="$ref.ctrl.search(query)"/>
+                </md-input-container>
+
+
+            </div>
+
+        </div>
+
+
+        <div layout="column" flex layout-gt-sm="row">
+
+            <div layout="column" layout-gt-md="row" flex="100" flex-gt-md="50">
+                <!--
+                          *****************
+                          Partner
+                          *****************
+                          -->
+                <md-input-container flex="50" class="md-block md-select-card">
+                    <label>Partner</label>
+                    <ngivr-autocomplete-partner ng-model="ref.partner"
+                                                partner-changed="ref.$ctrl.search(query)"></ngivr-autocomplete-partner>
+                </md-input-container>
+                <!--
+                ******************************
+                Sygnus / nem Sygnus / összes
+                ******************************
+                -->
+                <md-input-container class="md-block" flex="50">
+                    <label>Tulajdonos</label>
+                    <md-select ng-model="ref.owner" md-on-close="ref.$ctrl.search(query)" style="margin-top:-2px">
+                        <md-option value="sygnus">Sygnus</md-option>
+                        <md-option value="notSygnus">Nem Sygnus</md-option>
+                        <md-option value="all">Összes</md-option>
+                    </md-select>
+
+                    <!--
+                    ******************
+                    Raktár
+                    ******************
+                    -->
+                </md-input-container>
+
+            </div>
+
+            <div layout="column" layout-gt-md="row" flex="100" flex-gt-md="50">
+
+                <md-input-container flex="50" class="md-block md-select-card">
+                    <label>Raktár</label>
+                    <ngivr-autocomplete-depot ng-model="ref.depot" site="userSite"
+                                              depot-changed="ref.$ctrl.search(query)"></ngivr-autocomplete-depot>
+                </md-input-container>
+
+
+                <!--
+                ***********
+                EKÁER szám
+                ***********
+                -->
+                <md-input-container flex="50" class="md-block md-select-card">
+                    <label>EKAER-szám</label>
+                    <ngivr-autocomplete-tcn ng-model="ref.tcn"
+                                            tcn-changed="ref.$ctrl.search(query)"></ngivr-autocomplete-tcn>
+                </md-input-container>
+
+            </div>
+
+        </div>
+
+        <div class="" hl-sticky="" container="ticketListPerDepots_{{$ctrl.$id}}" offset-top="{{$ctrl.topOffset}}"
+             sticky-class="tpd-sticky-properties">
+            <div class="tpd-table-row tpd-table-row-header">
+                <div class="tpd-wrapper tpd-first-to-eighth">
+
+                    <div class="tpd-wrapper tpd-attributes tpd-group-1-2-3-4">
+                        <div class="tpd-wrapper tpd-group-1-2">
+                            <div class="tpd-column tpd-col-1">Mozgás azonosító</div>
+                            <div class="tpd-column tpd-col-2">Dátum</div>
+                        </div>
+                        <div class="tpd-wrapper tpd-group-3-4">
+                            <div class="tpd-column tpd-col-3">Partner</div>
+                            <div class="tpd-column tpd-col-4">Termény</div>
+                        </div>
+                    </div>
+                    <!--<div class="tpd-wrapper tpd-group-5-6-7-8">-->
+                    <!--<div class="tpd-wrapper tpd-group-5-6">-->
+                    <!--&lt;!&ndash;<div class="tpd-column tpd-col-5">Termény</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="tpd-column tpd-col-6">Egyenleg</div>&ndash;&gt;-->
+                    <!--</div>-->
+                    <!--&lt;!&ndash;<div class="tpd-wrapper tpd-group-7-8">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="tpd-column tpd-col-7">Változás</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="tpd-column tpd-col-8">EKÁER</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--</div>-->
+                </div>
+
+                <div class="tpd-wrapper tpd-nineth-to-sixteenth">
+                    <div class="tpd-wrapper tpd-group-9-10-11-12">
+                        <div class="tpd-wrapper tpd-group-9-10">
+                            <div class="tpd-column tpd-col-9">Raktárpozíció</div>
+                            <div class="tpd-column tpd-col-10">EKÁER</div>
+                        </div>
+                        <div class="tpd-wrapper tpd-group-11-12" style="text-align: right">
+                            <div class="tpd-column tpd-col-11" style="margin-right: 20px">Változás</div>
+                            <div class="tpd-column tpd-col-12">Egyenleg (mt)</div>
+                        </div>
+                    </div>
+                    <!--<div class="tpd-wrapper tpd-group-13-14-15-16">-->
+                    <!--<div class="tpd-wrapper tpd-group-13-14">-->
+                    <!--&lt;!&ndash;<div class="tpd-column tpd-col-13" style="text-align: right">Egyenleg (mt)</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="tpd-column tpd-col-14">EKÁER</div>&ndash;&gt;-->
+                    <!--</div>-->
+                    <!--&lt;!&ndash;<div class="tpd-wrapper tpd-group-15-16">&ndash;&gt;-->
+                    <!--&lt;!&ndash;<div class="tpd-column tpd-col-15">Telephely</div>&ndash;&gt;-->
+                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                    <!--</div>-->
+                </div>
+                <!-- <div class="container--unsticky"></div> -->
+            </div>
+            <!-- <div class="container--unsticky"></div> -->
+
+
+        </div>
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+
+        <!--<pre>{{doc | json}}</pre>-->
+        <div class="tpd-table-row">
+            <div class="tpd-wrapper tpd-first-to-eighth">
+                <div class="tpd-wrapper tpd-attributes tpd-group-1-2-3-4">
+                    <div class="tpd-wrapper tpd-group-1-2">
+                        <div class="tpd-column tpd-col-1">{{doc.ticketName}}</div>
+                        <div class="tpd-column tpd-col-2">{{doc.fulfillmentDate |
+                            date:'yyyy-MM-dd'}}
+                        </div>
+                    </div>
+                    <div class="tpd-wrapper tpd-group-3-4">
+                        <div class="tpd-column tpd-col-3">{{doc.ownerName}}</div>
+                        <div class="tpd-column tpd-col-4">{{doc.productName}}</div>
+                    </div>
+                </div>
+                <!--<div class="tpd-wrapper tpd-group-5-6-7-8">-->
+                <!--<div class="tpd-wrapper tpd-group-5-6">-->
+                <!--&lt;!&ndash;<div class="tpd-column tpd-col-5">{{doc.productName}}</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="tpd-column tpd-col-6">{{doc.ledger.unloadedWeight}}</div>&ndash;&gt;-->
+                <!--</div>-->
+                <!--&lt;!&ndash;<div class="tpd-wrapper tpd-group-7-8">&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="tpd-column tpd-col-7">{{doc.direction === 'in' ? 'Betárolás' : 'Kitárolás'}}</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="tpd-column tpd-col-8">{{doc.order[0].orderNumber}}</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--</div>-->
+            </div>
+
+            <div class="tpd-wrapper tpd-nineth-to-sixteenth">
+                <div class="tpd-wrapper tpd-group-9-10-11-12">
+                    <div class="tpd-wrapper tpd-group-9-10">
+                        <div class="tpd-column tpd-col-9">{{doc.depotName}}</div>
+                        <div class="tpd-column tpd-col-10">{{doc.tcn || '---'}}</div>
+                    </div>
+                    <div class="tpd-wrapper tpd-group-11-12" style="text-align: right">
+                        <div class="tpd-column tpd-col-11" style="margin-right: 20px">{{doc.change | number : 3}}</div>
+                        <div class="tpd-column tpd-col-12">{{doc.balance | number : 3}}</div>
+                    </div>
+                </div>
+                <!--<div class="tpd-wrapper tpd-group-13-14-15-16">-->
+                <!--<div class="tpd-wrapper tpd-group-13-14">-->
+                <!--&lt;!&ndash;<div class="tpd-column tpd-col-13" style="text-align: right">{{doc.balance | number : 3}}</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="tpd-column tpd-col-14">{{doc.ledger.tcn? doc.ledger.tcn :"-&#45;&#45;"}}</div>&ndash;&gt;-->
+                <!--</div>-->
+                <!--&lt;!&ndash;<div class="tpd-wrapper tpd-group-15-16">&ndash;&gt;-->
+                <!--&lt;!&ndash;<div class="tpd-column tpd-col-15">{{doc.siteName}}</div>&ndash;&gt;-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--</div>-->
+            </div>
+        </div>
+    </ngivr-list-template>
+
+</ngivr-list>

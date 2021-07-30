@@ -1,0 +1,63 @@
+<ngivr-list ngivr-schema="contract" ngivr-ref="this" ngivr-query="ngivrQuery">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ $root.ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-template>
+        <md-card class="card-padding" style="margin-left: 0; margin-right: 0; clear: both;">
+            <md-card-content ng-click="goToDetails(doc)">
+                <!-- ng-click="load(doc._id, doc.isNewPartner ? true : null , null, 'offer')"  szerződés betöltése rögzítéshez-->
+                <div class="card-left {{ doc.buy ? 'card-green' : 'card-red' }}">
+                    <span ng-bind="doc.buy ? 'V' : 'E'"></span>
+                    <span ng-if="doc.newEventsByOwner + doc.newEventsBySytem + doc.newMessagesByOwner> 0"
+                          class="badge badge-danger">{{doc.newEventsByOwner + doc.newEventsBySytem + doc.newMessagesByOwner}}</span>
+                </div>
+                <div class="card-right">
+                    <table>
+                        <tr>
+                            <td><span ng-bind="doc.contractName"></span>
+                                <ngivr-button-clipboard-copy ng-model="doc.contractName"
+                                                             hint="{{doc.buy ? 'contractNumberV' : 'contractNumberE'}}"></ngivr-button-clipboard-copy>
+                            </td>
+                            <td><span
+                                ng-bind="doc.normal ? doc.product[0].name : doc.optionProductGroupName + ' (Opciós)'"></span>
+                            </td>
+                            <td><span ng-bind="(doc.quantity | number) + ' mt'"></span></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><span>{{doc.withoutPartner ? 'Partner nélkül' : doc.isNewPartner ? doc.newPartner[0].name : doc.partner[0].name}}</span>
+                            </td>
+                            <td>
+                                <md-tooltip md-direction="left">{{doc.normal ? ngivr.strings.field.contractPrice :
+                                    ngivr.strings.field.avgPrice}}
+                                </md-tooltip>
+                                {{doc.normal ? doc.price : doc.optionAvgPrice | currency : doc.currency : 0}}
+                            </td>
+                            <td>
+                                <md-tooltip md-direction="left">Beküldés ideje</md-tooltip>
+                                <span>{{timeOfSubmit({history: doc.history})}}</span>
+                            </td>
+                        </tr>
+                        <tr class="card-third-row">
+                            <td colspan="3">
+                                <span ng-if="doc.submitted && doc.editable" class="label label-danger label-table">Beküldött, szerkeszthető</span>
+                                <span ng-if="doc.submitted && !doc.editable"
+                                      class="label label-warning label-table">Beküldött, nem szerkeszthető</span>
+                                <span ng-if="doc.returned" class="label label-default label-table">Visszaküldött, szerkeszthető</span>
+                            </td>
+                            <td>
+                                <span ng-if="doc.isNewPartner" class="label label-success label-table">Új partner</span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </md-card-content>
+        </md-card>
+
+    </ngivr-list-template>
+
+</ngivr-list>

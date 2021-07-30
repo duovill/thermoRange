@@ -1,0 +1,125 @@
+<form name="htmlTemplateForm" ng-submit="command.template.save(template)" novalidate>
+
+  <ng-include src="'app/master/htmlTemplates/view/includes/editor.html'"/>
+
+  <div class="col-md-4">
+
+    <ng-include src="'app/master/htmlTemplates/view/includes/files.html'"/>
+
+    <md-tabs md-dynamic-height class="ngivr-tab-pure">
+
+      <!--
+      ***********************************************
+      Beszúrás
+      ***********************************************
+       -->
+      <md-tab>
+        <md-tab-label>{{ ngivr.strings.title.insert }}</md-tab-label>
+        <md-tab-body>
+
+          <ngivr-button ng-click="command.editor.insertPageBreak()">
+            <ng-md-icon icon="linear_scale"></ng-md-icon>
+            {{ ngivr.strings.button.pageBreak }}
+          </ngivr-button>
+
+          <ngivr-button ng-click="command.editor.insertDefault('${qr}')">
+            <i class="fa fa-qrcode"></i>
+            {{ ngivr.strings.button.qrCode }}
+          </ngivr-button>
+
+
+          <ngivr-button ng-click="command.editor.insertDefault('${page}')">
+            <i class="fa fa-list-ol"></i>
+            {{ ngivr.strings.button.page }}
+          </ngivr-button>
+
+
+
+          <ngivr-button ng-click="command.editor.insertDefault('${pages}')">
+            <i class="fa fa-list-alt"></i>
+            {{ ngivr.strings.button.allPages }}
+          </ngivr-button>
+
+
+          <!--
+          ***********************************************
+          RESZLEGES SABLON
+          ***********************************************
+          -->
+          <div ng-if="command.partialTemplates().length > 0">
+            <label>{{ ngivr.strings.htmlTemplate.title.partialTemplate }}</label>
+            <div style="overflow-y: auto; overflow-x: hidden; max-height: 300px;">
+              <div class="ngivr-row-hoverable" ng-repeat="template in command.partialTemplates()"
+                   ng-click="command.editor.insertTemplate(template)">
+                <div class="ngivr-html-template-variable">{{ template.name }}</div>
+              </div>
+            </div>
+          </div>
+
+
+
+        </md-tab-body>
+      </md-tab>
+
+      <!--
+        ***********************************************
+        VALTOZOK
+        ***********************************************
+        -->
+
+      <md-tab>
+        <md-tab-label>{{ ngivr.strings.htmlTemplate.title.variables }}</md-tab-label>
+        <md-tab-body>
+
+          <!-- by id
+          592fc4c07fdfd212c2e7f78c
+          -->
+          <md-input-container class="md-block">
+
+            <label>ID</label>
+
+            <input ng-model="command.schema.customId" />
+
+            </md-select>
+
+          </md-input-container>
+
+          <treecontrol class="tree-classic"
+                       tree-model="command.schema.tree"
+                       options="command.schema.treeOptions"
+                       on-selection="command.editor.insertVariable(node)"
+                       >
+            <span ng-if="node.type === 'Array'" style="float: right">
+               <ngivr-icon-fa ngivr-tooltip="{{ngivr.strings.htmlTemplate.tree.array}}" class="ngivr-icon-fa-tree" ngivr-icon-fa="fa-hashtag" ng-click="command.editor.insertVariable(node, $event)"></ngivr-icon-fa>
+              </span>
+            <span title="{{ node.name }}">{{node.name}}</span>
+                <!--: {{node.type}} -->
+
+          </treecontrol>
+
+          <!--
+          A kereso meg lehet kell
+          <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search }}</label>
+
+            <input type="text" ng-model="command.schema.filterText">
+          </md-input-container>
+
+          <div style="overflow-y: auto; overflow-x: hidden; max-height: 300px;">
+            <div class="ngivr-row-hoverable" ng-repeat="variable in command.schema.queryVariableSearch(command.schema.filterText) "
+                 ng-click="command.editor.insertVariable(variable)">
+              <div class="ngivr-html-template-variable" ng-bind-html="variable.display | ngivrRawHtml"></div>
+            </div>
+          </div>
+          -->
+
+        </md-tab-body>
+      </md-tab>
+
+    </md-tabs>
+
+
+  </div>
+
+
+</form>

@@ -1,0 +1,69 @@
+<md-input-container class="md-block md-select-card">
+    <label>Kereső</label>
+    <input ng-model="filter.textSearch" ng-change="search()"
+           ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+</md-input-container>
+
+<md-input-container flex="100" class="md-block md-select-card" ng-show="!hideFields.partner">
+    <label>Partner</label>
+    <!-- <input type="text" mask="2029.19.39" restrict="reject" ng-model="filterExpiryTo" /> -->
+    <ngivr-autocomplete-partner ng-model="filter.partner"></ngivr-autocomplete-partner>
+</md-input-container>
+
+<md-input-container flex="100" class="md-block md-select-card">
+    <label>Telephely</label>
+    <!-- <input type="text" mask="2029.19.39" restrict="reject" ng-model="filterExpiryTo" /> -->
+    <ngivr-autocomplete-site ng-model="filter.site"></ngivr-autocomplete-site>
+</md-input-container>
+
+<md-input-container flex="100" class="md-block md-select-card">
+    <label>Cikk</label>
+    <ngivr-autocomplete-general-product ng-model="filter.product"
+                                        ng-show="!hideFields.product"></ngivr-autocomplete-general-product>
+</md-input-container>
+
+<div layout="row" ng-if="!hideFields.date">
+    <div flex="50">
+        <md-input-container class="md-block md-select-card">
+            <label>Dátumtól</label>
+            <!-- <input type="text" mask="2029.19.39" restrict="reject" ng-model="filterExpiryTo"  /> -->
+            <input class="day-fix-2" type="text" mask="2029.19.39" restrict="reject" ng-model="filter.from"/>
+        </md-input-container>
+    </div>
+    <div flex="50">
+        <md-input-container class="md-block md-select-card">
+            <label>Dátumig</label>
+            <!-- <input type="text" mask="2029.19.39" restrict="reject" ng-model="filterExpiryTo" /> -->
+            <input class="day-fix-2" type="text" mask="2029.19.39" restrict="reject" ng-model="filter.to"/>
+        </md-input-container>
+    </div>
+</div>
+
+<div layout="row" style="padding-bottom: 10px">
+    <div flex ng-if="!hideFields.status">
+        <md-input-container class="md-block">
+            <label>Véglegesítettség szerint</label>
+            <md-select ng-model="filter.status">
+                <md-option value="all">Összes</md-option>
+                <md-option value="finalized">Véglegesített</md-option>
+                <md-option value="notFinalized">Nem véglegesített</md-option>
+            </md-select>
+        </md-input-container>
+    </div>
+    <div flex>
+        <md-input-container class="md-block">
+            <label>Állapot szerint {{hideFields.status ? '(csak diszpozíció)' : ''}}</label>
+            <md-select ng-model="filter.isClosed">
+                <md-option value="all">Összes</md-option>
+                <md-option value="closed">Lezárt</md-option>
+                <md-option value="notClosed">Nyitott</md-option>
+            </md-select>
+        </md-input-container>
+    </div>
+    <div ng-if="!hideButton" style="margin-top:22px; float:right">
+        <ngivr-button-excel-export ngivr-url='/api/statistics/dispoList' ngivr-server-query="listQuery"
+                                   transformer-function="buildListQuery" ngivr-add-date="1"
+                                   ngivr-filename="fileName"></ngivr-button-excel-export>
+    </div>
+
+</div>

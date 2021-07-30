@@ -1,0 +1,5 @@
+@import "mixins";
+
+.ngivr-tab-content {
+  @include portlet();
+}

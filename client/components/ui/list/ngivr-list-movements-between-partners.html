@@ -1,0 +1,111 @@
+<ngivr-list ngivr-schema="ticket" ngivr-ref="this" ngivr-query="ngivrQuery"
+            ngivr-url="/api/tickets/movements-between-partners" ngivr-sort="sort">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <md-tooltip md-direction="top">Termékre, telephelyre, raktárra és partnerre keres</md-tooltip>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+        <ng-include ng-if="showFilter" src="'app/stockStatement/template/stock-log-filter.html'"
+        ></ng-include>
+
+        <div hl-sticky offset-top="$root.hlStickyTopOffset" class="ngivr-list-header-column"
+
+             layout-padding>
+
+            <div layout="row" layout-wrap style="text-align: center">
+
+                <div flex-gt-md="5" flex="33" flex-xs="50">
+                    <strong>Dátum</strong>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <strong>Termék</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Telephely</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Raktár</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Mennyiség (mt)</strong>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <strong>Kitől</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Mozgásazonosító</strong>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <strong>Kinek</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Mozgásazonosító</strong>
+                </div>
+
+            </div>
+
+
+        </div>
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+
+        <div class="ngivr-list-tickets-without-invoice">
+            <div layout="row" class="center-in-table" style="text-align: center"
+                 layout-wrap ng-click="ticketSelected(doc)">
+
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="ngivr-list-tickets-without-invoice-title-hoverable"
+
+                >
+                    <span ng-bind="doc.tickets[0].fulfillmentDate | date: 'yyyy.MM.dd.'"></span>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <span ng-bind="doc.tickets[0].productName"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" ngivr-ellipsis>
+                    <md-tooltip md-direction="top">{{doc.depot[0].site[0].name}}</md-tooltip>
+                    <span ng-bind="doc.depot[0].site[0].name"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <span ng-bind="doc.depot[0].name">
+
+                    </span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <span ng-bind="doc.tickets[0].ledger[0].loadedWeight | number : 3"></span>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50" ngivr-ellipsis>
+                    <md-tooltip md-direction="top">{{doc.tickets[0].direction === 'out' ? doc.tickets[0].ownerName :
+                        doc.tickets[1].ownerName}}
+                    </md-tooltip>
+                    <span
+                        ng-bind="doc.tickets[0].direction === 'out' ? doc.tickets[0].ownerName : doc.tickets[1].ownerName"></span>
+
+                    <!--<span ng-bind="doc.depot.name + (doc.ship.name ? ' / ' + doc.ship.name : '')"></span>-->
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <span
+                        ng-bind="doc.tickets[0].direction === 'out' ? doc.tickets[0].ticketName : doc.tickets[1].ticketName"></span>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50" style="text-align: center" ngivr-ellipsis>
+                    <md-tooltip md-direction="top">{{doc.tickets[0].direction === 'in' ? doc.tickets[0].ownerName :
+                        doc.tickets[1].ownerName}}
+                    </md-tooltip>
+                    <span
+                        ng-bind="doc.tickets[0].direction === 'in' ? doc.tickets[0].ownerName : doc.tickets[1].ownerName"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <span
+                        ng-bind="doc.tickets[0].direction === 'in' ? doc.tickets[0].ticketName : doc.tickets[1].ticketName"></span>
+                </div>
+
+            </div>
+        </div>
+        <div class="ngivr-list-tickets-without-invoice-divider"></div>
+    </ngivr-list-template>
+</ngivr-list>

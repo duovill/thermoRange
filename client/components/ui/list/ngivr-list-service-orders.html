@@ -1,0 +1,32 @@
+<ngivr-list ngivr-schema="serviceOrder" ngivr-ref="this">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+    <ngivr-list-template>
+        <pre>{{doc}}</pre>
+        <md-card ng-click="loadServiceOrder(doc)">
+            <md-card-content>
+                <div layout="row">
+                    <div flex="20" ng-bind="index+1">
+                        <md-tooltip md-direction="left">id: {{doc._id}}</md-tooltip>
+                    </div>
+                    <div flex="20" ng-bind="doc.name">
+                        <md-tooltip md-direction="left">Megrendelés neve</md-tooltip>
+                    </div>
+                    <div flex="20" ng-bind="doc.estimatedPriceCurrency">
+                        <md-tooltip md-direction="left">Valuta</md-tooltip>
+                    </div>
+                    <div flex="20" ng-bind="doc.createdAt  | date: 'yyyy.MM.dd'">
+                        <md-tooltip md-direction="left">Létrehozás dátuma</md-tooltip>
+                    </div>
+                    <div flex="20" ng-bind="doc.updatedAt  | date: 'yyyy.MM.dd'">
+                        <md-tooltip md-direction="left">Módosítás dátuma</md-tooltip>
+                    </div>
+                </div>
+            </md-card-content>
+        </md-card>
+    </ngivr-list-template>
+</ngivr-list>

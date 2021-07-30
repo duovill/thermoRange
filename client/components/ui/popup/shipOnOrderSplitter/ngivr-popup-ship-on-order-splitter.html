@@ -1,0 +1,370 @@
+<md-dialog aria-label="">
+    <form name="splitForm" ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools portlet-title">
+                <h2>{{newNomination.name}} -- </h2>
+                <span
+                    style="margin-left: 5px;">Maximálisan felosztható mennyiség: {{ availableLoadedQuantityMax }}, felosztatlan mennyiség: {{(availableLoadedQuantity | number : 3) + ' mt'}}</span>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon class="fa fa-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <h5>Szerződések</h5>
+                <div layout="row" class="table-head" style="text-align: center">
+                    <div flex="10">
+                        Szerződésszám (eladás)
+                    </div>
+                    <div flex="10">
+                        Partner szerződésszám
+                    </div>
+                    <div flex="15">
+                        Partner
+                    </div>
+                    <div flex="10">
+                        Termény
+                    </div>
+                    <div flex="10">
+                        Fenntarthatóság
+                    </div>
+                    <div flex="10">
+                        Paritás
+                    </div>
+                    <div flex="15" style="text-align: right">
+                        Szerződött / Tervezhető mennyiség
+                    </div>
+                    <div flex="10" style="text-align: right">
+                        Tervezett mennyiség
+                    </div>
+                    <div flex="10" style="text-align: right">
+                        Felosztási mennyiség {{newNomination.splittedContract ? '' : '(mt)'}}
+                    </div>
+
+                </div>
+
+                <div ng-repeat="sellContract in newNomination.sellContracts" style="text-align: center">
+                    <!--<pre>{{sellContract._id}}</pre>-->
+                    <div layout="row">
+                        <!--szerződésszám-->
+                        <div flex="10">
+
+                            <input
+                                style="margin-bottom: 0"
+                                type="text"
+                                name="{{'contractNumber_' + $index}}"
+                                ng-model="sellContract.contractNumber"
+                                ngivr-capitalize
+                                ng-change=""
+                                required
+                                ng-disabled="sellContract._id"
+                                field-disabled="false"
+                                ngivr-validation-get-contract-required="{isFromSplit: true, isOwnContractNumber: true, isBuy: false, model: sellContract, callback: changeSellContract, index: $index}"
+                            />
+                            <span
+                                ng-show="splitForm['contractNumber_' + $index].$pending.ngivrValidationGetContractRequired"
+                                class="ngivr-validation-pending">
+                                  Keresek egy szerződészámot!</span>
+                            <div ng-messages="splitForm['contractNumber_' + $index].$error">
+                                <div ng-message="ngivrValidationGetContractRequired">Nem megfelelő a
+                                    szerződészám!
+                                </div>
+                                <div ng-message="required">Kötelező!</div>
+                            </div>
+
+
+                        </div>
+                        <!--partner szerződésszám-->
+                        <div flex="10" style="margin-top: 7px">
+                            {{sellContract.partnerContractNumber}}
+                        </div>
+                        <div flex="15" style="margin-top: 7px">
+                            {{sellContract.partner}}
+                        </div>
+                        <!--termény-->
+                        <div flex="10" style="margin-top: 7px">
+                            {{sellContract.productName}}
+                        </div>
+                        <!--fenntarthatóság-->
+                        <div flex="10" style="margin-top: 7px">
+                            {{sellContract.sustainability}}
+                        </div>
+                        <!--paritás-->
+                        <div flex="10" style="margin-top: 7px">
+                            {{sellContract.parity}}
+                        </div>
+                        <div flex="15" ng-show="sellContract.contractNumber" style="margin-top: 7px; text-align: right">
+                            <span>{{(sellContract.contractQuanity | number : 3) + '/' +
+                            (ngivrOrder.calculateFreeToDispo(sellContract, undefined,
+                            newNomination._id)
+                            > 0 ?
+                            (ngivrOrder.calculateFreeToDispo(sellContract, undefined,
+                            newNomination._id)
+                                | number : 3): 0)  + ' mt'}}</span>
+                        </div>
+                        <div flex="10" ng-show="sellContract.contractNumber" style="text-align: right"
+                             ng-style="{'margin-top': newNomination.splittedContract ? '7px' : '7px'}">
+                            <div layout="column" ng-if="!newNomination.splittedContract">
+                                <div>
+                                    <ngivr-input-number name="{{'sellContractToLoadQuantity_' + $index}}"
+                                                        max="ngivrOrder.calculateFreeToDispo(sellContract, undefined, newNomination._id)"
+                                                        min="1" ng-disabled="sellContract._id"
+                                                        required ng-model="sellContract.toLoadQuantity"/>
+
+                                </div>
+                                <div ng-messages="splitForm['sellContractToLoadQuantity_' + $index].$error">
+
+                                    <div ng-message="wrongNumber">{{ngivr.strings.form.validation.range}} 1,000
+                                        -
+                                        {{(ngivrOrder.calculateFreeToDispo(sellContract, undefined,
+                                        newNomination._id)) | number : 3}}
+                                    </div>
+                                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                                </div>
+                            </div>
+                            <span ng-if="newNomination.splittedContract">{{(sellContract.toLoadQuantity | number: 3) + ' mt'}}</span>
+                        </div>
+
+                        <div flex="10" ng-show="sellContract.contractNumber" style="text-align: right"
+                             ng-style="{'margin-top': newNomination.splittedContract ? '7px' : '7px'}">
+                            <div layout="column" ng-if="!newNomination.splittedContract">
+                                <div>
+                                    <ngivr-input-number ng-model="sellContract.splitAmount"
+                                                        max="getMaxAmountToSplit({sc: sellContract, idx: $index})"
+                                                        get-available-loaded-quantity="getAvailableLoadedQuantity(type, idx, value)"
+                                                        type="'sc'" idx="$index" required
+                                                        name="{{ 'splitAmount' + $index }}"></ngivr-input-number>
+                                </div>
+                                <div ng-messages="splitForm['splitAmount' + $index].$error">
+                                    <div ng-message="wrongNumber">{{ngivr.strings.form.validation.max}}
+                                        {{(getMaxAmountToSplit({sc: sellContract, idx: $index}) | number: 3) + ' mt'}}
+                                    </div>
+                                    <div ng-message="required">Kötelező!</div>
+                                </div>
+                            </div>
+                            <span ng-if="newNomination.splittedContract">{{(sellContract.splitAmount | number: 3) + ' mt'}}</span>
+                        </div>
+
+                    </div>
+                    <md-divider></md-divider>
+                </div>
+
+                <div layout="row" layout-align="end end" style="margin-top: 15px; margin-bottom: 10px">
+                    <ngivr-button ng-click="newNomination.splittedContract || addSellContract()"
+                                  ng-disabled="newNomination.splittedContract">
+                        Eladási szerződés hozzáadása
+                    </ngivr-button>
+                </div>
+
+                <h5 ng-if="newNomination.possessionTransfers.length">Tulajdonátruházók</h5>
+                <div layout="row" class="table-head" ng-if="newNomination.possessionTransfers.length"
+                     style="text-align: center">
+                    <!--<div layout="row" class="table-head">-->
+                    <div flex="10">
+                        Sorszám
+                    </div>
+                    <div flex="10">
+                        Eladási szerződés
+                    </div>
+                    <div flex="15">
+                        Partner
+                    </div>
+                    <div flex="10">
+                        Termény
+                    </div>
+                    <div flex="10">
+                        Telephely
+                    </div>
+                    <div flex="10">
+                        Raktár
+                    </div>
+                    <div flex="15" style="text-align: right">
+                        Eredeti mennyiség / Maradvány
+                    </div>
+                    <div flex="10" style="text-align: right">
+                        Teljesítés dátuma
+                    </div>
+                    <div flex="10" style="text-align: right">
+                        Felosztási mennyiség {{newNomination.splittedContract ? '' : '(mt)'}}
+                    </div>
+                </div>
+
+                <div ng-repeat="pt in newNomination.possessionTransfers" style="text-align: center">
+
+                    <div layout="row">
+                        <div flex="10" style="margin-top: 7px">
+                            {{pt.ticketName}}
+                        </div>
+                        <div flex="10" style="margin-top: 7px">
+                            {{pt.sellContractNumber}}
+                        </div>
+                        <div flex="15" style="margin-top: 7px">
+                            {{pt.partner}}
+                        </div>
+                        <div flex="10" style="margin-top: 7px">
+                            {{pt.productName}}
+                        </div>
+                        <div flex="10" style="margin-top: 7px">
+                            {{newNomination.splittedContract ? pt.site.name : possessionTransferQuery.site.name}}
+                        </div>
+                        <div flex="10" style="margin-top: 7px">
+                            {{pt.depot.name}}
+                        </div>
+                        <div flex="15" style="margin-top: 7px; text-align: right">
+                            {{pt.diagramInfo.quantity | number: 3}} mt / {{pt.technicalRemain | number: 3}} mt
+                        </div>
+                        <div flex="10" style="margin-top: 7px; text-align: right">
+                            {{pt.fulfillmentDate | date: 'yyyy.MM.dd'}}
+                        </div>
+                        <div flex="10" style="text-align: right"
+                             ng-style="{'margin-top': newNomination.splittedContract ? '7px' : '7px'}">
+                            <div layout="row">
+                                <div flex>
+                                    <div layout="column" ng-if="!newNomination.splittedContract">
+                                        <div>
+                                            <ngivr-input-number ng-model="pt.splitAmount"
+                                                                max="getMaxAmountToSplit({pt: pt, idx: $index})"
+                                                                get-available-loaded-quantity="getAvailableLoadedQuantity(type, idx, value)"
+                                                                type="'pt'" idx="$index"
+                                                                name="{{'ptSplitAmount_' + $index}}"></ngivr-input-number>
+                                        </div>
+                                        <div ng-messages="splitForm['ptSplitAmount_' + $index].$error">
+                                            <div ng-message="wrongNumber">{{ngivr.strings.form.validation.max}}
+                                                {{(getMaxAmountToSplit({pt: pt, idx: $index}) | number: 3) + ' mt'}}
+                                            </div>
+                                            <div ng-message="required">Kötelező!</div>
+                                        </div>
+                                    </div>
+                                    <span ng-if="newNomination.splittedContract">{{(pt.splitAmount | number: 3) + ' mt'}}</span>
+                                </div>
+                                <div flex="15" ng-if="!newNomination.splittedContract" style="text-align: center">
+                                    <ngivr-icon-fa style="top: 24px"
+
+                                                   ng-click="removePossessionTransfer($index)"
+                                                   ngivr-tooltip="Törlés"
+                                                   ngivr-icon-fa="fa-trash-o"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <fieldset ng-disabled="newNomination.splittedContract">
+                        <div layout="row" style="text-align: left">
+                            <div flex>
+                                <md-input-container class="md-block">
+
+                                    <textarea placeholder="Megjegyzés" ng-model="pt.comment"></textarea>
+                                </md-input-container>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <md-divider style="margin-top: 7px"></md-divider>
+                </div>
+
+                <div layout="row" ng-show="!newNomination.splittedContract">
+                    <div flex>
+                        <md-input-container class="md-block md-select-card">
+                            <label>Partner</label>
+                            <ngivr-autocomplete-partner ng-model="possessionTransferQuery.partner"
+                            ></ngivr-autocomplete-partner>
+                        </md-input-container>
+                    </div>
+
+                    <div flex>
+                        <md-input-container class="md-block md-select-card">
+                            <label>Telephely</label>
+                            <ngivr-autocomplete-site ng-model="possessionTransferQuery.site"
+                            ></ngivr-autocomplete-site>
+                        </md-input-container>
+                    </div>
+                </div>
+
+                <div ng-if="availablePossessionTransfers.length">
+                    <h5>Felhasználható tulajdonátruházók</h5>
+                    <div layout="row" class="table-head" style="text-align: center">
+                        <div flex="10">
+                            Sorszám
+                        </div>
+                        <div flex="10">
+                            Eladási szerződés
+                        </div>
+                        <div flex="15">
+                            Partner
+                        </div>
+                        <div flex="10">
+                            Termény
+                        </div>
+                        <div flex="10">
+                            Telephely
+                        </div>
+                        <div flex="10">
+                            Raktár
+                        </div>
+                        <div flex="15" style="text-align: right">
+                            Eredeti mennyiség / Maradvány
+                        </div>
+                        <div flex="10" style="text-align: right">
+                            Teljesítés dátuma
+                        </div>
+                        <div flex="10">
+                        </div>
+                    </div>
+                </div>
+                <div ng-repeat="pt in availablePossessionTransfers" style="text-align: center">
+                    <div layout="row" style="margin-top: 7px">
+                        <div flex="10">
+                            {{pt.ticketName}}
+                        </div>
+                        <div flex="10">
+                            {{pt.sellContractNumber}}
+                        </div>
+                        <div flex="15">
+                            {{pt.partner}}
+                        </div>
+                        <div flex="10">
+                            {{pt.productName}}
+                        </div>
+                        <div flex="10">
+                            {{possessionTransferQuery.site.name}}
+                        </div>
+                        <div flex="10">
+                            {{pt.depot.name}}
+                        </div>
+                        <div flex="15" style="text-align: right">
+                            {{pt.diagramInfo.quantity | number: 3}} mt / {{pt.technicalRemain | number: 3}} mt
+                        </div>
+                        <div flex="10" style="text-align: right">
+                            {{pt.fulfillmentDate | date: 'yyyy.MM.dd'}}
+                        </div>
+                        <div flex="10">
+                            <md-checkbox aria-label="0" ng-model="pt.selected" class="md-primary"
+                                         ng-click="addPossessionTransfer(pt)">
+                            </md-checkbox>
+                        </div>
+                    </div>
+                    <md-divider style="margin-top: 7px"></md-divider>
+                </div>
+
+            </div>
+
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <ngivr-button ng-click="splitOrdersCancel()">
+                <ng-md-icon icon="close"></ng-md-icon>
+                <md-tooltip>Mégse</md-tooltip>
+                {{newNomination.splittedContract ? ngivr.strings.button.close : ngivr.strings.button.cancel}}
+            </ngivr-button>
+            <ngivr-button
+                ng-click="splitForm.$invalid || availableLoadedQuantity ||newNomination.splittedContract || saveButtonIsDisabled || splitOrdersSave()"
+                ng-disabled="splitForm.$invalid || availableLoadedQuantity || newNomination.splittedContract || saveButtonIsDisabled">
+                <ng-md-icon icon="save"></ng-md-icon>
+                <md-tooltip>Felosztás</md-tooltip>
+                Felosztás
+            </ngivr-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

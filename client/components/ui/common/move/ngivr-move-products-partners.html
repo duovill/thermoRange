@@ -1,0 +1,244 @@
+<!--<ngivr-portlet ngivr-title="Összetárolás" ngivr-icon-fa="fa fa-list-ul"-->
+<!--class="col-md-12 padding-sides-0"-->
+<!--style="padding-right: 0">-->
+
+<!--<ngivr-portlet-body>-->
+<ng-form name="moveForm">
+    <div layout="column" flex layout-gt-md="row">
+
+        <!--
+        ******************
+        Forrás partner
+        ******************
+        -->
+        <div flex>
+            <md-input-container class="md-block">
+                <label>Forrás</label>
+                <ngivr-autocomplete-partner-more name="srcPartner" ng-model="model.srcPartner"
+                                                 get-depots="getDepots(options)"
+                                                 required></ngivr-autocomplete-partner-more>
+            </md-input-container>
+
+            <div ng-messages="moveForm.srcPartner.$error"
+                 ng-show="ngivr.form.message.show(moveForm, 'srcPartner')" style="height: auto !important;">
+                <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+            </div>
+        </div>
+
+        <!--
+        ******************
+        Cikk
+        ******************
+        -->
+        <div flex>
+            <div layout="row">
+                <!--
+                ************************
+                Szolgáltatási szerződés
+                ************************
+                -->
+                <div flex>
+                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                        <label>{{ngivr.strings.field.sourceServiceContract}}</label>
+                        <ngivr-select-service-contract required cost-bearer-id="model.srcPartner._id"
+                                                       name="sourceServiceContract" get-depots="getDepots(options)"
+                                                       ng-model="model.sourceServiceContract">
+                        </ngivr-select-service-contract>
+                    </md-input-container>
+
+                    <div ng-messages="moveForm.sourceServiceContract.$error"
+                         ng-show="ngivr.form.message.show(moveForm, 'sourceServiceContract')"
+                         style="margin-top: 10px; height: auto !important;">
+                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                    </div>
+                </div>
+                <!--
+                *********************
+                Cikk
+                *********************
+                -->
+                <div flex>
+                    <md-input-container class="md-block">
+                        <label>{{ngivr.strings.field.product}}</label>
+                        <ngivr-autocomplete-general-product name="product" ng-model="model.product"
+                                                            get-depots="getDepots(options)"
+                                                            required></ngivr-autocomplete-general-product>
+
+                    </md-input-container>
+                    <div ng-messages="moveForm.product.$error"
+                         ng-show="ngivr.form.message.show(moveForm, 'product')" style="height: auto !important;">
+                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!--
+        ******************
+        Cél partner
+        ******************
+        -->
+        <div flex>
+            <md-input-container class="md-block">
+                <label>Cél</label>
+                <ngivr-autocomplete-partner-more name="dstPartner" ng-model="model.dstPartner"
+                                                 required></ngivr-autocomplete-partner-more>
+            </md-input-container>
+
+            <div ng-messages="moveForm.dstPartner.$error"
+                 ng-show="ngivr.form.message.show(moveForm, 'dstPartner')" style="height: auto !important;">
+                <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+            </div>
+
+        </div>
+
+
+        <div flex>
+            <div layout="row">
+                <!--
+                ************************
+                Szolgáltatási szerződés
+                ************************
+                -->
+                <div flex>
+                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                        <label>{{ngivr.strings.field.actualServiceContract}}</label>
+                        <ngivr-select-service-contract required cost-bearer-id="model.dstPartner._id"
+                                                       name="actualServiceContract"
+                                                       ng-model="model.actualServiceContract">
+                        </ngivr-select-service-contract>
+                    </md-input-container>
+
+                    <div ng-messages="moveForm.actualServiceContract.$error"
+                         ng-show="ngivr.form.message.show(moveForm, 'actualServiceContract')"
+                         style="margin-top: 10px; height: auto !important;">
+                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                    </div>
+                </div>
+                <!--
+               ******************
+               Dátum
+               ******************
+               -->
+                <div flex>
+                    <md-input-container class="md-block">
+                        <label>{{ngivr.strings.field.date}}</label>
+                        <ngivr-input-date ng-model="model.fulfillmentDate" name="date"
+                                          ngivr-validation-future-date-forbidden
+                                          ngivr-validation-date-before="18" required></ngivr-input-date>
+                    </md-input-container>
+
+                    <div ng-messages="moveForm.date.$error"
+                         ng-show="ngivr.form.message.show(moveForm, 'date')" style="height: auto !important;">
+                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                        <div ng-message="ngivrValidationFutureDateForbidden">
+                            {{ngivr.strings.form.validation.futureDate}}
+                        </div>
+                        <div ng-message="ngivrValidationDateBefore">{{ngivr.strings.form.validation.validDate}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!--
+    ***************************************
+    Nincs forrás vagy termék kiválasztva
+    ***************************************
+    -->
+    <div ng-if="!model.srcPartner || !model.product" class="padding-top-15">
+        Válasszon forrás partnert és cikket!
+    </div>
+
+
+    <!--
+    ******************************
+    Raktárkészlet lista
+    ******************************
+    -->
+    <div ng-if="model.depotsWithProduct.length" class="padding-top-15">
+        <div>
+            <!-- ide kerül be a lista -->
+            <div layout="row" class="table-head">
+                <div flex="20">
+                    Raktár
+                </div>
+                <div flex="20">
+                    Termény
+                </div>
+                <div flex="15" style="text-align: right">
+                    Összes mennyiség
+                </div>
+                <div flex="15" style="text-align: right">
+                    Befoglalt mennyiség
+                </div>
+                <div flex="15" style="text-align: right">
+                    Szabad mennyiség
+                </div>
+                <div flex="15" style="text-align: right">
+                    Átrakandó (mt)
+                </div>
+
+            </div>
+            <md-divider></md-divider>
+            <div ng-repeat="depot in model.depotsWithProduct">
+                <div layout="row">
+
+                    <div flex="20" style="margin-top: 12px">
+                        {{depot.depotName + ' (' + depot.siteName + ')'}}
+                    </div>
+                    <div flex="20" style="margin-top: 12px">
+                        {{depot.product}}
+                    </div>
+                    <div flex="15" style="margin-top: 12px; text-align: right">
+                        {{(depot.total | number : 3) + ' mt'}}
+                    </div>
+                    <div flex="15" style="margin-top: 12px; text-align: right">
+                        {{(depot.reserved | number : 3) + ' mt'}}
+                    </div>
+                    <div flex="15" style="margin-top: 12px; text-align: right">
+                        {{(depot.free | number : 3) + ' mt'}}
+                    </div>
+                    <div flex="10" flex-offset="5">
+                        <ngivr-input-number name="{{'quantity' + $index}}" ng-model="depot.amount"
+                                            max="Math.round(depot.free * 100) / 100"></ngivr-input-number>
+                        <div ng-messages="moveForm['quantity' + $index].$error">
+                            <div ng-message="wrongNumber">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                        </div>
+                    </div>
+                    <md-divider></md-divider>
+                </div>
+                <md-divider></md-divider>
+            </div>
+        </div>
+    </div>
+
+    <!--
+    ************************
+    Nincs raktárkészlet
+    ************************
+    -->
+    <div ng-if="!model.depotsWithProduct.length && model.srcPartner && model.product">
+        Nincs raktárkészlet!
+    </div>
+
+    <!--
+    ***************
+    Mentés
+    ***************
+    -->
+    <div layout="row">
+        <div flex layout-padding layout-align="end">
+            <ngivr-button type="submit" class="pull-right" ng-click="moveProducts(moveForm)">
+                Mentés
+            </ngivr-button>
+        </div>
+    </div>
+</ng-form>
+
+<ngivr-list-movements-between-partners></ngivr-list-movements-between-partners>
+<!--</ngivr-portlet-body>-->
+<!--</ngivr-portlet>-->

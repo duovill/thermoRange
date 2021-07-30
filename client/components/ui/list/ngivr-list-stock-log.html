@@ -1,0 +1,277 @@
+<!-- <ngivr-list ngivr-schema="ticket" ngivr-ref="this" ngivr-query="ngivrQuery"> -->
+<ngivr-list ngivr-url="/api/statistics/stockLog" ngivr-ref="this" ngivr-query="ngivrQuery" ngivr-sort="sort"
+            id="stockLog_{{::$ctrl.$id}}">
+    <ngivr-list-buttons>
+        <ngivr-button-excel-export ngivr-add-date="1" ngivr-filename="$ctrl.filename"
+                                   ngivr-url='/api/statistics/stockLog'
+                                   ngivr-server-query="query.search"
+                                   ngivr-columns="ngivrColumns"
+                                   ngivr-headers="ngivrHeaders"></ngivr-button-excel-export>
+    </ngivr-list-buttons>
+    <ngivr-list-searcher>
+        <!--<pre>{{showStockLogFields | json}}</pre>-->
+        <div layout="row">
+            <div flex style="margin-top: 2px">
+                <md-input-container class="md-block md-select-card">
+                    <label>Kereső</label>
+                    <md-tooltip md-direction="top">Mozgás azonosítóra, terményre, partnerre, diszpozícióra, szerződésszámra és partner szerződésszámra keres.</md-tooltip>
+                    <input ng-model="ref.textSearch" ng-change="ref.$ctrl.search(query)"
+                           ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+                </md-input-container>
+            </div>
+            <div flex>
+                <md-input-container class="md-block">
+                    <label>Hozzáadható mérleges adatok</label>
+                    <md-select ng-model="ref.showStockLogFields" multiple>
+
+                        <md-optgroup>
+                            <md-option ng-value="row.name" ng-repeat="row in rows1">{{row.name}}</md-option>
+                        </md-optgroup>
+                    </md-select>
+                </md-input-container>
+            </div>
+            <div flex>
+                <md-input-container class="md-block">
+                    <label>Hozzáadható egyéb oszlopok</label>
+                    <md-select ng-model="ref.showStockLogFields2" multiple>
+                        <md-optgroup>
+                            <md-option ng-value="row.name" ng-repeat="row in rows2">{{row.name}}</md-option>
+                        </md-optgroup>
+
+                    </md-select>
+                </md-input-container>
+            </div>
+        </div>
+
+
+    </ngivr-list-searcher>
+    <ngivr-list-header>
+        <ng-include src="'app/stockStatement/template/stock-log-filter.html'"
+        ></ng-include>
+        <!--<pre>{{showStockLogFields.includes('Tára súly')}}</pre>-->
+        <div hl-sticky offset-top="$root.hlStickyTopOffset" class="ngivr-list-header-column"
+             id="ngivr-list-stock-log-header"
+             style="display:inline-block">
+
+            <div layout="row" style="text-align: center; padding-top: 8px; padding-bottom: 8px" class="sl-font-size"
+                 ng-style="{'flex-wrap' : !$mdMedia('gt-md') ? 'wrap' : 'initial'}">
+                <div flex-gt-md="10" flex="33" flex-xs="50" class="sl-col-1">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[0]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-2">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[1]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-3">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[2]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-4">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[3]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-5">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[4]}}/{{ngivr.strings.excel.stockLog.headers[5]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-6">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[6]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-7">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[7]}}</strong>
+                </div>
+
+
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-8">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[8]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50"
+                     ng-if="showStockLogFields.includes(ngivr.strings.excel.stockLog.headers[9])" class="sl-col-19">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[9]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50"
+                     ng-if="showStockLogFields.includes(ngivr.strings.excel.stockLog.headers[10])" class="sl-col-20">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[10]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50"
+                     ng-if="showStockLogFields.includes(ngivr.strings.excel.stockLog.headers[11])" class="sl-col-21">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[11]}}</strong>
+                </div>
+                <div fflex-gt-md="5" flex="33" flex-xs="50"
+                     ng-if="showStockLogFields.includes(ngivr.strings.excel.stockLog.headers[12])" class="sl-col-22">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[12]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50"
+                     ng-if="showStockLogFields.includes(ngivr.strings.excel.stockLog.headers[13])" class="sl-col-23">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[13]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50"
+                     ng-if="showStockLogFields.includes(ngivr.strings.excel.stockLog.headers[14])" class="sl-col-24">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[14]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50"
+                     ng-if="showStockLogFields.includes(ngivr.strings.excel.stockLog.headers[15])" class="sl-col-25">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[15]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-9">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[16]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-10">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[17]}}</strong>
+                </div>
+
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-11">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[18]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-26"
+                     ng-if="showStockLogFields2.includes('Számlaszám')">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[19]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-12"
+                     ng-if="showStockLogFields2.includes(ngivr.strings.excel.stockLog.headers[20])">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[20]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-13">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[21]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-14">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[22]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-15">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[23]}}</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-16"
+                     ng-if="showStockLogFields2.includes(ngivr.strings.excel.stockLog.headers[24])">
+                    <strong>{{ngivr.strings.excel.stockLog.headers[24]}}</strong>
+                </div>
+                <!--<div flex-gt-md="5" flex="33" flex-xs="50">-->
+                <!--<strong>Telephely</strong>-->
+                <!--</div>-->
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-18">
+
+                </div>
+            </div>
+
+        </div>
+
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+
+        <div style="display: inline-block" class="sl-font-size">
+            <div layout="row" class="center-in-table" style="text-align: center"
+                 ng-style="{'flex-wrap' : !$mdMedia('gt-md') ? 'wrap' : 'initial'}">
+                <div flex-gt-md="5" flex="33" flex-xs="50"
+                     class="ngivr-list-tickets-without-invoice-title-hoverable sl-col-1">
+                    <span>{{(doc.ledger.subTicketName||doc.ticketName||'---') + (doc.ticketType === 'openStock' ? ' (Nyitó)' : '')}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-2">
+                    <span>{{doc.direction === 'in' ?
+                            'Betárolás' : doc.direction === 'internal_in' ? 'Belső áttárolás, lerakodás' : doc.direction
+                            === 'internal_out' ? 'Belső áttárolás, felrakodás' : doc.direction === 'external_in' ?
+                            'Külső hajórakodás' : 'Kitárolás'}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-3">
+                    <span>{{doc.date}}</span>
+                </div>
+                <div flex="10" class="sl-col-4">
+                    <span>{{doc.productName||'---'}}</span>
+                </div>
+                <div flex="10" class="sl-col-5">
+                    <span>{{doc.depotName}}</span><br>
+                    <span>{{doc.siteName}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-6">
+                    <span>{{(doc.ledger.loadedWeight | number : 3) + ' mt'}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-7">
+                    <span>{{(doc.ledger.unloadedWeight | number : 3) + ' mt'}}</span>
+                </div>
+
+
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-8">
+                    <span>{{doc.order.orderNumber ? doc.order.orderNumber : '---'}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" ng-if="showStockLogFields.includes('Tára súly')"
+                     class="sl-col-19">
+                    <span>{{doc.taraWeight ? (doc.taraWeight | number: 3) + ' mt' : '---'}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" ng-if="showStockLogFields.includes('Tára idő')"
+                     class="sl-col-20">
+                    <span>{{doc.taraDate}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" ng-if="showStockLogFields.includes('Bruttó súly')"
+                     class="sl-col-21">
+                    <span>{{doc.bruttoWeight ? (doc.bruttoWeight | number: 3) + ' mt' : '---'}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" ng-if="showStockLogFields.includes('Bruttó idő')"
+                     class="sl-col-22">
+                    <span>{{doc.bruttoDate}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" ng-if="showStockLogFields.includes('Zsákok száma')"
+                     class="sl-col-23">
+                    <span>{{doc.numberOfPackings ? doc.numberOfPackings : '---'}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" ng-if="showStockLogFields.includes('Vontató')"
+                     class="sl-col-24">
+                    <span>{{doc.plateNumber1 ? doc.plateNumber1 : '---'}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" ng-if="showStockLogFields.includes('Vontatmány')"
+                     class="sl-col-25">
+                    <span>{{doc.plateNumber2 ? doc.plateNumber2 : '---'}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-9">
+                    <span>{{doc.order && doc.order[0].cargoPlanName ? doc.order[0].cargoPlanName : '---'}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-10">
+                    <span>{{doc.shipName ? doc.shipName : '---'}}</span>
+                </div>
+
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-11">
+                    <div layout="column">
+                        <span>{{doc.contract[0].contractNumber||'N/A'}} </span>
+                        <span>{{doc.contract[0].partnerContractNumber||'N/A'}} </span>
+                    </div>
+
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-12"
+                     ng-if="showStockLogFields2.includes('Számlaszám')">
+                    <span>{{doc.invoiceNumber||'invoiceNr'}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-26"
+                     ng-if="showStockLogFields2.includes('Könyvelési azonosító')">
+                    <span>{{doc.accountingId||'---'}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-13">
+                    <span>{{doc.order[0].partner[0].name||
+                            doc.contract[0].partner[0].name ||
+                            doc.ownerName || 'N/A'}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-14">
+                    <span>{{doc.sygnus?'IGEN':'NEM'}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-15">
+                    <span>{{doc.ledger.tcn? doc.ledger.tcn :"---"}}</span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-16"
+                     ng-if="showStockLogFields2.includes('Rögzítette')">
+                    <span>{{doc.userFullName}}</span>
+                </div>
+                <!--<div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-17">-->
+                <!--<span>{{doc.siteName}}</span>-->
+                <!--</div>-->
+                <div flex-gt-md="5" flex="33" flex-xs="50" class="sl-col-18">
+                    <div layout="row">
+                        <ngivr-button-pdf-existing-popup ngivr-schema="Ticket"
+                                                         ngivr-id="{{ doc._id }}"></ngivr-button-pdf-existing-popup>
+                        <ngivr-popup-change-order-in-ticket
+                            ng-if="doc.ledgerLength === 1 && doc.ticketType !== 'requalify' && doc.order[0].orderNumber && (doc.direction !== 'out' || (doc.direction === 'out' && !doc.parentTicketId))"
+                            ng-model="doc"></ngivr-popup-change-order-in-ticket>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="ngivr-list-tickets-without-invoice-divider"></div>
+
+    </ngivr-list-template>
+
+</ngivr-list>

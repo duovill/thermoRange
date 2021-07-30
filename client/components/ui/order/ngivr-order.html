@@ -1,0 +1,1489 @@
+<style>
+    .num-to-text {
+        float: right;
+        padding-right: 15px;
+    }
+</style>
+<form name="formOrder" ng-if="mode != null || isShipOnType" novalidate>
+
+
+    <div class="ngivr-accordion-container">
+        <md-toolbar class="md-primary ngivr-accordion-toolbar"
+                    md-colors="::{background: 'primary-500', 'border-color': 'primary-500'}">
+            <div class="md-toolbar-tools md-toolbar-tools-small">
+                <h2 flex md-truncate style="margin-top: 3px">
+                    <div layout="row" layout-wrap>
+                        <div flex="50" layout="column">
+                            <div ngivr-ellipsis>
+                                <md-tooltip ng-if="order.orderNumber" md-direction="top">{{formTitle + (order.technicalPerformId ? ' (' + ngivr.strings.additionalInfo.performsToPossessionTransfer + ')' : '')}}</md-tooltip>
+                                <span ng-if="!order.orderNumber" style="margin-right: 5px;">Új</span>
+                                <span>{{formTitle}}</span>
+                                <span ng-if="order.technicalPerformId">{{' (' + ngivr.strings.additionalInfo.performsToPossessionTransfer + ')'}}</span>
+
+                            </div>
+                            <div ng-if="order.orderNumber" ngivr-ellipsis>
+                                <md-tooltip md-direction="top">Felrakóhely</md-tooltip>
+                                {{order.loadLocation[0].name || order.loadLocationSettlement[0].name || 'N/A'}}
+                            </div>
+
+                        </div>
+
+                        <div flex="50" layout="row" layout-wrap style="display:flex;align-items:center;">
+                            <div flex="100" style="text-align: right" ngivr-ellipsis ng-if="!order.sygnus">
+                                <md-tooltip md-direction="top" ng-if="!order.sygnus">Partner</md-tooltip>
+                                <span ng-if="!order.sygnus">{{order.partner[0].name}}</span>
+
+                            </div>
+
+                            <div flex="100" style="text-align: right" ng-if="order.orderNumber">
+                                <md-tooltip md-direction="top">Tervezett mt / Teljesült mt</md-tooltip>
+                                {{order.volume ? (order.volume | number: 3) : '---'}} / {{order.performed ?
+                                (order.performed
+                                | number : 3) : '---'}}
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                </h2>
+                <div style="margin-top: 3px; margin-left: 10px">
+                    <md-tooltip md-direction="top" ng-if="order.orderNumber">Diszpozíció száma</md-tooltip>
+                    {{order.orderNumber}}
+                </div>
+
+                <ngivr-button-clipboard-copy ngivr-decorate="true" ng-if="order.orderNumber"
+                                             ng-model="order.orderNumber"
+                                             hint="'orderNumber'"></ngivr-button-clipboard-copy>
+
+                <md-menu>
+                    <md-button class="md-icon-button" ng-click="$mdMenu.open($event)">
+                        <ng-md-icon icon="menu"></ng-md-icon>
+                    </md-button>
+
+                    <md-menu-content>
+
+                        <ngivr-button-excel-export ngivr-menu="true" ngivr-add-date="1" hide-tool-tip="true"
+                                                   ng-if="order.orderNumber"
+                                                   ngivr-filename="fileName" big="true" style="width: 100%"
+                                                   ngivr-url="{{'/api/statistics/ticketsOfOrder/' + order._id}}"
+                                                   button-name="ngivr.strings.button.orderTicketList"
+                        ></ngivr-button-excel-export>
+
+                        <ngivr-popup-new-partner ngivr-menu="true"></ngivr-popup-new-partner>
+
+                    </md-menu-content>
+                </md-menu>
+
+                <md-button class="md-icon-button" ng-click="accordion = !accordion">
+                    <ng-md-icon ng-if="!accordion" icon="keyboard_arrow_down"></ng-md-icon>
+                    <ng-md-icon ng-if="accordion" icon="keyboard_arrow_up"></ng-md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-content layout-padding ng-show="accordion ">
+
+            <div layout="row">
+                <div flex>
+                    <!--
+                    ****************************************
+                    Partner betárolás tárházba, order pbt
+                    Partner kitárolás tárházból, order pkt
+                    Belső áttárolás
+                    ****************************************
+                    -->
+                    <div ng-if="mode === availableMode.pbt ||
+                                  mode === availableMode.pkt ||
+                                  mode === availableMode.int ||
+                                  mode === availableMode.sht ||
+                                  mode === availableMode.pht ||
+                                  mode === availableMode.pkb ||
+                                  isShipOnType()" style="margin-bottom: 20px;">
+                        <div>
+                            <!--
+                            ***************
+                            Partner adatok
+                            ***************
+                            -->
+                            <div layout="row" layout-wrap>
+                                <!--
+                                *************
+                                Partner
+                                *************
+                                -->
+                                <div flex="50" flex-xs="66" ng-if="!order.sygnus" flex-order="1">
+                                    <md-input-container class="md-block">
+                                        <label>Partner</label>
+                                        <ngivr-autocomplete-partner ng-model="order.partner[0]"
+                                                                    ng-disabled="!edited.order"
+                                                                    name="partner"></ngivr-autocomplete-partner>
+                                    </md-input-container>
+                                </div>
+
+                                <!--
+                                *************************************
+                                Forrás szolgáltatási szerződés
+                                Csak PKT, és PHT esetén
+                                *************************************
+                                -->
+                                <div flex flex-xs="50" flex-order="2" flex-order-xs="3" ng-if="mode === availableMode.pkt || mode === availableMode.pht || order.shipOnType === 'pkt' || order.shipOnType === 'pht' ||
+                                  (mode ===availableMode.int   && !order.sygnus)">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>{{ngivr.strings.field.sourceServiceContract}}</label>
+                                        <ngivr-select-service-contract required cost-bearer-id="order.partner[0]._id"
+                                                                       ng-model="order.selectedSourceServiceContract"
+                                                                       ng-disabled="!edited.order">
+                                        </ngivr-select-service-contract>
+                                    </md-input-container>
+                                </div>
+                                <!--
+                                *********************************************
+                                Aktuális szolgáltatási szerződés PKT esetén
+                                Szolgáltatási szerződés PBT PKB esetén
+                                *********************************************
+                                -->
+                                <div flex flex-xs="50" flex-order="3" flex-order-xs="4" ng-if="!order.sygnus">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>{{mode === availableMode.pkt || mode === availableMode.pkb ||
+                                            order.shipOnType
+                                            === 'pkt' ||
+                                            order.shipOnType === 'pht' || (mode === availableMode.int &&
+                                            !order.sygnus) ?
+                                            ngivr.strings.field.actualServiceContract :
+                                            ngivr.strings.field.serviceContract}}</label>
+                                        <ngivr-select-service-contract required cost-bearer-id="order.partner[0]._id"
+                                                                       ng-model="order.selectedActualServiceContract"
+                                                                       ng-disabled="!edited.order">
+                                        </ngivr-select-service-contract>
+                                    </md-input-container>
+                                </div>
+
+                            </div>
+                            <!--
+                            ******************
+                            Termény adatok
+                            ******************
+                            -->
+                            <div layout="row" ng-style="{'margin-top': $mdMedia('xs') ? '10px' : '0'}" layout-wrap>
+                                <!--
+                                **************
+                                Termény neve
+                                **************
+                                -->
+                                <div flex="40" flex-xs="100">
+                                    <md-input-container class="md-block">
+                                        <label>Cikk</label>
+                                        <ngivr-autocomplete-product ng-model="order.orderProduct[0]" name="orderProduct"
+                                                                    required
+                                                                    ng-disabled="!edited.order"></ngivr-autocomplete-product>
+                                    </md-input-container>
+
+                                    <div ng-if="formOrder.orderProduct.$touched"
+                                         ng-messages="formOrder.orderProduct.error"
+                                         multiple md-auto-hide="false">
+                                        <div ng-message="required"><span ng-bind="'Válasszon egy listaelemet!'"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--
+                                ******************************
+                                fertilizer (műtrágya) switch
+                                ******************************
+                                -->
+                                <div ng-if="$mdMedia('gt-lg')" flex="20" style="margin-top: 6px;">
+                                    <ngivr-input-switch ng-disabled="!edited.order"
+                                                        ng-model="order.fertilizer"
+                                                        ngivr-caption="műtrágya"
+                                                        ngivr-off-display="ngivr.strings.inputSwitch.default.off"
+                                                        ngivr-on-display="ngivr.strings.inputSwitch.default.on"
+                                                        ngivr-on-value="true"
+                                                        ngivr-off-value="false"
+                                                        width="165px">
+                                    </ngivr-input-switch>
+                                </div>
+                                <!--
+                                ***********************
+                                Tervezett mennyiség
+                                ***********************
+                                -->
+                                <div flex="20" flex-xs="50">
+                                    <md-input-container class="md-block">
+                                        <label>Tervezett mennyiség</label>
+                                        <input type="number" required name="volume" ng-model="order.volume"
+                                               ng-disabled="mode == availableMode.pkt ||
+                                    mode == availableMode.int ||
+                                    mode === availableMode.sht ||
+                                    mode === availableMode.pht ||
+
+                                    order.shipOnType === 'sht' ||
+                                    order.shipOnType === 'pht' ||
+                                    !edited.order"/>
+                                    </md-input-container>
+                                    <div ng-if="formOrder.volume.$touched" ng-messages="formOrder.volume.$error"
+                                         multiple
+                                         md-auto-hide="false">
+                                        <p ng-message="required">A mező kitöltése kötelező!</p>
+                                    </div>
+                                </div>
+                                <!--
+                                ***********************
+                                teljesült mennyiség
+                                ***********************
+                                -->
+                                <div flex="20" flex-xs="50">
+                                    <span>Teljesült mennyiség (mt)</span><br>
+                                    <span
+                                        class="badge badge-default ship-label pull-left">{{order.performed ? order.performed : '---'}}</span>
+                                </div>
+                            </div>
+
+
+                            <div ng-if="!$mdMedia('gt-lg')" style="margin-bottom: 6px;">
+                                <ngivr-input-switch ng-disabled="!edited.order"
+                                                    ng-model="order.fertilizer"
+                                                    ngivr-caption="műtrágya"
+                                                    ngivr-off-display="ngivr.strings.inputSwitch.default.off"
+                                                    ngivr-on-display="ngivr.strings.inputSwitch.default.on"
+                                                    ngivr-on-value="true"
+                                                    ngivr-off-value="false"
+                                                    width="165px">
+                                </ngivr-input-switch>
+                            </div>
+
+                            <!--
+                            *****************
+                            Felrakó adatok
+                            *****************
+                            -->
+                            <div layout="row">
+                                <!--
+                                ****************
+                                Felrakóhely
+                                ****************
+                                -->
+                                <div flex="40">
+                                    <md-input-container class="md-block ">
+                                        <label>Felrakóhely</label>
+                                        <ngivr-autocomplete-site ng-model="order.loadLocation[0]"
+                                                                 ng-disabled="!edited.order || currentUser.site && order.direction == 'out'"
+                                                                 ng-required="mode === availableMode.pkt ||
+                                                      mode === availableMode.int ||
+                                                      mode === availableMode.sht ||
+
+                                                      order.shipOnType === 'sht'"
+                                                                 get-depots="mode === availableMode.pkt || mode === availableMode.int || mode === availableMode.sht || mode === availableMode.pht ? getDepots(site) : undefined"
+                                                                 name="loadLocation"></ngivr-autocomplete-site>
+                                    </md-input-container>
+                                    <div ng-if="formOrder.loadLocation.$touched"
+                                         ng-messages="formOrder.loadLocation.error"
+                                         multiple md-auto-hide="false">
+                                        <div ng-message="required"><span ng-bind="'Válasszon egy listaelemet!'"></span>
+                                        </div>
+                                    </div>
+                                    {{order.loadLocation[0].city + (order.loadLocation[0] ?', ' : '') +
+                                    order.loadLocation[0].street + ' ' +
+                                    order.loadLocation[0].streetType + ' ' + order.loadLocation[0].streetNumber }}
+                                </div>
+                                <!--
+                                *************************************
+                                Felrakó település, csak PBT, PKB
+                                *************************************
+                                -->
+                                <div flex="40"
+                                     ng-if="mode === availableMode.pbt || mode === availableMode.pkb || order.shipOnType === 'pkb'">
+                                    <ngivr-autocomplete-settlement ng-model="order.loadLocationSettlement[0]"
+                                                                   ng-disabled="!edited.order"
+                                                                   name="loadLocationSettlement"></ngivr-autocomplete-settlement>
+                                </div>
+                                <div flex
+                                     ng-if="(mode === availableMode.pkt || mode === availableMode.int || mode === availableMode.sht || mode === availableMode.pht || order.shipOnType === 'sht' || order.shipOnType === 'pht')"
+                                     style="margin-top: 6px">
+                                    <ngivr-popup-select-depot order="order" edited="edited.order"
+                                                              ng-disabled="isDisabled.selectDepot()"></ngivr-popup-select-depot>
+                                </div>
+
+                                <div flex="20" flex-xs="50">
+                                    <span>Zsákok száma (db)</span><br>
+                                    <span
+                                        class="badge badge-default ship-label pull-left">{{order.sackDb ? order.sackDb : '---'}}</span>
+                                </div>
+                            </div>
+
+                            <!--
+                            *******************************
+                            Raktár lista PKT, SHT, PHT esetén és int
+                            *******************************
+                            -->
+                            <ngivr-divider
+                                ng-if="(mode === availableMode.pkt  || mode === availableMode.int || mode === availableMode.sht || mode === availableMode.pht || order.shipOnType === 'sht' || order.shipOnType === 'pht')&& order.depotsWithProduct.length > 0"></ngivr-divider>
+                            <div layout="row">
+                                <div style="width: 100%;">
+                                    <!--ng-if="(mode === availableMode.pkt || mode === availableMode.int || mode === availableMode.sht || mode === availableMode.pht || order.shipOnType === 'sht' || order.shipOnType === 'pht') && order.depotsWithProduct.length > 0">-->
+                                    <!--<ngivr-depot-reservation depots="order.depotsWithProduct"-->
+                                    <!--load-depot="order.loadDepot"-->
+                                    <!--edited="edited.order"-->
+                                    <!--order-id="order._id"-->
+                                    <!--ngivr="ngivr" form="formOrder"></ngivr-depot-reservation>-->
+
+                                    <div layout="row" class="table-head" ng-if="order.loadDepot.length">
+
+                                        <div flex="30">
+                                            Raktár
+                                        </div>
+
+
+                                        <div flex="15" style="text-align: right">
+                                            Tervezett mennyiség
+                                        </div>
+
+                                        <div flex="15" style="text-align: right">
+                                            Kiszállított mennyiség
+                                        </div>
+
+                                    </div>
+
+                                    <div ng-repeat="depot in order.loadDepot">
+                                        <div layout="row">
+                                            <div flex="30" style="margin-top: 12px">
+                                                {{depot.depotName}}
+                                            </div>
+                                            <div flex="15" style="margin-top: 12px; text-align: right">
+                                                {{(depot.quantity| number : 3) + ' mt'}}
+                                            </div>
+                                            <div flex="15" style="margin-top: 12px; text-align: right">
+                                                {{(depot.performed| number : 3) + ' mt'}}
+                                            </div>
+
+
+                                            <md-divider></md-divider>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!--
+                            ********************
+                            Lerakó adatok
+                            ********************
+                            -->
+                            <div layout="row">
+                                <!--
+                                ******************
+                                Lerakóhely
+                                ******************
+                                -->
+                                <div flex="40" ng-if="true">
+                                    <md-input-container class="md-block ">
+                                        <label>Lerakóhely</label>
+                                        <ngivr-autocomplete-site ng-model="order.unloadLocation[0]"
+                                                                 ng-required="mode === availableMode.pbt || mode === availableMode.int"
+                                                                 ng-disabled="!edited.order || currentUser.site && order.direction === 'in'"
+                                                                 name="unloadLocation"></ngivr-autocomplete-site>
+                                    </md-input-container>
+                                    <div ng-if="formOrder.unloadLocation.$touched"
+                                         ng-messages="formOrder.unloadLocation.error"
+                                         multiple md-auto-hide="false">
+                                        <div ng-message="required"><span ng-bind="'Válasszon egy listaelemet!'"></span>
+                                        </div>
+                                    </div>
+                                    {{order.unloadLocation[0].city + (order.unloadLocation[0] ?', ' : '') +
+                                    order.unloadLocation[0].street + '
+                                    '
+                                    +
+                                    order.unloadLocation[0].streetType + ' ' + order.unloadLocation[0].streetNumber }}
+                                </div>
+                                <!--
+                                **********************************
+                                Raktárpozíció PBT, és int esetén
+                                **********************************
+                                -->
+                                <div flex style="margin-top: 2px"
+                                     ng-if="mode === availableMode.pbt || mode === availableMode.int || (mode === availableMode.sht || mode === availableMode.pht ) && loadPlace._id !== order.loadLocation[0]._id">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>Raktárpozíció (Lerakó)</label>
+                                        <!--<ngivr-select-depot ng-model="order.unloadDepot[0]" name="unloadDepot"-->
+                                                            <!--site-id="order.unloadLocation[0]._id"-->
+                                                            <!--ng-disabled="!edited.order"-->
+                                                            <!--ngivr-validation-mongoose required-->
+                                                            <!--ng-model-options="{ getterSetter: true }"/>-->
+
+                                        <ngivr-autocomplete-depots-of-site ng-model="order.unloadDepot[0]"
+                                                                           name="unloadDepot"
+                                                                           ng-required="true"
+                                                                           ng-disabled="!edited.order"
+                                                                           site-id="order.unloadLocation[0]._id"
+                                                                           own="order.unloadLocation[0].own"></ngivr-autocomplete-depots-of-site>
+                                    </md-input-container>
+                                </div>
+                                <div flex ng-if="mode === availableMode.pkt">
+                                    <ngivr-autocomplete-settlement-out ng-model="order.loadLocationSettlement[0]"
+                                                                       ng-disabled="!edited.order"
+                                                                       name="loadLocationSettlement"></ngivr-autocomplete-settlement-out>
+                                </div>
+
+                                <!--
+                                ******************************************
+                                Nominálás, illetve order kiválasztás
+                                Sygnus belső áttárolásnál volt, TODO utánanézni, kell-e. ha nem, akkor törölhető az js-ből a lista lekérés
+                                ******************************************
+                                -->
+                                <!--&lt;!&ndash;Nominálás&ndash;&gt;-->
+                                <!--<div flex="20" ng-if="mode === availableMode.int && order.sygnus">-->
+                                <!--<md-input-container class="md-block md-container-md-select-fix" style="top: 6px">-->
+                                <!--<label>Nominálás</label>-->
+                                <!--<md-select id="nomination" md-no-ink name="nomination" ng-model="order.cargoPlanId"-->
+                                <!--ng-disabled="!edited.order"-->
+                                <!--ng-change="getDispoList(order.cargoPlanId)">-->
+                                <!--<md-option ng-repeat="cargoPlan in cargoPlans " value="{{ cargoPlan._id }}">{{-->
+                                <!--cargoPlan.name}}-->
+                                <!--</md-option>-->
+                                <!--</md-select>-->
+                                <!--</md-input-container>-->
+                                <!--</div>-->
+                                <!--&lt;!&ndash;Nominálás diszpozíció&ndash;&gt;-->
+                                <!--<div flex="20" ng-if="mode === availableMode.int && order.sygnus">-->
+                                <!--<md-input-container class="md-block md-container-md-select-fix " style="top: 6px">-->
+                                <!--<label>Nominálás diszpozíció</label>-->
+                                <!--<md-select id="nominationDispo" md-no-ink name="nominationDispo"-->
+                                <!--ng-disabled="!edited.order"-->
+                                <!--ng-model="order.parentOrderId">-->
+                                <!--<md-option ng-repeat="dispo in dispoList " value="{{ dispo._id }}">{{-->
+                                <!--dispo.name}}-->
+                                <!--</md-option>-->
+                                <!--</md-select>-->
+                                <!--</md-input-container>-->
+                                <!--</div>-->
+                            </div>
+                            <!--
+                            ********************
+                            Egyéb adatok
+                            ********************
+                            -->
+                            <div layout="row">
+                                <!--
+                                *******************************
+                                Partner beszállító PBT, PKB esetén
+                                *******************************
+                                -->
+                                <div flex="60"
+                                     ng-if="mode === availableMode.pbt || mode === availableMode.pkb || order.shipOnType === 'pkb'">
+                                    <md-input-container class="md-block">
+                                        <label>Partner beszállítója</label>
+                                        <ngivr-autocomplete-partner-partner ng-model="order.partnerPartner[0]"
+                                                                            ng-disabled="!edited.order"
+                                                                            name="partnerPartner"></ngivr-autocomplete-partner-partner>
+                                    </md-input-container>
+                                </div>
+                                <!--
+                                ********************
+                                Nyitás dátuma
+                                ********************
+                                -->
+                                <div flex="20" ng-if="order._id"
+                                     flex-offset="{{ mode === availableMode.pbt || mode === availableMode.pkb || order.shipOnType === 'pkb' ? 0: 60}}">
+                                    <span>Nyitás dátuma</span><br>
+                                    <span
+                                        class="badge badge-default ship-label pull-left">{{order.createdAt | date:"yyyy.MM.dd. HH:mm"}}</span>
+                                </div>
+                                <!--
+                                **********************
+                                Utolsó mérés dátuma
+                                **********************
+                                -->
+                                <div flex="20" ng-if="order._id">
+                                    <div class="pull-right">
+                                        <span>Utolsó mérés dátuma</span><br>
+                                        <span
+                                            class="badge badge-default ship-label pull-left">{{order.lastTicketAt ? (order.lastTicketAt | date:"yyyy.MM.dd. HH:mm") : '---'}}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--
+                            *****************
+                            Szállítmányozó
+                            *****************
+                            -->
+                            <div layout="row" ng-if="!order.sygnus">
+                                <!--Partner-->
+                                <div flex>
+                                    <md-input-container class="md-block">
+                                        <label>Szállítmányozó</label>
+                                        <ngivr-autocomplete-carrier ng-model="order.carrier[0]"
+                                                                    ng-disabled="!edited.order"
+                                                                    name="carrier"></ngivr-autocomplete-carrier>
+                                    </md-input-container>
+                                </div>
+                            </div>
+
+                            <!--
+                            ****************
+                            Megjegyzés
+                            ****************
+                            -->
+                            <div layout="row" style="margin-bottom: 10px"
+                                 ng-if=" mode !== availableMode.sht && !order.sygnus">
+                                <div flex>
+                                    <md-input-container class="md-block" ng-disabled="!edited.order">
+                                        <textarea placeholder="Partner megjegyzése" ng-model="order.comment"></textarea>
+                                    </md-input-container>
+                                </div>
+                            </div>
+
+                            <!--
+                            **********************
+                            Termény paraméterek
+                            **********************
+                            -->
+                            <div ng-if="order.productParams.length" class="ngivr-list-header-column" layout="column"
+                                 flex
+                                 layout-gt-sm="row" layout-padding>
+
+                                <div layout="column" layout-gt-xs="row" flex="100" flex-gt-xs="50">
+                                    <div flex-gt-xs="25">
+                                        <strong>Paraméter</strong>
+                                    </div>
+                                    <div flex-gt-xs="25">
+                                        <strong>Mérlegen kötelező</strong>
+                                    </div>
+                                    <div ng-if="$mdMedia('gt-xs')" flex-gt-xs="25">
+                                        <strong>Paraméter</strong>
+                                    </div>
+                                    <div ng-if="$mdMedia('gt-xs')" flex-gt-xs="25">
+                                        <strong>Mérlegen kötelező</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div layout="row" layout-wrap>
+                                <div flex="100" flex-gt-xs="50" ng-repeat="param in order.productParams">
+                                    <div layout="row" layout-wrap>
+                                        <div flex="100" flex-gt-xs="50">
+                                            {{param.name}}
+                                        </div>
+                                        <div flex="100" flex-gt-xs="50">
+                                            <md-checkbox aria-label="0" ng-model="param.required" class="md-primary"
+                                                         ng-disabled="!edited.order">
+                                                <span>{{ param.required ? 'Igen' : 'Nem'}}</span>
+                                            </md-checkbox>
+                                        </div>
+                                    </div>
+                                    <div ng-if="!$last" class="ngivr-list-tickets-without-invoice-divider"></div>
+                                </div>
+                            </div>
+
+                            <div layout="row" style="margin-top: 15px">
+                                <!--
+                             **************************************
+                             Engedélyezett rendszámok PKT esetén
+                             **************************************
+                             -->
+                                <div
+                                    ng-if="mode === availableMode.pkt || order.direction === 'internal' || order.direction === 'out' && order.loadLocation[0]._id !== loadPlace._id"
+                                    flex="100">
+                                    <label>Engedélyezett rendszámok</label>
+                                    <md-chips flex="100" ng-model="order.allowedPlateNumbers"
+                                              md-on-add="capitalizeChips()"
+                                              readonly="!edited.order" md-add-on-blur="true"
+                                              placeholder="Adjon meg rendszámokat...">
+                                    </md-chips>
+                                </div>
+
+                            </div>
+
+                            <!--
+                            *********************************
+                            Sygnus rendszámok engedélyezése, lezárás, újranyitása
+                            *********************************
+                            -->
+                            <div layout="row">
+                                <div flex layout-align="center"
+                                     ng-if="mode === availableMode.pkt || order.direction === 'internal' || order.direction === 'out' && order.loadLocation[0]._id !== loadPlace._id">
+                                    <ngivr-input-switch ng-disabled="!edited.order"
+                                                        ng-model="order.ownPlateNumbersAllowed"
+                                                        ng-click=""
+                                                        ngivr-caption="Saját rendszámok engedélyezve"
+                                                        ngivr-off-display="ngivr.strings.inputSwitch.default.off"
+                                                        ngivr-on-display="ngivr.strings.inputSwitch.default.on"
+                                                        ngivr-on-value="true"
+                                                        ngivr-off-value="false"></ngivr-input-switch>
+                                </div>
+                                <div flex
+                                     ng-if="(mode !== availableMode.sht && mode !== availableMode.pht && mode !== availableMode.pbt) || (mode === availableMode.sht || mode === availableMode.pht) && order.intShip && !parentFormName">
+                                    <ngivr-input-switch ng-disabled="!edited.order" ng-model="order.ekaer"
+                                                        class="pull-left"
+                                                        ng-click="setEKAER()"
+                                                        ngivr-caption="EKÁER"
+                                                        ngivr-off-display="ngivr.strings.inputSwitch.default.off"
+                                                        ngivr-on-display="ngivr.strings.inputSwitch.default.on"
+                                                        ngivr-on-value="true"
+                                                        ngivr-off-value="false"></ngivr-input-switch>
+                                </div>
+                                <!--
+                                    ***************
+                                    Lezárás
+                                    ***************
+                                    -->
+                                <div ng-if="order._id && edited.order" flex layout-fill>
+                                    <ngivr-button ng-click="order.deleted || closeOrder(order)" class="pull-right"
+                                                  style="margin-left: 10px;"
+                                                  ng-disabled="order.deleted">
+                                        <ng-md-icon icon="close"></ng-md-icon>
+                                        {{ngivr.strings.button.closeOrder}}
+                                    </ngivr-button>
+                                </div>
+                                <!--
+                                ***************
+                                Újranyitás
+                                ***************
+                                -->
+                                <div ng-if="order.orderClosed && order._id" flex layout-fill>
+                                    <ngivr-button ng-click="order.deleted || reopenOrder(order)" class="pull-right"
+                                                  ng-disabled="order.deleted">
+                                        <ng-md-icon icon="redo"></ng-md-icon>
+                                        {{ngivr.strings.button.reopenOrder}}
+                                    </ngivr-button>
+                                </div>
+                            </div>
+                            <div layout="row">
+                                <!--
+                               ****************
+                               order gombok
+                               ****************
+                               -->
+                                <div flex>
+                                    <div style="margin-top: 16px; margin-right: 5px;" class="pull-right">
+                                        <ngivr-lock ngivr-lock="locks.order" class="pull-right">
+                                            <ngivr-lock-unlocked>
+                                                <ngivr-icon-static ng-if="!order._id || edited.order"
+                                                                   ng-disabled="formOrder.$invalid"
+                                                                   ng-click="formOrder.$invalid || saveOrder(order, mode)"
+                                                                   ngivr-icon="save"
+                                                                   ngivr-tooltip="Mentés"/>
+                                                <ngivr-icon-static ng-if="edited.order"
+                                                                   ng-click="cancelOrder({timeout: false, idx: idx, origOrder: origOrder})"
+                                                                   ngivr-icon="close"
+                                                                   ngivr-tooltip="Mégse"/>
+
+                                                <ngivr-icon-static ng-if="order._id && !edited.order"
+                                                                   ng-disabled="isOrderLocked(order)"
+                                                                   ng-click="isOrderLocked(order) || editOrder(order)"
+                                                                   ngivr-icon="edit"
+                                                                   ngivr-tooltip="Szerkesztés"/>
+                                                <ngivr-icon-static ng-if="!edited.order"
+                                                                   ng-click="isOrderLocked(order) || removeOrder(order)"
+                                                                   ng-disabled="isOrderLocked(order)" ngivr-icon="close"
+                                                                   ngivr-tooltip="Diszpó törlése"/>
+                                            </ngivr-lock-unlocked>
+                                        </ngivr-lock>
+                                    </div>
+                                    <div ng-if="isOrderLocked(order)">
+                                        <div layout-fill>
+                                            <div class="pull-right">
+                                                <span class="badge badge-default" style="margin-top: 10px !important;">A diszpozíció lockolva van egy másik felhasználó által illetve törölt vagy lezárt.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!--order int-->
+                    <div
+                        ng-if="mode == availableMode.int || (mode === availableMode.sht && order.intShip && !parentFormName)"
+                        style="margin-bottom: 20px;">
+                        <div>
+
+                            <div ng-if="order.ekaer">
+                                <ngivr-divider></ngivr-divider>
+                                <!--EKÁER adatok-->
+                                <fieldset ng-disabled="!edited.order">
+                                    <div ng-if="order.ekaer">
+                                        <div layout="row" class="margin-bottom--10">
+
+                                            <!--
+                                            **********
+                                            Irány
+                                            **********
+                                            -->
+                                            <div flex="15">
+                                                <md-input-container class="md-block md-container-md-select-fix">
+                                                    <label>Irány</label>
+                                                    <md-select ng-disabled="!edited.order" id="tradeType" md-no-ink
+                                                               name="tradeType"
+                                                               ng-model="order.tradeType">
+                                                        <md-option value="{{ 'D' }}" selected>Belföld-Belföld
+                                                        </md-option>
+                                                        <!--                          <md-option value="{{ 'E' }}">Belföld-Közösség</md-option>
+                                                                                  <md-option value="{{ 'I' }}">Közösség-Belföld</md-option>-->
+                                                    </md-select>
+                                                </md-input-container>
+                                            </div>
+
+                                            <!--
+                                            ****************
+                                            Szállítmányozó
+                                            ****************
+                                            q-->
+
+
+                                            <!--
+                                            *************************
+                                            Szállítmányozó módosíthat
+                                            *************************
+                                            -->
+                                            <div flex="25" style="margin-left: 20px">
+                <span
+                    class="md-headline label label-grey label-red-fix ng-class:{ 'label-red' : order.modByCarrierEnabled }"
+                    style="width: auto;">Szállítmányozó módosíthat</span>
+                                                <md-switch class="switch-red switch-fix-1" ng-disabled="!edited.order"
+                                                           ng-model="order.modByCarrierEnabled"
+                                                           aria-label="szállítmányozó"></md-switch>
+                                            </div>
+
+                                            <!--
+                                            ****************
+                                            Intermodális
+                                            ****************
+                                            -->
+                                            <div flex="25">
+                    <span
+                        class="md-headline label label-grey label-red-fix ng-class:{ 'label-red' : order.isIntermodal }">Intermodális</span>
+                                                <md-switch class="switch-red switch-fix-1" ng-disabled="!edited.order"
+                                                           ng-model="order.isIntermodal"
+                                                           aria-label="intermodális"></md-switch>
+                                            </div>
+
+                                            <!--
+                                            ***********************
+                                            Feladó-címzett radio
+                                            ***********************
+                                            -->
+                                            <div flex="35">
+                                                <md-radio-group ng-model="order.partnerRelation">
+                                                    <md-radio-button ng-disabled="!edited.order"
+                                                                     ng-click="!edited.order || sygnus_sygnus(order, order.seller, order.destination)"
+                                                                     value="1">
+                                                        Sygnus-Sygnus
+                                                    </md-radio-button>
+                                                    <md-radio-button ng-disabled="!edited.order"
+                                                                     value="2" ng-click="!edited.order || partner_sygnus(order)">
+
+                                                        {{order.sygnus ? order.contractId ? 'Adatok szerződésből' : 'Partner-Sygnus' : 'Sygnus-Partner' }}
+                                                    </md-radio-button>
+                                                </md-radio-group>
+                                            </div>
+                                        </div>
+
+                                        <!--
+                                        ***********
+                                        feladó
+                                        ***********
+                                        -->
+                                        <div layout="row">
+                                            <div flex="40">
+                                                <md-input-container class="md-block">
+                                                    <label>Feladó</label>
+                                                    <ngivr-autocomplete-partner ng-model="order.seller"
+                                                                                name="seller"></ngivr-autocomplete-partner>
+                                                </md-input-container>
+                                            </div>
+
+                                            <div flex="20" ng-if="order.seller.vatNumbers.length === 1"
+                                                 ng-disabled="!edited.order">
+                                                <md-input-container class="md-block md-container-md-select-fix"
+                                                                    style="top: 6px">
+                                                    <label>Adószám</label>
+                                                    <md-select md-no-ink name="sellerVat"
+                                                               ng-model="order.ekaerSellerVat"
+                                                               ng-disabled="!edited.order">
+                                                        <md-option ng-repeat="vat in order.seller.vatNumbers"
+                                                                   value="{{ vat.number }}"
+                                                                   ng-selected="order.seller.vatNumbers[0]"> {{
+                                                            vat.number}}
+                                                        </md-option>
+                                                    </md-select>
+                                                </md-input-container>
+                                            </div>
+
+                                            <div flex="20" ng-if="order.seller.vatNumbers.length > 1"
+                                                 ng-disabled="!edited.order">
+                                                <md-input-container class="md-block md-container-md-select-fix"
+                                                                    style="top: 6px">
+                                                    <label>Adószám</label>
+                                                    <md-select md-no-ink name="sellerVat"
+                                                               ng-model="order.ekaerSellerVat"
+                                                               ng-disabled="!edited.order">
+                                                        <md-option ng-repeat="vat in order.seller.vatNumbers"
+                                                                   value="{{ vat.number }}">
+                                                            {{ vat.number}}
+                                                        </md-option>
+                                                    </md-select>
+                                                </md-input-container>
+                                            </div>
+
+                                            <div flex="40">
+                                                <md-input-container class="md-block">
+                                                    <label>Cím</label>
+                                                    <input type="text" ng-model="order.sellerAddress"/>
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+
+                                        <!--
+                                        *********
+                                        címzett
+                                        *********
+                                        -->
+                                        <div layout="row">
+                                            <div flex="40">
+                                                <md-input-container class="md-block">
+                                                    <label>Címzett</label>
+                                                    <ngivr-autocomplete-partner ng-model="order.destination"
+                                                                                name="destination"></ngivr-autocomplete-partner>
+                                                </md-input-container>
+                                            </div>
+
+                                            <div flex="20" ng-if="order.destination.vatNumbers.length === 1"
+                                                 ng-disabled="!edited.order">
+                                                <md-input-container class="md-block md-container-md-select-fix"
+                                                                    style="top: 6px">
+                                                    <label>Adószám</label>
+                                                    <md-select md-no-ink name="destinationVat"
+                                                               ng-model="order.ekaerDestinationVat"
+                                                               ng-disabled="!edited.order">
+                                                        <md-option ng-repeat="vat in order.destination.vatNumbers"
+                                                                   value="{{ vat.number }}"
+                                                                   ng-selected="order.destination.vatNumbers[0]"> {{
+                                                            vat.number}}
+                                                        </md-option>
+                                                    </md-select>
+                                                </md-input-container>
+                                            </div>
+
+                                            <div flex="20" ng-if="order.destination.vatNumbers.length > 1"
+                                                 ng-disabled="!edited.order">
+                                                <md-input-container class="md-block md-container-md-select-fix"
+                                                                    style="top: 6px">
+                                                    <label>Adószám</label>
+                                                    <md-select md-no-ink name="destinationVat"
+                                                               ng-model="order.ekaerDestinationVat"
+                                                               ng-disabled="!edited.order">
+                                                        <md-option ng-repeat="vat in order.destination.vatNumbers"
+                                                                   value="{{ vat.number }}">
+                                                            {{ vat.number}}
+                                                        </md-option>
+                                                    </md-select>
+                                                </md-input-container>
+                                            </div>
+
+                                            <div flex="40">
+                                                <md-input-container class="md-block">
+                                                    <label>Cím</label>
+                                                    <input type="text" ng-model="order.destinationAddress"/>
+                                                </md-input-container>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <ngivr-divider ng-if="order.sygnus && order._id"></ngivr-divider>
+                            <div>
+                                <add-vehicles-to-order order="order" data="vehicleData"
+                                                       default-vehicle-data="defaultVehicleData"
+                                                       ekaer="order.ekaer"></add-vehicles-to-order>
+                                <ngivr-divider ng-if="order.sygnus && order._id && !hideVehicleList"></ngivr-divider>
+                                <ngivr-list-tracking-vehicles ng-if="order.sygnus && order._id && !hideVehicleList"
+                                                              ngivr-query="listQuery.vehicle" dispo="order">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--order ekh-->
+                    <div ng-if="mode == availableMode.ekh" style="margin-bottom: 20px;">
+                        <div>
+                            <div layout="row">
+                                <!--ship-->
+                                <div flex="25">
+                                    <md-input-container class="md-block">
+                                        <label>Hajó</label>
+                                        <ngivr-select-ship ng-model="order.ship" cargo-plan-id="order.cargoPlanId"
+                                                           ng-disabled="!edited.order"
+                                                           required></ngivr-select-ship>
+                                    </md-input-container>
+                                </div>
+                                <!--ship item-->
+                                <div flex="25">
+                                    <md-input-container class="md-block">
+                                        <label>Hajó item</label>
+                                        <ngivr-select-ship-item ng-model="order.shipItem" ship-id="order.ship._id"
+                                                                ng-disabled="!edited.order"
+                                                                required></ngivr-select-ship-item>
+                                    </md-input-container>
+                                </div>
+                                <!--Tervezett mennyiség-->
+                                <div flex="20" style="margin-top: 2px;">
+                                    <md-input-container class="md-block">
+                                        <label>Tervezett mennyiség</label>
+                                        <input type="number" required name="volume" ng-model="order.volume"
+                                               ng-disabled="!edited.order"/>
+                                    </md-input-container>
+                                    <div ng-if="formOrder.volume.$touched" ng-messages="formOrder.volume.$error"
+                                         multiple
+                                         md-auto-hide="false">
+                                        <p ng-message="required">A mező kitöltése kötelező!</p>
+                                    </div>
+                                </div>
+                                <!--fertilizer-->
+                                <div flex="15" style="margin-top: 6px;">
+                                    <ngivr-input-switch ng-disabled="!edited.order"
+                                                        ng-model="order.fertilizer"
+                                                        ngivr-caption="műtrágya"
+                                                        ngivr-off-display="ngivr.strings.inputSwitch.default.off"
+                                                        ngivr-on-display="ngivr.strings.inputSwitch.default.on"
+                                                        ngivr-on-value="true"
+                                                        ngivr-off-value="false">
+                                    </ngivr-input-switch>
+                                </div>
+                                <!--order gombok-->
+                                <div flex="15">
+                                    <div style="margin-top: 16px; margin-right: 5px;" class="pull-right">
+                                        <ngivr-icon-static ng-if="!order._id || edited.order"
+                                                           ng-disabled="formOrder.$invalid"
+                                                           ng-click="formOrder.$invalid || saveOrder(order, mode)"
+                                                           ngivr-icon="save"
+                                                           ngivr-tooltip="Mentés"/>
+                                        <ngivr-icon-static ng-if="edited.order" ng-click="cancelOrder()"
+                                                           ngivr-icon="close"
+                                                           ngivr-tooltip="Mégse"/>
+
+                                        <ngivr-icon-static ng-if="order._id && !edited.order"
+                                                           ng-disabled="isOrderLocked(order)"
+                                                           ng-click="isOrderLocked(order) || editOrder(order)"
+                                                           ngivr-icon="edit"
+                                                           ngivr-tooltip="Szerkesztés"/>
+                                        <ngivr-icon-static ng-if="!edited.order"
+                                                           ng-click="isOrderLocked(order) || removeOrder(order)"
+                                                           ng-disabled="isOrderLocked(order)" ngivr-icon="close"
+                                                           ngivr-tooltip="Diszpó törlése"/>
+                                    </div>
+                                    <div ng-if="isOrderLocked(order)">
+                                        <div layout-fill>
+                                            <div class="pull-right">
+                                                <span class="badge badge-default" style="margin-top: 10px !important;">A diszpozíció lockolva van egy másik felhasználó által illetve törölt vagy lezárt.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div layout="row">
+                                <!--Partner-->
+                                <div flex="40">
+                                    <md-input-container class="md-block">
+                                        <label>Partner</label>
+                                        <ngivr-autocomplete-partner ng-model="order.partner[0]"
+                                                                    ng-disabled="!edited.order"
+                                                                    required
+                                                                    name="partner"></ngivr-autocomplete-partner>
+                                    </md-input-container>
+                                </div>
+                                <!--Lerakóhely-->
+                                <div flex="30">
+                                    <md-input-container class="md-block ">
+                                        <label>Lerakóhely</label>
+                                        <ngivr-autocomplete-site ng-model="order.unloadLocation[0]"
+                                                                 ng-disabled="!edited.order"
+                                                                 name="unloadLocation"></ngivr-autocomplete-site>
+                                    </md-input-container>
+                                    {{order.unloadLocation[0].city + (order.unloadLocation[0] ?', ' : '') +
+                                    order.unloadLocation[0].street + '
+                                    ' +
+                                    order.unloadLocation[0].streetType + ' ' + order.unloadLocation[0].streetNumber }}
+                                </div>
+                                <!--settlement-->
+                                <div flex="30">
+                                    <ngivr-autocomplete-settlement-out ng-model="order.loadLocationSettlement[0]"
+                                                                       ng-disabled="!edited.order"
+                                                                       name="loadLocationSettlement"></ngivr-autocomplete-settlement-out>
+                                </div>
+                            </div>
+                            <!--Hajó kirakodás-->
+                            <div layout="row">
+                                <div flex="30" style="margin-top: 16px;">
+                                    <span class="badge badge-warning ship-label pull-left">Hajó kirakodás</span>
+                                </div>
+                                <!--Partner-->
+                                <div flex="35">
+                                    <md-input-container class="md-block">
+                                        <label>Költségviselő partner</label>
+                                        <ngivr-autocomplete-partner ng-model="order.serviceTypes[0].partner[0]"
+                                                                    ng-disabled="!edited.order"
+                                                                    name="partner"></ngivr-autocomplete-partner>
+                                    </md-input-container>
+                                </div>
+                                <!--szolgáltatási szerződés-->
+                                <div flex="35">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>Szolgáltatási szerződés</label>
+                                        <ngivr-select-service-contract required
+                                                                       cost-bearer-id="order.serviceTypes[0].partner[0]._id"
+                                                                       ng-model="order.selectedActualServiceContract"
+                                                                       ng-disabled="!edited.order">
+                                        </ngivr-select-service-contract>
+                                    </md-input-container>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--order ekz-->
+                    <div ng-if="mode == availableMode.ekz" style="margin-bottom: 20px;">
+                        <div>
+                            <div layout="row">
+                                <!--ship-->
+                                <div flex="25">
+                                    <md-input-container class="md-block">
+                                        <label>Hajó</label>
+                                        <ngivr-select-ship ng-model="order.ship" cargo-plan-id="order.cargoPlanId"
+                                                           ng-disabled="!edited.order"
+                                                           required></ngivr-select-ship>
+                                    </md-input-container>
+                                </div>
+                                <!--ship item-->
+                                <div flex="25">
+                                    <md-input-container class="md-block">
+                                        <label>Hajó item</label>
+                                        <ngivr-select-ship-item ng-model="order.shipItem" ship-id="order.ship._id"
+                                                                ng-disabled="!edited.order"
+                                                                required></ngivr-select-ship-item>
+                                    </md-input-container>
+                                </div>
+                                <!--Tervezett mennyiség-->
+                                <div flex="20" style="margin-top: 2px;">
+                                    <md-input-container class="md-block">
+                                        <label>Tervezett mennyiség</label>
+                                        <input type="number" required name="volume" ng-model="order.volume"
+                                               ng-disabled="!edited.order"/>
+                                    </md-input-container>
+                                    <div ng-if="formOrder.volume.$touched" ng-messages="formOrder.volume.$error"
+                                         multiple
+                                         md-auto-hide="false">
+                                        <p ng-message="required">A mező kitöltése kötelező!</p>
+                                    </div>
+                                </div>
+                                <!--fertilizer-->
+                                <div flex="15" style="margin-top: 6px;">
+                                    <ngivr-input-switch ng-disabled="!edited.order"
+                                                        ng-model="order.fertilizer"
+                                                        ngivr-caption="műtrágya"
+                                                        ngivr-off-display="ngivr.strings.inputSwitch.default.off"
+                                                        ngivr-on-display="ngivr.strings.inputSwitch.default.on"
+                                                        ngivr-on-value="true"
+                                                        ngivr-off-value="false">
+                                    </ngivr-input-switch>
+                                </div>
+                                <!--order gombok-->
+                                <div flex="15">
+                                    <div style="margin-top: 16px; margin-right: 5px;" class="pull-right">
+                                        <ngivr-icon-static ng-if="!order._id || edited.order"
+                                                           ng-disabled="formOrder.$invalid"
+                                                           ng-click="formOrder.$invalid || saveOrder(order, mode)"
+                                                           ngivr-icon="save"
+                                                           ngivr-tooltip="Mentés"/>
+                                        <ngivr-icon-static ng-if="edited.order" ng-click="cancelOrder()"
+                                                           ngivr-icon="close"
+                                                           ngivr-tooltip="Mégse"/>
+
+                                        <ngivr-icon-static ng-if="order._id && !edited.order"
+                                                           ng-disabled="isOrderLocked(order)"
+                                                           ng-click="isOrderLocked(order) || editOrder(order)"
+                                                           ngivr-icon="edit"
+                                                           ngivr-tooltip="Szerkesztés"/>
+                                        <ngivr-icon-static ng-if="!edited.order"
+                                                           ng-click="isOrderLocked(order) || removeOrder(order)"
+                                                           ng-disabled="isOrderLocked(order)" ngivr-icon="close"
+                                                           ngivr-tooltip="Diszpó törlése"/>
+                                    </div>
+                                    <div ng-if="isOrderLocked(order)">
+                                        <div layout-fill>
+                                            <div class="pull-right">
+                                                <span class="badge badge-default" style="margin-top: 10px !important;">A diszpozíció lockolva van egy másik felhasználó által illetve törölt vagy lezárt.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div layout="row">
+                                <!--Partner-->
+                                <div flex="40">
+                                    <md-input-container class="md-block">
+                                        <label>Partner</label>
+                                        <ngivr-autocomplete-partner ng-model="order.partner[0]"
+                                                                    ng-disabled="!edited.order"
+                                                                    required
+                                                                    name="partner"></ngivr-autocomplete-partner>
+                                    </md-input-container>
+                                </div>
+                                <!--Lerakóhely-->
+                                <div flex="30">
+                                    <md-input-container class="md-block ">
+                                        <label>Lerakóhely</label>
+                                        <ngivr-autocomplete-site ng-model="order.unloadLocation[0]"
+                                                                 ng-disabled="!edited.order"
+                                                                 name="unloadLocation"></ngivr-autocomplete-site>
+                                    </md-input-container>
+                                    {{order.unloadLocation[0].city + (order.unloadLocation[0] ?', ' : '') +
+                                    order.unloadLocation[0].street + '
+                                    ' +
+                                    order.unloadLocation[0].streetType + ' ' + order.unloadLocation[0].streetNumber }}
+                                </div>
+                                <!--settlement-->
+                                <div flex="30">
+                                    <ngivr-autocomplete-settlement-out ng-model="order.loadLocationSettlement[0]"
+                                                                       ng-disabled="!edited.order"
+                                                                       name="loadLocationSettlement"></ngivr-autocomplete-settlement-out>
+                                </div>
+                            </div>
+                            <div layout="row">
+                                <!--Partner eszköztár-->
+                                <div flex="30">
+                                    <md-input-container class="md-block">
+                                        <label>Partner eszköztár</label>
+                                        <ngivr-select-partner-toolkit ng-model="order.partnerToolkit[0]"
+                                                                      partner-id="order.partner[0]._id"
+                                                                      ng-disabled="!edited.order" required
+                                                                      name="partnerToolkit"></ngivr-select-partner-toolkit>
+                                    </md-input-container>
+                                </div>
+                                <!--Partner eszköz-->
+                                <div flex="30">
+                                    <md-input-container class="md-block ">
+                                        <label>Partner eszköz</label>
+                                        <ngivr-select-partner-toolkit-tool ng-model="order.partnerTool[0]"
+                                                                           partner-tool-id="order.partnerToolkit[0]._id"
+                                                                           partner-id="order.partner[0]._id"
+                                                                           ng-disabled="!edited.order" required
+                                                                           name="partnerTool"></ngivr-select-partner-toolkit-tool>
+                                    </md-input-container>
+                                </div>
+                                <!--zsákok száma-->
+                                <div flex="20" style="margin-top: 2px;">
+                                    <md-input-container class="md-block">
+                                        <label>Zsákok száma</label>
+                                        <input type="number" name="sackDb" ng-model="order.sackDb"
+                                               ng-disabled="!edited.order"/>
+                                    </md-input-container>
+                                    <div ng-if="formOrder.sackDb.$touched" ng-messages="formOrder.sackDb.$error"
+                                         multiple
+                                         md-auto-hide="false">
+                                        <p ng-message="required">A mező kitöltése kötelező!</p>
+                                    </div>
+                                </div>
+                                <!--Mennyiség/zsákok-->
+                                <div flex="20" style="margin-top: 2px;">
+                                    <md-input-container class="md-block">
+                                        <label>Mennyiség/zsák</label>
+                                        <input type="text"
+                                               ng-if="order.volume === undefined && order.sackDb === undefined"
+                                               value="0 mt"
+                                               name="sackVolume" ng-model="order.sackVolume" ng-disabled="true"/>
+                                        <input type="text"
+                                               ng-if="order.volume !== undefined && order.sackDb !== undefined"
+                                               ng-value="(order.volume / order.sackDb).toFixed(3) + ' mt'"
+                                               name="sackVolume"
+                                               ng-model="order.sackVolume" ng-disabled="true"/>
+                                    </md-input-container>
+                                </div>
+                            </div>
+                            <!--Hajó kirakodás-->
+                            <div layout="row">
+                                <div flex="30" style="margin-top: 16px;">
+                                    <span class="badge badge-warning ship-label pull-left">Hajó kirakodás</span>
+                                </div>
+                                <!--Partner-->
+                                <div flex="35">
+                                    <md-input-container class="md-block">
+                                        <label>Költségviselő partner</label>
+                                        <ngivr-autocomplete-partner ng-model="order.serviceTypes[0].partner[0]"
+                                                                    ng-disabled="!edited.order"
+                                                                    name="partner"></ngivr-autocomplete-partner>
+                                    </md-input-container>
+                                </div>
+                                <!--szolgáltatási szerződés-->
+                                <div flex="35">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>Szolgáltatási szerződés</label>
+                                        <ngivr-select-service-contract required
+                                                                       cost-bearer-id="order.serviceTypes[0].partner[0]._id"
+                                                                       ng-model="order.selectedActualServiceContract[0]"
+                                                                       ng-disabled="!edited.order">
+                                        </ngivr-select-service-contract>
+                                    </md-input-container>
+                                </div>
+                            </div>
+                            <!--Zsákolás-->
+                            <div layout="row" ng-if="order.shipItem.stripping !== ngivr.settings.strippingType.sack">
+                                <div flex="30" style="margin-top: 16px;">
+                                    <span class="badge badge-info ship-label pull-left">Zsákolás</span>
+                                </div>
+                                <!--Partner-->
+                                <div flex="35">
+                                    <md-input-container class="md-block">
+                                        <label>Költségviselő partner</label>
+                                        <ngivr-autocomplete-partner ng-model="order.serviceTypes[1].partner[0]"
+                                                                    ng-disabled="!edited.order"
+                                                                    name="partner"></ngivr-autocomplete-partner>
+                                    </md-input-container>
+                                </div>
+                                <!--szolgáltatási szerződés-->
+                                <div flex="35">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>Szolgáltatási szerződés</label>
+                                        <ngivr-select-service-contract required
+                                                                       cost-bearer-id="order.serviceTypes[1].partner[0]._id"
+                                                                       ng-model="order.selectedActualServiceContract[1]"
+                                                                       ng-disabled="!edited.order">
+                                        </ngivr-select-service-contract>
+                                    </md-input-container>
+                                </div>
+                            </div>
+                            <!--Teherautóra rakodás-->
+                            <div layout="row">
+                                <div flex="30" style="margin-top: 16px;">
+                                    <span class="badge badge-success ship-label pull-left">Teherautóra rakodás</span>
+                                </div>
+                                <!--Partner-->
+                                <div flex="35">
+                                    <md-input-container class="md-block">
+                                        <label>Költségviselő partner</label>
+                                        <ngivr-autocomplete-partner ng-model="order.serviceTypes[2].partner[0]"
+                                                                    ng-disabled="!edited.order"
+                                                                    name="partner"></ngivr-autocomplete-partner>
+                                    </md-input-container>
+                                </div>
+                                <!--szolgáltatási szerződés-->
+                                <div flex="35">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>Szolgáltatási szerződés</label>
+                                        <ngivr-select-service-contract required
+                                                                       cost-bearer-id="order.serviceTypes[2].partner[0]._id"
+                                                                       ng-model="order.selectedActualServiceContract[2]"
+                                                                       ng-disabled="!edited.order">
+                                        </ngivr-select-service-contract>
+                                    </md-input-container>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--order bto-->
+                    <div ng-if="mode == availableMode.bto" style="margin-bottom: 20px;">
+                        <div>
+                            <div layout="row">
+                                <!--ship-->
+                                <div flex="25">
+                                    <md-input-container class="md-block">
+                                        <label>Hajó</label>
+                                        <ngivr-select-ship ng-model="order.ship" cargo-plan-id="order.cargoPlanId"
+                                                           ng-disabled="!edited.order"
+                                                           required></ngivr-select-ship>
+                                    </md-input-container>
+                                </div>
+                                <!--ship item-->
+                                <div flex="25">
+                                    <md-input-container class="md-block">
+                                        <label>Hajó item</label>
+                                        <ngivr-select-ship-item ng-model="order.shipItem" ship-id="order.ship._id"
+                                                                ng-disabled="!edited.order"
+                                                                required></ngivr-select-ship-item>
+                                    </md-input-container>
+                                </div>
+                                <!--Tervezett mennyiség-->
+                                <div flex="20" style="margin-top: 2px;">
+                                    <md-input-container class="md-block">
+                                        <label>Tervezett mennyiség</label>
+                                        <input type="number" required name="volume" ng-model="order.volume"
+                                               ng-disabled="!edited.order"/>
+                                    </md-input-container>
+                                    <div ng-if="formOrder.volume.$touched" ng-messages="formOrder.volume.$error"
+                                         multiple
+                                         md-auto-hide="false">
+                                        <p ng-message="required">A mező kitöltése kötelező!</p>
+                                    </div>
+                                </div>
+                                <!--fertilizer-->
+                                <div flex="15" style="margin-top: 6px;">
+                                    <ngivr-input-switch ng-disabled="!edited.order"
+                                                        ng-model="order.fertilizer"
+                                                        ngivr-caption="műtrágya"
+                                                        ngivr-off-display="ngivr.strings.inputSwitch.default.off"
+                                                        ngivr-on-display="ngivr.strings.inputSwitch.default.on"
+                                                        ngivr-on-value="true"
+                                                        ngivr-off-value="false">
+                                    </ngivr-input-switch>
+                                </div>
+                                <!--order gombok-->
+                                <div flex="15">
+                                    <div style="margin-top: 16px; margin-right: 5px;" class="pull-right">
+                                        <ngivr-icon-static ng-if="!order._id || edited.order"
+                                                           ng-disabled="formOrder.$invalid"
+                                                           ng-click="formOrder.$invalid || saveOrder(order, mode)"
+                                                           ngivr-icon="save"
+                                                           ngivr-tooltip="Mentés"/>
+                                        <ngivr-icon-static ng-if="edited.order" ng-click="cancelOrder()"
+                                                           ngivr-icon="close"
+                                                           ngivr-tooltip="Mégse"/>
+
+                                        <ngivr-icon-static ng-if="order._id && !edited.order"
+                                                           ng-disabled="isOrderLocked(order)"
+                                                           ng-click="isOrderLocked(order) || editOrder(order)"
+                                                           ngivr-icon="edit"
+                                                           ngivr-tooltip="Szerkesztés"/>
+                                        <ngivr-icon-static ng-if="!edited.order"
+                                                           ng-click="isOrderLocked(order) || removeOrder(order)"
+                                                           ng-disabled="isOrderLocked(order)" ngivr-icon="close"
+                                                           ngivr-tooltip="Diszpó törlése"/>
+                                    </div>
+                                    <div ng-if="isOrderLocked(order)">
+                                        <div layout-fill>
+                                            <div class="pull-right">
+                                                <span class="badge badge-default" style="margin-top: 10px !important;">A diszpozíció lockolva van egy másik felhasználó által illetve törölt vagy lezárt.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div layout="row">
+                                <!--Partner-->
+                                <div flex="60">
+                                    <md-input-container class="md-block">
+                                        <label>Partner</label>
+                                        <ngivr-autocomplete-partner ng-model="order.partner[0]"
+                                                                    ng-disabled="!edited.order"
+                                                                    required
+                                                                    name="partner"></ngivr-autocomplete-partner>
+                                    </md-input-container>
+                                </div>
+                                <!--Raktárpozíció-->
+                                <div flex="40"  style="margin-top: 2px">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>Raktárpozíció</label>
+                                        <!--<ngivr-select-depot ng-model="order.unloadDepot[0]" name="unloadDepot" required-->
+                                                            <!--ng-disabled="!edited.order"-->
+                                                            <!--site-id="order.cargoPlan.loadPlace[0]._id"-->
+                                                            <!--ngivr-validation-mongoose-->
+                                                            <!--ng-model-options="{ getterSetter: true }"/>-->
+
+                                        <ngivr-autocomplete-depots-of-site ng-model="order.unloadDepot[0]"
+                                                                           name="unloadDepot"
+                                                                           ng-required="true"
+                                                                           ng-disabled="!edited.order"
+                                                                           site-id="order.cargoPlan.loadPlace[0]._id"
+                                                                           own="order.cargoPlan.loadPlace[0].own"></ngivr-autocomplete-depots-of-site>
+                                    </md-input-container>
+                                </div>
+                            </div>
+                            <!--Hajó kirakodás-->
+                            <div layout="row">
+                                <div flex="30" style="margin-top: 16px;">
+                                    <span class="badge badge-warning ship-label pull-left">Hajó kirakodás</span>
+                                </div>
+                                <!--Partner-->
+                                <div flex="35">
+                                    <md-input-container class="md-block">
+                                        <label>Költségviselő partner</label>
+                                        <ngivr-autocomplete-partner ng-model="order.serviceTypes[0].partner[0]"
+                                                                    ng-disabled="!edited.order"
+                                                                    name="partner"></ngivr-autocomplete-partner>
+                                    </md-input-container>
+                                </div>
+                                <!--szolgáltatási szerződés-->
+                                <div flex="35">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>Szolgáltatási szerződés</label>
+                                        <ngivr-select-service-contract required
+                                                                       cost-bearer-id="order.serviceTypes[0].partner[0]._id"
+                                                                       ng-model="order.selectedActualServiceContract[0]"
+                                                                       ng-disabled="!edited.order">
+                                        </ngivr-select-service-contract>
+                                    </md-input-container>
+                                </div>
+                            </div>
+                            <!--raktár ki-, betárolás-->
+                            <div layout="row">
+                                <div flex="30" style="margin-top: 16px;">
+                                    <span class="badge badge-special ship-label pull-left">Raktár ki-, betárolás</span>
+                                </div>
+                                <!--Partner-->
+                                <div flex="35">
+                                    <md-input-container class="md-block">
+                                        <label>Költségviselő partner</label>
+                                        <ngivr-autocomplete-partner ng-model="order.serviceTypes[1].partner[0]"
+                                                                    ng-disabled="!edited.order"
+                                                                    name="partner"></ngivr-autocomplete-partner>
+                                    </md-input-container>
+                                </div>
+                                <!--szolgáltatási szerződés-->
+                                <div flex="35">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>Szolgáltatási szerződés</label>
+                                        <ngivr-select-service-contract required
+                                                                       cost-bearer-id="order.serviceTypes[1].partner[0]._id"
+                                                                       ng-model="order.selectedActualServiceContract[1]"
+                                                                       ng-disabled="!edited.order">
+                                        </ngivr-select-service-contract>
+                                    </md-input-container>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--add order-->
+                    <!--<div layout="row" layout-padding style="margin-bottom: 20px;" >-->
+
+                    <!--<div flex="50" flex-xs="100" ng-if="mode == availableMode.int">-->
+
+                    <!--<div layout="column">-->
+                    <!--<div flex>-->
+                    <!--<a ng-click="addOrder(true)" ng-if="!edited.order" ng-disabled="buttonDisabled"-->
+                    <!--class="waves-effect waves-grey btn fw-btn btn-raised-default"><i-->
+                    <!--class="fa fa-plus"></i> <span>{{buttonTitle}}</span></a>-->
+                    <!--</div>-->
+                    <!--<div flex>-->
+                    <!--<a ng-click="addOrder(false)" ng-if="!edited.order" ng-disabled="buttonDisabled"-->
+                    <!--class="waves-effect waves-grey btn fw-btn btn-raised-default"><i-->
+                    <!--class="fa fa-plus"></i> <span>{{buttonTitleAlt}}</span></a>-->
+                    <!--</div>-->
+                    <!--</div>-->
+
+
+                    <!--</div>-->
+
+                    <!--<div flex="50" flex-xs="100" ng-if="mode != availableMode.int">-->
+
+
+                    <!--<a ng-click="addOrder()" ng-if="!edited.order" ng-disabled="buttonDisabled"-->
+                    <!--class="waves-effect waves-grey btn fw-btn btn-raised-default"><i-->
+                    <!--class="fa fa-plus"></i> <span>{{buttonTitle}}</span></a>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                </div>
+            </div>
+
+        </md-content>
+    </div>
+
+
+</form>
+
+<!--<ngivr-list-tracking-vehicles dispo="order" ng-if="!hidePortVehicle"-->
+<!--ngivr-query="listQuery.vehicle"-->
+<!--dispos="order.relatedContract[0].reserved.orders"></ngivr-list-tracking-vehicles>-->
+

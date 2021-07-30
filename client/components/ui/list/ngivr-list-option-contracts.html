@@ -1,0 +1,55 @@
+<ngivr-list ngivr-schema="optionContract" ngivr-ref="this">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+    <ngivr-list-template>
+        <md-card class="card-sm">
+            <md-card-content>
+                <div layout="row" ng-click="toggleOptionsChange($index)">
+                    <div flex="20">
+                        <strong>{{$index+1}}</strong>
+                        <md-tooltip md-direction="left">id: {{doc._id}}</md-tooltip>
+                    </div>
+                    <div flex="20" ng-bind="doc.rate">
+                        <md-tooltip md-direction="left">Árfolyam</md-tooltip>
+                    </div>
+                    <div flex="20" ng-bind="doc.expiry | date: 'yyyy.MM.dd'">
+                        <md-tooltip md-direction="left">Lejárat</md-tooltip>
+                    </div>
+                    <div flex="20">
+                        <span>{{doc.quantity| number: 0}}</span>
+                        <md-tooltip md-direction="left">Volumen</md-tooltip>
+                    </div>
+                    <div flex="20" ng-bind="doc.openDate | date: 'yyyy.MM.dd'">
+                        <md-tooltip md-direction="left">Kötés</md-tooltip>
+                    </div>
+                    <div flex="20" ng-bind="doc.bank">
+                        <md-tooltip md-direction="left">Bank</md-tooltip>
+                    </div>
+                </div>
+                <div ng-if="showOptions[$index]" layout="row">
+                    <div flex="100">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <tbody>
+                                <tr>
+                                    <td>{{ doc.direction + "/" + doc.type}}</td>
+                                    <td>{{'Prémium: ' + doc.premium }}</td>
+                                    <td>{{doc.by}}</td>
+                                </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </md-card-content>
+        </md-card>
+
+    </ngivr-list-template>
+
+</ngivr-list>

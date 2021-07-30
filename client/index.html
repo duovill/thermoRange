@@ -1,0 +1,992 @@
+<!doctype html>
+<html ng-app="ngIvrApp" ng-cloak>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <base href="/">
+    <title>Thermo Range</title>
+    <meta name="description" content="NGIVR">
+
+
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="0">
+    <meta http-equiv="Cache-Control" content="no-store"/>
+
+    <script src="socket.io/socket.io.js"></script>
+
+    <!--  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"> -->
+
+
+    <!--@build-->
+
+    <!-- bower:css -->
+    <link rel="stylesheet" href="bower_components/components-font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.css" />
+    <link rel="stylesheet" href="bower_components/angular-material-icons/angular-material-icons.css" />
+    <link rel="stylesheet" href="bower_components/simple-line-icons/dist/styles/simple-line-icons.css" />
+    <link rel="stylesheet" href="bower_components/codemirror/lib/codemirror.css" />
+    <link rel="stylesheet" href="bower_components/jGrowl/jquery.jgrowl.css" />
+    <link rel="stylesheet" href="bower_components/angular-tree-control/css/tree-control.css" />
+    <link rel="stylesheet" href="bower_components/animate.css/animate.css" />
+    <link rel="stylesheet" href="bower_components/videogular-themes-default/videogular.css" />
+    <!-- endbower -->
+
+    <!-- injector:css -->
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/metronic/assets/admin/global/css/components-md.css">
+    <link rel="stylesheet" href="assets/metronic/assets/admin/layout2/css/layout.css">
+    <link rel="stylesheet" href="assets/metronic/assets/admin/layout2/css/themes/light.css">
+    <link rel="stylesheet" href="bower_components/materialize/bin/materialize.css">
+    <link rel="stylesheet" href="assets/style-dynamic.css">
+    <link rel="stylesheet" href="app/account/login/login.css">
+    <link rel="stylesheet" href="app/admin/admin.css">
+    <link rel="stylesheet" href="app/app.css">
+    <link rel="stylesheet" href="app/main/main.css">
+    <!-- endinjector -->
+
+    <!-- bower:js -->
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/highcharts/highcharts.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-messages/angular-messages.js"></script>
+    <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+    <script src="bower_components/angular-animate/angular-animate.js"></script>
+    <script src="bower_components/angular-aria/angular-aria.js"></script>
+    <script src="bower_components/angular-material/angular-material.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="bower_components/chart.js/dist/Chart.js"></script>
+    <script src="bower_components/angular-chart.js/dist/angular-chart.js"></script>
+    <script src="bower_components/angularUtils-pagination/dirPagination.js"></script>
+    <script src="bower_components/angular-jwt/dist/angular-jwt.js"></script>
+    <script src="bower_components/angular-ui-validate/dist/validate.js"></script>
+    <script src="bower_components/highcharts-ng/dist/highcharts-ng.js"></script>
+    <script src="bower_components/angular-scrollto/angular-scrollto.js"></script>
+    <script src="bower_components/angular-material-icons/angular-material-icons.min.js"></script>
+    <script src="bower_components/angular-filter/dist/angular-filter.js"></script>
+    <script src="bower_components/ngMask/dist/ngMask.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="bower_components/tinymce/tinymce.js"></script>
+    <script src="bower_components/angular-ui-tinymce/src/tinymce.js"></script>
+    <script src="bower_components/angular-i18n/angular-locale_hu-hu.js"></script>
+    <script src="bower_components/tinymce-i18n/langs/hu_HU.js"></script>
+    <script src="bower_components/js-cookie/src/js.cookie.js"></script>
+    <script src="bower_components/lodash/lodash.js"></script>
+    <script src="bower_components/codemirror/lib/codemirror.js"></script>
+    <script src="bower_components/codemirror/addon/selection/active-line.js"></script>
+    <script src="bower_components/codemirror/addon/mode/simple.js"></script>
+    <script src="bower_components/codemirror/addon/mode/multiplex.js"></script>
+    <script src="bower_components/codemirror/mode/xml/xml.js"></script>
+    <script src="bower_components/codemirror/mode/javascript/javascript.js"></script>
+    <script src="bower_components/codemirror/mode/css/css.js"></script>
+    <script src="bower_components/codemirror/mode/htmlmixed/htmlmixed.js"></script>
+    <script src="bower_components/codemirror/mode/handlebars/handlebars.js"></script>
+    <script src="bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
+    <script src="bower_components/jGrowl/jquery.jgrowl.js"></script>
+    <script src="bower_components/angular-bind-html-compile/angular-bind-html-compile.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="bower_components/moment/locale/hu.js"></script>
+    <script src="bower_components/angular-swipe/dist/angular-swipe.js"></script>
+    <script src="bower_components/angular-tree-control/angular-tree-control.js"></script>
+    <script src="bower_components/ngCapsLock/ng-caps-lock.js"></script>
+    <script src="bower_components/written-number/dist/written-number.js"></script>
+    <script src="bower_components/mobile-detect/mobile-detect.js"></script>
+    <script src="bower_components/angular-sticky/dist/angular-sticky.js"></script>
+    <script src="bower_components/js-htmlencode/src/htmlencode.js"></script>
+    <script src="bower_components/angular-socket-io/socket.js"></script>
+    <script src="bower_components/threejs/build/three.min.js"></script>
+    <script src="bower_components/threejs/examples/js/controls/OrbitControls.js"></script>
+    <script src="bower_components/threejs/examples/js/geometries/ConvexGeometry.js"></script>
+    <script src="bower_components/threejs/examples/js/math/ConvexHull.js"></script>
+    <script src="bower_components/videogular/videogular.js"></script>
+    <script src="bower_components/videogular-controls/vg-controls.js"></script>
+    <script src="bower_components/videogular-buffering/vg-buffering.js"></script>
+    <script src="bower_components/videogular-overlay-play/vg-overlay-play.js"></script>
+    <!-- endbower -->
+
+
+    <!-- injector:js -->
+    <script src="shared/ngivr-settings.js"></script>
+    <script src="app/ngivr.js"></script>
+    <script src="shared/translation/hu/ngivr-strings.js"></script>
+    <script src="shared/translation/hu/strings/depot.js"></script>
+    <script src="shared/translation/hu/strings/financial-document.js"></script>
+    <script src="shared/translation/hu/strings/html-template.js"></script>
+    <script src="shared/translation/hu/strings/input/autocomplete/city.js"></script>
+    <script src="shared/translation/hu/strings/input/autocomplete/country.js"></script>
+    <script src="shared/translation/hu/strings/input/autocomplete/parity-place.js"></script>
+    <script src="shared/translation/hu/strings/input/autocomplete/parity.js"></script>
+    <script src="shared/translation/hu/strings/input/autocomplete/partner.js"></script>
+    <script src="shared/translation/hu/strings/input/autocomplete/product.js"></script>
+    <script src="shared/translation/hu/strings/input/autocomplete/site.js"></script>
+    <script src="shared/translation/hu/strings/input/autocomplete/tow.js"></script>
+    <script src="shared/translation/hu/strings/input/autocomplete/trailer.js"></script>
+    <script src="shared/translation/hu/strings/input/autocomplete/zip-code.js"></script>
+    <script src="shared/translation/hu/strings/input/date.js"></script>
+    <script src="shared/translation/hu/strings/partner.js"></script>
+    <script src="shared/translation/hu/strings/product.js"></script>
+    <script src="shared/translation/hu/strings/sychronizer.js"></script>
+    <script src="shared/translation/hu/strings/zipcode.js"></script>
+    <script src="shared/translation/en/ngivr-strings.js"></script>
+    <script src="shared/translation/en/strings/depot.js"></script>
+    <script src="shared/translation/en/strings/financial-document.js"></script>
+    <script src="shared/translation/en/strings/html-template.js"></script>
+    <script src="shared/translation/en/strings/input/autocomplete/city.js"></script>
+    <script src="shared/translation/en/strings/input/autocomplete/country.js"></script>
+    <script src="shared/translation/en/strings/input/autocomplete/parity-place.js"></script>
+    <script src="shared/translation/en/strings/input/autocomplete/parity.js"></script>
+    <script src="shared/translation/en/strings/input/autocomplete/partner.js"></script>
+    <script src="shared/translation/en/strings/input/autocomplete/product.js"></script>
+    <script src="shared/translation/en/strings/input/autocomplete/site.js"></script>
+    <script src="shared/translation/en/strings/input/autocomplete/tow.js"></script>
+    <script src="shared/translation/en/strings/input/autocomplete/trailer.js"></script>
+    <script src="shared/translation/en/strings/input/autocomplete/zip-code.js"></script>
+    <script src="shared/translation/en/strings/input/date.js"></script>
+    <script src="shared/translation/en/strings/partner.js"></script>
+    <script src="shared/translation/en/strings/product.js"></script>
+    <script src="shared/translation/en/strings/sychronizer.js"></script>
+    <script src="shared/translation/en/strings/zipcode.js"></script>
+    <script src="shared/ngivr-string.js"></script>
+    <script src="shared/ngivr-console.js"></script>
+    <script src="shared/ngivr-keycode.js"></script>
+    <script src="shared/ngivr-mongoose.js"></script>
+    <script src="shared/ngivr-protocol.js"></script>
+    <script src="shared/ngivr-validation.js"></script>
+    <script src="app/app.js"></script>
+    <script src="components/_thermo/factory/thermo-webgl.js"></script>
+    <script src="components/core/json-prune.js"></script>
+    <script src="components/core/ngivr-base64.js"></script>
+    <script src="components/core/ngivr-clipboard.js"></script>
+    <script src="components/core/ngivr-event.js"></script>
+    <script src="components/core/ngivr-file-base64.js"></script>
+    <script src="components/core/ngivr-functional.js"></script>
+    <script src="components/core/ngivr-growl.js"></script>
+    <script src="components/core/ngivr-input.js"></script>
+    <script src="components/core/ngivr-json.js"></script>
+    <script src="components/core/ngivr-list.js"></script>
+    <script src="components/core/ngivr-overlay.js"></script>
+    <script src="components/core/ngivr-paletta.js"></script>
+    <script src="components/core/ngivr-referrer.js"></script>
+    <script src="components/core/ngivr-sticky-scroller.js"></script>
+    <script src="components/decorator/global-input-autocomplete-disable.js"></script>
+    <script src="components/decorator/md-autocomplete-ngivr-ellipsis.js"></script>
+    <script src="components/decorator/md-swipe.js"></script>
+    <script src="components/decorator/md-tab.js"></script>
+    <script src="components/decorator/ng-click.js"></script>
+    <script src="components/decorator/ng-model-option.js"></script>
+    <script src="components/directive/form/ngivr-form.js"></script>
+    <script src="components/directive/list/ngivr-list-buttons.js"></script>
+    <script src="components/directive/list/ngivr-list-header.js"></script>
+    <script src="components/directive/list/ngivr-list-paginator.js"></script>
+    <script src="components/directive/list/ngivr-list-searcher.js"></script>
+    <script src="components/directive/list/ngivr-list-template.js"></script>
+    <script src="components/directive/list/ngivr-list.js"></script>
+    <script src="components/directive/md-blur.js"></script>
+    <script src="components/directive/ng-click.js"></script>
+    <script src="components/directive/ngivr-capitalize.js"></script>
+    <script src="components/directive/ngivr-ellipsis.js"></script>
+    <script src="components/directive/ngivr-filter-kebab-case.js"></script>
+    <script src="components/directive/ngivr-full-width.js"></script>
+    <script src="components/directive/ngivr-isolate-form.js"></script>
+    <script src="components/directive/ngivr-lock.js"></script>
+    <script src="components/directive/ngivr-model-file.js"></script>
+    <script src="components/directive/ngivr-nav-indicator.js"></script>
+    <script src="components/filter/ngivr-date.js"></script>
+    <script src="components/filter/ngivr-depots-with-product-filter.js"></script>
+    <script src="components/filter/ngivr-interpolate.js"></script>
+    <script src="components/filter/ngivr-number.js"></script>
+    <script src="components/filter/ngivr-raw-html.js"></script>
+    <script src="components/filter/ngivr-reverse.js"></script>
+    <script src="components/model/delivery-certificate.js"></script>
+    <script src="components/model/deposit.js"></script>
+    <script src="components/model/depots.js"></script>
+    <script src="components/model/financial-cost-bearer.js"></script>
+    <script src="components/model/financial-document.js"></script>
+    <script src="components/model/general-outgoing-invoice.js"></script>
+    <script src="components/model/html-template-comment.js"></script>
+    <script src="components/model/html-template.js"></script>
+    <script src="components/model/incoming-invoice.js"></script>
+    <script src="components/model/item.js"></script>
+    <script src="components/model/ledger.js"></script>
+    <script src="components/model/nomination.js"></script>
+    <script src="components/model/outgoing-invoice.js"></script>
+    <script src="components/model/partner-toolkit.js"></script>
+    <script src="components/model/partners.js"></script>
+    <script src="components/model/possession-transfer.js"></script>
+    <script src="components/model/service-contract.js"></script>
+    <script src="components/model/service-order.js"></script>
+    <script src="components/model/site.js"></script>
+    <script src="components/model/ticket.js"></script>
+    <script src="components/model/user.js"></script>
+    <script src="components/model/weighing-house.js"></script>
+    <script src="components/service/auth/auth-interceptor.js"></script>
+    <script src="components/service/auth/auth.js"></script>
+    <script src="components/service/auth/user.js"></script>
+    <script src="components/service/common.js"></script>
+    <script src="components/service/html-template/ngivr-button-pdf-shared.js"></script>
+    <script src="components/service/html-template/ngivr-html-template-include.js"></script>
+    <script src="components/service/html-template/ngivr-pdf-model-generator.js"></script>
+    <script src="components/service/html-template/ngivr-template-generator.js"></script>
+    <script src="components/service/html-template/ngivr-template-pdf.js"></script>
+    <script src="components/service/html-template/ngivr-template-schema-helper.js"></script>
+    <script src="components/service/http/ngivr-api.js"></script>
+    <script src="components/service/http/ngivr-data-id.js"></script>
+    <script src="components/service/http/ngivr-data-query.js"></script>
+    <script src="components/service/http/ngivr-data.js"></script>
+    <script src="components/service/http/ngivr-http-interceptor.js"></script>
+    <script src="components/service/http/ngivr-http.js"></script>
+    <script src="components/service/input/ngivr-autocomplete.js"></script>
+    <script src="components/service/input/ngivr-chips.js"></script>
+    <script src="components/service/input/ngivr-form.js"></script>
+    <script src="components/service/input/ngivr-input.js"></script>
+    <script src="components/service/lock/ngivr-lock-list.js"></script>
+    <script src="components/service/lock/ngivr-lock-service.js"></script>
+    <script src="components/service/lock/ngivr-lock.js"></script>
+    <script src="components/service/ngivr-arabesque.js"></script>
+    <script src="components/service/ngivr-bank-account.js"></script>
+    <script src="components/service/ngivr-config.js"></script>
+    <script src="components/service/ngivr-debounce.js"></script>
+    <script src="components/service/ngivr-debug.js"></script>
+    <script src="components/service/ngivr-ekar.js"></script>
+    <script src="components/service/ngivr-exception.js"></script>
+    <script src="components/service/ngivr-form-helper.js"></script>
+    <script src="components/service/ngivr-ledger-splitter.js"></script>
+    <script src="components/service/ngivr-loader.js"></script>
+    <script src="components/service/ngivr-observer.js"></script>
+    <script src="components/service/ngivr-order.js"></script>
+    <script src="components/service/ngivr-pdf-popup.js"></script>
+    <script src="components/service/ngivr-pub-sub.js"></script>
+    <script src="components/service/ngivr-service.js"></script>
+    <script src="components/service/ngivr-strings.js"></script>
+    <script src="components/service/ngivr-ticket-validation.js"></script>
+    <script src="components/service/ngivr-ticket.js"></script>
+    <script src="components/service/offer-factory.js"></script>
+    <script src="components/service/socket/lock/ngivr-socket-lock.js"></script>
+    <script src="components/service/socket/socket.js"></script>
+    <script src="components/service/socket/synced-cache.js"></script>
+    <script src="components/ui/button/ngivr-button-clipboard-copy.js"></script>
+    <script src="components/ui/button/ngivr-button-clipboard-cut.js"></script>
+    <script src="components/ui/button/ngivr-button-clipboard-paste.js"></script>
+    <script src="components/ui/button/ngivr-button-excel-export.js"></script>
+    <script src="components/ui/button/ngivr-button-menu-popup.storege-list.js"></script>
+    <script src="components/ui/button/ngivr-button-pdf-existing-popup.js"></script>
+    <script src="components/ui/button/ngivr-button-pdf-preview-ult.js"></script>
+    <script src="components/ui/button/ngivr-button-pdf-preview.js"></script>
+    <script src="components/ui/button/ngivr-button-pdf-qr.js"></script>
+    <script src="components/ui/button/ngivr-button-pdf.js"></script>
+    <script src="components/ui/button/ngivr-button.js"></script>
+    <script src="components/ui/button/ngivr-icon-fa.js"></script>
+    <script src="components/ui/button/ngivr-icon-static.js"></script>
+    <script src="components/ui/button/ngivr-input-switch.js"></script>
+    <script src="components/ui/button/ngivr-stock-popup-button.js"></script>
+    <script src="components/ui/common/move/ngivr-move-products-partners.js"></script>
+    <script src="components/ui/common/moveBetweenDepots/ngivr-move-between-depots.js"></script>
+    <script src="components/ui/common/reQualification/ngivr-re-qualification.js"></script>
+    <script src="components/ui/common/sweep/ngivr-sweep.js"></script>
+    <script src="components/ui/form/ngivr-form-financial-document.js"></script>
+    <script src="components/ui/form/ngivr-form-possession-transfer.js"></script>
+    <script src="components/ui/form/ngivr-form-service-order.js"></script>
+    <script src="components/ui/form/ngivr-form-user.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocmplete-depots-of-site.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-boni-product.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-carrier.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-city.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-country-code.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-country.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-depot.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-general-products.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-menu.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-other-document-template.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-parity-settlement.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-partner-more.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-partner-partner.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-partner.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-plate-number1.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-plate-numbers.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-producer.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-product.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-settlement-out.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-settlement.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-site.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-tcn.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-tow.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-trailer.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-vehicle.js"></script>
+    <script src="components/ui/input/autocomplete/ngivr-autocomplete-zip-code.js"></script>
+    <script src="components/ui/input/chips/ngivr-chips-other-document-template.js"></script>
+    <script src="components/ui/input/chips/ngivr-chips-parity-place.js"></script>
+    <script src="components/ui/input/chips/ngivr-chips-partner.js"></script>
+    <script src="components/ui/input/chips/ngivr-chips-product.js"></script>
+    <script src="components/ui/input/chips/ngivr-chips.parity.js"></script>
+    <script src="components/ui/input/menu/ngivr-menu-html-template-comment-insert.js"></script>
+    <script src="components/ui/input/ngivr-input-date.js"></script>
+    <script src="components/ui/input/ngivr-input-number.js"></script>
+    <script src="components/ui/input/select/ngivr-select-afa-types.js"></script>
+    <script src="components/ui/input/select/ngivr-select-amount-units.js"></script>
+    <script src="components/ui/input/select/ngivr-select-cargo-plan.js"></script>
+    <script src="components/ui/input/select/ngivr-select-carrier.js"></script>
+    <script src="components/ui/input/select/ngivr-select-contract-status.js"></script>
+    <script src="components/ui/input/select/ngivr-select-counties.js"></script>
+    <script src="components/ui/input/select/ngivr-select-currency-string.js"></script>
+    <script src="components/ui/input/select/ngivr-select-currency.js"></script>
+    <script src="components/ui/input/select/ngivr-select-deposit.js"></script>
+    <script src="components/ui/input/select/ngivr-select-depot.js"></script>
+    <script src="components/ui/input/select/ngivr-select-document-type.js"></script>
+    <script src="components/ui/input/select/ngivr-select-filter-template.js"></script>
+    <script src="components/ui/input/select/ngivr-select-fizmod.js"></script>
+    <script src="components/ui/input/select/ngivr-select-fkv-cikkcsop.js"></script>
+    <script src="components/ui/input/select/ngivr-select-fkvmozgas.js"></script>
+    <script src="components/ui/input/select/ngivr-select-fob-destination-string.js"></script>
+    <script src="components/ui/input/select/ngivr-select-fob-destination.js"></script>
+    <script src="components/ui/input/select/ngivr-select-gender.js"></script>
+    <script src="components/ui/input/select/ngivr-select-language.js"></script>
+    <script src="components/ui/input/select/ngivr-select-ledger-helper.js"></script>
+    <script src="components/ui/input/select/ngivr-select-menu.js"></script>
+    <script src="components/ui/input/select/ngivr-select-own-accountNumbers.js"></script>
+    <script src="components/ui/input/select/ngivr-select-own-vat-numbers.js"></script>
+    <script src="components/ui/input/select/ngivr-select-parity.js"></script>
+    <script src="components/ui/input/select/ngivr-select-partner-group.js"></script>
+    <script src="components/ui/input/select/ngivr-select-partner-toolkit-tool.js"></script>
+    <script src="components/ui/input/select/ngivr-select-partner-toolkit.js"></script>
+    <script src="components/ui/input/select/ngivr-select-partner-tools-string.js"></script>
+    <script src="components/ui/input/select/ngivr-select-partner-tools.js"></script>
+    <script src="components/ui/input/select/ngivr-select-partner-type1.js"></script>
+    <script src="components/ui/input/select/ngivr-select-partner-type2.js"></script>
+    <script src="components/ui/input/select/ngivr-select-product-group-object.js"></script>
+    <script src="components/ui/input/select/ngivr-select-product-group.js"></script>
+    <script src="components/ui/input/select/ngivr-select-product.js"></script>
+    <script src="components/ui/input/select/ngivr-select-quality-params.js"></script>
+    <script src="components/ui/input/select/ngivr-select-quay-berth-nomination.js"></script>
+    <script src="components/ui/input/select/ngivr-select-quay-berth.js"></script>
+    <script src="components/ui/input/select/ngivr-select-risk.js"></script>
+    <script src="components/ui/input/select/ngivr-select-service-contract.js"></script>
+    <script src="components/ui/input/select/ngivr-select-ship-item.js"></script>
+    <script src="components/ui/input/select/ngivr-select-ship.js"></script>
+    <script src="components/ui/input/select/ngivr-select-status-of-contract.js"></script>
+    <script src="components/ui/input/select/ngivr-select-stripping.js"></script>
+    <script src="components/ui/input/select/ngivr-select-vat-number.js"></script>
+    <script src="components/ui/input/select/ngivr-select-vat-type.js"></script>
+    <script src="components/ui/input/select/ngivr-select-vehicle.js"></script>
+    <script src="components/ui/input/select/ngivr-select-weighing-house.js"></script>
+    <script src="components/ui/input/select/ngivrSelectInvoiceDateType.js"></script>
+    <script src="components/ui/invoice/ngivr-invoice-details.js"></script>
+    <script src="components/ui/list/ngivr-list-bfk-tickets.js"></script>
+    <script src="components/ui/list/ngivr-list-contracts-sell-huf.js"></script>
+    <script src="components/ui/list/ngivr-list-contracts-without-hedge.js"></script>
+    <script src="components/ui/list/ngivr-list-contracts.js"></script>
+    <script src="components/ui/list/ngivr-list-delivery-certificate.js"></script>
+    <script src="components/ui/list/ngivr-list-deposits.js"></script>
+    <script src="components/ui/list/ngivr-list-depots.js"></script>
+    <script src="components/ui/list/ngivr-list-finance-outgoing-invoices.js"></script>
+    <script src="components/ui/list/ngivr-list-financial-costbearer.js"></script>
+    <script src="components/ui/list/ngivr-list-financial-document.js"></script>
+    <script src="components/ui/list/ngivr-list-general-invoices.js"></script>
+    <script src="components/ui/list/ngivr-list-hedge-contracts.js"></script>
+    <script src="components/ui/list/ngivr-list-hedge-outgoing.js"></script>
+    <script src="components/ui/list/ngivr-list-incoming-invoices.js"></script>
+    <script src="components/ui/list/ngivr-list-invoice-incoming-right.js"></script>
+    <script src="components/ui/list/ngivr-list-invoice-incoming.js"></script>
+    <script src="components/ui/list/ngivr-list-invoice-outgoing-right.js"></script>
+    <script src="components/ui/list/ngivr-list-invoice-outgoing.js"></script>
+    <script src="components/ui/list/ngivr-list-invoice-statement.js"></script>
+    <script src="components/ui/list/ngivr-list-invoice-statistics.js"></script>
+    <script src="components/ui/list/ngivr-list-itk-depots.js"></script>
+    <script src="components/ui/list/ngivr-list-movements-between-depots.js"></script>
+    <script src="components/ui/list/ngivr-list-movements-between-partners..js"></script>
+    <script src="components/ui/list/ngivr-list-my-contracts.js"></script>
+    <script src="components/ui/list/ngivr-list-my-offers.js"></script>
+    <script src="components/ui/list/ngivr-list-new-contract-contracts.js"></script>
+    <script src="components/ui/list/ngivr-list-new-contract-offers.js"></script>
+    <script src="components/ui/list/ngivr-list-option-contracts.js"></script>
+    <script src="components/ui/list/ngivr-list-paid-delivery-certificates.js"></script>
+    <script src="components/ui/list/ngivr-list-reconcilation.js"></script>
+    <script src="components/ui/list/ngivr-list-service-orders.js"></script>
+    <script src="components/ui/list/ngivr-list-ship-balance.js"></script>
+    <script src="components/ui/list/ngivr-list-ship-ticket.js"></script>
+    <script src="components/ui/list/ngivr-list-stock-log.js"></script>
+    <script src="components/ui/list/ngivr-list-sweep.js"></script>
+    <script src="components/ui/list/ngivr-list-ticket-generator-half-tickets.js"></script>
+    <script src="components/ui/list/ngivr-list-ticket-generator-orders.js"></script>
+    <script src="components/ui/list/ngivr-list-ticket-generator-ships.js"></script>
+    <script src="components/ui/list/ngivr-list-ticket-generator-tickets.js"></script>
+    <script src="components/ui/list/ngivr-list-tickets-need-invoice.js"></script>
+    <script src="components/ui/list/ngivr-list-tickets-per-depots.js"></script>
+    <script src="components/ui/list/ngivr-list-tickets-without-invoice.js"></script>
+    <script src="components/ui/list/ngivr-list-tracking-cargo-plans-deliveries-popup-controller.js"></script>
+    <script src="components/ui/list/ngivr-list-tracking-cargo-plans.js"></script>
+    <script src="components/ui/list/ngivr-list-tracking-contracts.js"></script>
+    <script src="components/ui/list/ngivr-list-tracking-dispos.js"></script>
+    <script src="components/ui/list/ngivr-list-tracking-possession-transfers.js"></script>
+    <script src="components/ui/list/ngivr-list-tracking-technical-performs.js"></script>
+    <script src="components/ui/list/ngivr-list-tracking-tickets.js"></script>
+    <script src="components/ui/list/ngivr-list-tracking-vehicles.js"></script>
+    <script src="components/ui/list/ngivr-list-ultima-list-trio.js"></script>
+    <script src="components/ui/list/ngivr-list-users.js"></script>
+    <script src="components/ui/ng-spinner-bar.js"></script>
+    <script src="components/ui/ngivr-confirm.js"></script>
+    <script src="components/ui/ngivr-divider.js"></script>
+    <script src="components/ui/ngivr-form-validation-display.js"></script>
+    <script src="components/ui/ngivr-google-chart.js"></script>
+    <script src="components/ui/ngivr-growl.js"></script>
+    <script src="components/ui/ngivr-list-divider-pre.js"></script>
+    <script src="components/ui/ngivr-overlay-simple.js"></script>
+    <script src="components/ui/ngivr-portlet-action.js"></script>
+    <script src="components/ui/ngivr-portlet-body.js"></script>
+    <script src="components/ui/ngivr-portlet-title.js"></script>
+    <script src="components/ui/ngivr-portlet.js"></script>
+    <script src="components/ui/ngivr-prompt.js"></script>
+    <script src="components/ui/ngivr-tab-badge.js"></script>
+    <script src="components/ui/ngivr-view-html-template-pdf.js"></script>
+    <script src="components/ui/ngivr-view-html-template.js"></script>
+    <script src="components/ui/order/depotReservation/ngivr-depot-reservation.js"></script>
+    <script src="components/ui/order/ngivr-excel-filter.js"></script>
+    <script src="components/ui/order/ngivr-order.js"></script>
+    <script src="components/ui/popup/changeOrderInTicket/ngivr-popup-change-order-in-ticket.js"></script>
+    <script src="components/ui/popup/deposit/ngivr-popup-deposit.js"></script>
+    <script src="components/ui/popup/depotEditor/ngivr-popup-depot-editor.js"></script>
+    <script src="components/ui/popup/generateContract/ngivr-popup-generate-contract-popup-controller.js"></script>
+    <script src="components/ui/popup/generateContract/ngivr-popup-generate-contract.js"></script>
+    <script src="components/ui/popup/incoming-invoice/ngivr-popup-incoming-invoice.js"></script>
+    <script src="components/ui/popup/ledgerSplitter/ngivr-popup-ledger-splitter.js"></script>
+    <script src="components/ui/popup/masterData/ngivr-popup-master-data.js"></script>
+    <script src="components/ui/popup/newPartner/ngivr-popup-new-partner.js"></script>
+    <script src="components/ui/popup/ngivr-popup-delivery-certificate.js"></script>
+    <script src="components/ui/popup/ngivr-popup-pdf-list.js"></script>
+    <script src="components/ui/popup/other-document/ngivr-other-document-form.js"></script>
+    <script src="components/ui/popup/partnerEditor/ngivr-popup-partner-editor.js"></script>
+    <script src="components/ui/popup/possessionTransferOutTicket/ngivr-popup-out-ticket.js"></script>
+    <script src="components/ui/popup/productEditor/ngivr-popup-product-editor.js"></script>
+    <script src="components/ui/popup/selectLoadDepotForOrder/ngivr-popup-select-depot.js"></script>
+    <script src="components/ui/popup/ship/ngivr-popup-ship-popup-controller.js"></script>
+    <script src="components/ui/popup/ship/ngivr-popup-ship.js"></script>
+    <script src="components/ui/popup/shipOnOrderSplitter/ngivr-popup-ship-on-order-splitter-popup-controller.js"></script>
+    <script src="components/ui/popup/shipOnOrderSplitter/ngivr-popup-ship-on-order-splitter.js"></script>
+    <script src="components/ui/popup/stock/ngivr-popup-stock.js"></script>
+    <script src="components/ui/popup/storageListExcel/ngivr-popup-storage-list-excel.js"></script>
+    <script src="components/ui/popup/sweepReason/ngivr-popup-sweep-reason.js"></script>
+    <script src="components/ui/popup/transportEquipmentEditor/ngivr-popup-transport-equipment-editor.js"></script>
+    <script src="components/ui/popup/vehicle/ngivr-popup-vehicle-popup-controller.js"></script>
+    <script src="components/ui/popup/vehicle/ngivr-popup-vehicle.js"></script>
+    <script src="components/validation/mongoose-error.js"></script>
+    <script src="components/validation/ngir-validation-order-for-split.js"></script>
+    <script src="components/validation/ngivr-validation-account-length.js"></script>
+    <script src="components/validation/ngivr-validation-account.js"></script>
+    <script src="components/validation/ngivr-validation-async-test.js"></script>
+    <script src="components/validation/ngivr-validation-date-before-date.js"></script>
+    <script src="components/validation/ngivr-validation-date-before.js"></script>
+    <script src="components/validation/ngivr-validation-e-invoice.js"></script>
+    <script src="components/validation/ngivr-validation-filextension.js"></script>
+    <script src="components/validation/ngivr-validation-future-date-forbidden.js"></script>
+    <script src="components/validation/ngivr-validation-get-contract-required.js"></script>
+    <script src="components/validation/ngivr-validation-invoice-exists.js"></script>
+    <script src="components/validation/ngivr-validation-is-same.js"></script>
+    <script src="components/validation/ngivr-validation-mongoose.js"></script>
+    <script src="components/validation/ngivr-validation-need-fields.js"></script>
+    <script src="components/validation/ngivr-validation-order-change.js"></script>
+    <script src="components/validation/ngivr-validation-order-exists.js"></script>
+    <script src="components/validation/ngivr-validation-possession-transfer.js"></script>
+    <script src="components/validation/ngivr-validation-unique-vat-number.js"></script>
+    <script src="components/validation/ngivr-validation-unique.js"></script>
+    <script src="components/validation/validate-date.js"></script>
+    <script src="app/_thermo/measuring-instrument/display/list/thermo-measuring-instrument-list-batch.js"></script>
+    <script src="app/_thermo/measuring-instrument/display/list/thermo-measuring-instrument-list-measure.js"></script>
+    <script src="app/_thermo/measuring-instrument/display/route.js"></script>
+    <script src="app/_thermo/measuring-instrument/display/thermo-measuring-instrument-display-container.js"></script>
+    <script src="app/_thermo/measuring-instrument/route.js"></script>
+    <script src="app/_thermo/measuring-instrument/thermo-measuring-instrument-container.js"></script>
+    <script src="app/_thermo/measuring-instrument/thermo-measuring-instrument-form.js"></script>
+    <script src="app/_thermo/measuring-instrument/thermo-measuring-instrument-list.js"></script>
+    <script src="app/_thermo/thermo-tests/route.js"></script>
+    <script src="app/_thermo/thermo-tests/thermo-tests-convex-hull.js"></script>
+    <script src="app/_thermo/thermo-tests/thermo-tests-test.js"></script>
+    <script src="app/_thermo/thermo-tests/thermo-tests.js"></script>
+    <script src="app/account/account.js"></script>
+    <script src="app/account/login/login.controller.js"></script>
+    <script src="app/account/mySettings/mySettings.controller.js"></script>
+    <script src="app/account/settings/settings.controller.js"></script>
+    <script src="app/account/signup/signup.controller.js"></script>
+    <script src="app/admin/admin.controller.js"></script>
+    <script src="app/admin/admin.js"></script>
+    <script src="app/main/main.controller.js"></script>
+    <script src="app/main/main.js"></script>
+    <script src="app/master/html-templates-comment/component/ngivr-master-html-template-comment-form.js"></script>
+    <script src="app/master/html-templates-comment/component/ngivr-master-html-template-comment-list.js"></script>
+    <script src="app/master/html-templates-comment/ngivr-master-html-template-comment.js"></script>
+    <script src="app/master/html-templates-comment/route.js"></script>
+    <script src="app/master/htmlTemplates/command.js"></script>
+    <script src="app/master/htmlTemplates/controller/editor.js"></script>
+    <script src="app/master/htmlTemplates/controller/qr.js"></script>
+    <script src="app/master/htmlTemplates/controller/schema.js"></script>
+    <script src="app/master/htmlTemplates/controller/template.js"></script>
+    <script src="app/master/htmlTemplates/model/qr.js"></script>
+    <script src="app/master/htmlTemplates/model/schema.js"></script>
+    <script src="app/master/htmlTemplates/model/setting.js"></script>
+    <script src="app/master/htmlTemplates/route.js"></script>
+    <script src="app/master/htmlTemplates/view/ngivr-master-html-template.js"></script>
+    <script src="app/master/master.controller.js"></script>
+    <script src="app/master/master.js"></script>
+    <script src="app/master/other-document/ngivr-other-document-container.js"></script>
+    <script src="app/master/other-document/ngivr-other-document-list.js"></script>
+    <script src="app/master/other-document/ngivr-other-document-template-form-field.js"></script>
+    <script src="app/master/other-document/ngivr-other-document-template-form.js"></script>
+    <script src="app/master/other-document/ngivr-other-document-template-list.js"></script>
+    <script src="app/master/other-document/route.js"></script>
+    <script src="app/master/queue/ngivr-master-queue.js"></script>
+    <script src="app/master/queue/route.js"></script>
+    <script src="app/master/synchronizer/synchronizer.controller.js"></script>
+    <script src="app/master/synchronizer/synchronizer.js"></script>
+    <script src="app/master/users/ngivr-master-users.js"></script>
+    <script src="app/master/users/route.js"></script>
+    <script src="app/sidebar/sidebar.Controller.js"></script>
+    <!-- endinjector -->
+
+    <!--@build:end-->
+</head>
+
+<body style="display: none;"
+      class="page-header-fixed page-container-bg-solid ng-class:{'page-sidebar-closed-hide-logo page-md': $root.user.role}; ng-class:{'login-fix2': !$root.user.role};"
+      ng-controller="MasterCtrl" ng-cloak>
+
+<div ng-if="$root.ngivrLoading" class="page-spinner-bar">
+    <div class="bounce1"></div>
+    <div class="bounce2"></div>
+    <div class="bounce3"></div>
+</div>
+
+<!-- BEGIN HEADER -->
+<div ng-if="$root.user.role" class="page-header navbar navbar-fixed-top" style="z-index: 11 !important;">
+    <div class="page-header-inner ">
+        <div class="page-logo waves-effect waves-white">
+            <a href="/">
+
+                <div style="font-size: 20px; text-align: center; width:130px; font-weight: bold;">THERMO</div>
+                <div style="font-size: 14px; text-align: center; width:130px;">RANGE</div>
+            </a>
+            <div class="menu-toggler sidebar-toggler hide"></div>
+        </div>
+        <a href="javascript:" class="menu-toggler responsive-toggler" data-toggle="collapse"
+           data-target=".navbar-collapse">
+            <ng-md-icon icon="menu"></ng-md-icon>
+
+        </a>
+        <div class="page-top">
+            <div class="top-menu">
+                <ul class="nav navbar-nav pull-right">
+                    <!--MASTER SZERVER ÁLLAPOTA-->
+                    <li class="dropdown dropdown-extended dropdown-notification"
+                        ng-if="$root.masterSlave.config.enabledAsClient">
+
+                        <a href="javascript:" class="dropdown-toggle waves-effect waves-grey" data-toggle="dropdown"
+                           data-hover="dropdown" data-close-others="true">
+                            <i class="fa fa-industry" class="waves-lightgrey"></i>
+                            <span class="badge badge-default" ng-hide="$root.masterSlave.master"> ! </span>
+                            <span class="badge badge-default" ng-show="$root.masterSlave.master"> 	&#10004; </span>
+                        </a>
+                        <ul class="dropdown-menu scrollable-menu">
+                            <li class="external">
+                                <h3>
+                                        <span class="label label-sm label-icon label-success notification-label">
+                                            <i class="fa" ng-class="$root.masterSlave.master?'fa-info':'fa-times'"></i></span>
+                                    <span class="notification-message">MASTER szerver {{$root.masterSlave.master?'':'NEM'}} elérhető</span><br/>
+                                </h3>
+                            </li>
+                        </ul>
+                    </li>
+                    <!--KLIENS SZERVEREK ÁLLAPOTA-->
+                    <li class="dropdown dropdown-extended dropdown-notification"
+                        ng-if="$root.masterSlave.config.enabledAsMaster">
+
+                        <a href="javascript:" class="dropdown-toggle waves-effect waves-grey" data-toggle="dropdown"
+                           data-hover="dropdown" data-close-others="true">
+                            <i class="fa fa-home" class="waves-lightgrey"></i>
+                            <span class="badge badge-default"> {{getClientCount()}} </span>
+                        </a>
+                        <ul class="dropdown-menu scrollable-menu">
+                            <li class="notification-height">
+                                <ul class="dropdown-menu-list scroller" data-handle-color="#637283">
+
+                                    <li ng-repeat="(key,value) in $root.masterSlave.slaves">
+
+                                        <a>
+                                            <div class="notification-left">
+                                                    <span
+                                                        class="label label-sm label-icon label-success notification-label">
+                                                        <i class="fa" ng-class="value.online?'fa-info':'fa-times'"></i></span>
+                                            </div>
+                                            <span class="details">
+                          <span class="notification-message">{{value.name}} {{value.online?'ON-LINE':'OFF-LINE'}}</span><br/>
+                                                </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <!--értesítések-->
+                    <li class="dropdown dropdown-extended dropdown-notification">
+                        <a href="javascript:" class="dropdown-toggle waves-effect waves-grey" data-toggle="dropdown"
+                           data-hover="dropdown" data-close-others="true">
+                            <i class="icon-bell"></i>
+                            <span ng-if="$root.notifications.length" class="badge badge-default"> {{ $root.notifications.length }} </span>
+                        </a>
+                        <ul class="dropdown-menu scrollable-menu">
+                            <li class="external">
+                                <h3>
+                                    <span ng-if="$root.notifications.length"><span class="bold">{{ $root.notifications.length }}</span> értesítés</span>
+                                    <span ng-if="!$root.notifications.length">Nincsenek értesítések!</span>
+                                </h3>
+                            </li>
+                            <li ng-if="$root.notifications.length" class="notification-height">
+                                <ul class="dropdown-menu-list scroller" data-handle-color="#637283">
+
+                                    <li ng-repeat="i in $root.notifications">
+
+                                        <!--<a href="{{ i.url == 'tracking' || i.url == 'newContract' ? 'tracking' : i.url + '/' + i.contractId }}" ng-click="removeNotification($index)">-->
+                                        <a ng-click="goToState(i); removeNotification($index)">
+                                            <div class="notification-left">
+                                                    <span
+                                                        class="label label-sm label-icon label-success notification-label"><i
+                                                        class="fa fa-info"></i></span>
+                                            </div>
+                                            <span class="details">
+                          <span class="notification-message">{{ i.message + ', ' + i.contractNumber}}</span><br/>
+                                                <span
+                                                    class="notification-date">{{ i.createdAt | date: "MM.dd. H:m"}}</span>
+                                                </span>
+                                            <!--<button class="waves-effect waves-whitesmoke btn btn-toleft-toright notification-close" ng-click="removeNotification($index)"><i class="fa fa-times"></i></button>-->
+                                        </a>
+
+
+                                    </li>
+
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!--üzenetek-->
+                    <li class="dropdown dropdown-extended dropdown-notification">
+                        <a href="javascript:" class="dropdown-toggle waves-effect waves-grey" data-toggle="dropdown"
+                           data-hover="dropdown" data-close-others="true">
+                            <i class="icon-envelope-open"></i>
+                            <span ng-if="$root.messages.length"
+                                  class="badge badge-default"> {{ $root.messages.length }} </span>
+                        </a>
+                        <ul class="dropdown-menu scrollable-menu">
+                            <li class="external">
+                                <h3>
+                                        <span ng-if="$root.messages.length"><span
+                                            class="bold">{{ $root.messages.length }}</span> üzenet</span>
+                                    <span ng-if="!$root.messages.length">Nincsenek üzenetek!</span>
+                                </h3>
+                            </li>
+                            <li ng-if="$root.messages.length" class="notification-height">
+                                <ul class="dropdown-menu-list scroller" data-handle-color="#637283">
+
+                                    <li ng-repeat="i in $root.messages">
+                                        <!--<a href="{{ i.url == 'tracking' || i.url == 'newContract' ? i.url : i.url + '/' + i.contractId }}" ng-click="removeMessage($index)">-->
+                                        <a ng-click="goToState(i); removeMessage($index)">
+                                            <div class="notification-left">
+                                                    <span
+                                                        class="label label-sm label-icon label-success notification-label"><i
+                                                        class="fa fa-info"></i></span>
+                                            </div>
+                                            <span class="details">
+                          <span class="notification-message">{{ i.message + ', ' + i.contractNumber}}</span><br/>
+                                                <span
+                                                    class="notification-date">{{ i.createdAt | date: "MM.dd. H:m"}}</span>
+                                                </span>
+                                            <!--<button class="waves-effect waves-whitesmoke btn btn-toleft-toright notification-close" ng-click="removeMessage($index)"><i class="fa fa-times"></i></button>-->
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!--feladatok-->
+                    <li class="dropdown dropdown-extended dropdown-notification">
+                        <a href="javascript:" class="dropdown-toggle waves-effect waves-grey" data-toggle="dropdown"
+                           data-hover="dropdown" data-close-others="true">
+                            <i class="icon-calendar"></i>
+                            <span ng-if="$root.tasks.length"
+                                  class="badge badge-default"> {{ $root.tasks.length }} </span>
+                        </a>
+                        <ul class="dropdown-menu extended tasks">
+                            <li class="external">
+                                <h3>
+                                    <span ng-if="$root.tasks.length"><span class="bold">{{ $root.tasks.length }}</span> értesítés</span>
+                                    <span ng-if="!$root.tasks.length">Nincsenek értesítések!</span>
+                                </h3>
+                            </li>
+                            <li ng-if="$root.tasks.length" class="notification-height">
+                                <ul class="dropdown-menu-list scroller" data-handle-color="#637283">
+
+                                    <li ng-repeat="i in $root.tasks">
+                                        <a href="{{ i.url }}">
+                                                <span class="details">
+                                                        <span class="label label-sm label-icon label-success">
+                                                            <i class="fa fa-info"></i>
+                                                        </span> {{ i.message }} </span>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+
+
+                    <li ng-if="isLoggedIn()" id="ngivr-menu-main-user" class="dropdown dropdown-user" uib-dropdown>
+                        <a href="javascript:" id="user-menu" class="dropdown-toggle waves-effect waves-grey"
+                           uib-dropdown-toggle>
+                            <img alt="" class="img-circle" src="assets/images/user.png"/>
+                            <span ng-bind="getCurrentUser().fullName"></span>
+                            <i class="fa fa-angle-down"></i>
+                        </a>
+                        <ul uib-dropdown-menu aria-labelledby="user-menu" class="dropdown-menu dropdown-menu-default">
+                            <li>
+                                <a class="waves-effect waves-grey" href="javascript:" ng-click="settings()">
+                                    <i class="icon-settings"></i> <span>Jelszó módosítás</span>
+                                </a>
+                            </li>
+
+
+                            <li>
+                                <a class="waves-effect waves-grey" href="javascript:" ng-click="logout()">
+                                    <i class="icon-logout"></i> <span>Kijelentkezés</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <div ng-controller="sidebarCtrl">
+                            <a class="waves-effect waves-grey" href="javascript:" ng-click="toggleRight();">
+                                <i class="icon-logout" style="font-size:19px; margin-top: 30px; color: #C0CDDC;"
+                                   aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- END HEADER -->
+<div class="clearfix">
+</div>
+<!-- BEGIN CONTAINER -->
+
+<div class="page-container" id="content">
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse" style="z-index: 10;" aria-expanded="false">
+            <!-- BEGIN SIDEBAR MENU -->
+            <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+            <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+            <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+            <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+            <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+            <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+
+            <div ng-if="isLoggedIn()">
+                <ul class="page-sidebar-menu page-sidebar-menu-light " aria-expanded="false" data-auto-scroll="true"
+                    data-slide-speed="200">
+                    <li class="sidebar-toggler-wrapper">
+                        <div class="sidebar-toggler"></div>
+                    </li>
+                    <!--{{$root.ngivr.settings.user.role}}-->
+                    <!--{{$root.user.role}}-->
+                    <!--{{$root.ngivr.settings.user.role[$root.user.role]== $root.ngivr.settings.user.role.adminGlobal}}-->
+                    <!--{{$root.ngivr.settings.user.role.indexOf($root.user.role)}}-->
+                    <li ui-sref-active="active-menu" ng-if="$root.user.role == $root.ngivr.settings.user.role.adminGlobal
+              || $root.user.role === $root.ngivr.settings.user.role.adminLogistic
+              || $root.user.role === $root.ngivr.settings.user.role.hedger
+              || $root.user.role == $root.ngivr.settings.user.role.registry
+              || $root.user.role == $root.ngivr.settings.user.role.site
+              || $root.user.role == $root.ngivr.settings.user.role.accounting">
+                        <a ui-sref="master" class="menu-fst waves-effect waves-lightgrey">
+                            <i class="icon-home"></i>
+                            <span class="title">Törzsadatok</span>
+
+                        </a>
+                    </li>
+
+                    <li ui-sref-active="active-menu">
+                        <a ui-sref="thermo-measuring-instrument" class="menu-fst waves-effect waves-lightgrey">
+                            <i class="fa fa-microchip"></i>
+                            <span class="title">Mérőműszerek</span>
+
+                        </a>
+                    </li>
+
+                    <li ui-sref-active="active-menu">
+                        <a ui-sref="thermo-tests.convex-hull" class="menu-fst waves-effect waves-lightgrey">
+                            <i class="fa fa-bug"></i>
+                            <span class="title">Thermo tesztek</span>
+
+                        </a>
+                    </li>
+
+
+                    <!--    EZ AZ UTOLSO -->
+                    <!-- EZ AZ UTOLSO, ALATTA MAR NINCS -->
+
+                </ul>
+            </div>
+            <!-- END SIDEBAR MENU -->
+        </div>
+    </div>
+    <!-- END SIDEBAR -->
+
+    <!-- BEGIN CONTENT -->
+    <!-- Add your site or application content here -->
+    <div class="page-content-wrapper">
+        <div class="page-content ng-class:{'login-fix1': !$root.user.role};"
+             style="padding-right: 0">
+
+            <div ng-controller="sidebarCtrl">
+                <!-- BEGIN RIGHT SIDEBAR -->
+                <md-sidenav class="md-sidenav-right" md-component-id="right">
+
+                    <md-toolbar class="portlet-title"></md-toolbar>
+
+                    <md-content layout-margin>
+
+                        <div layout="row">
+                            <div flex>
+                                <md-tabs md-dynamic-height md-border-bottom md-center-tabs>
+                                    <md-tab id="tab1">
+                                        <md-tab-label>{{ ngivr.strings.title.socketLock }}</md-tab-label>
+                                        <md-tab-body>
+                                            Old lock<br>
+                                            <md-card ng-repeat="lock in locklist" ng-click="openLockModel(lock)"
+                                                     class="card-padding">
+                                                <md-card-content>
+                                                    <div class="card-left card-red">
+                                                        <span ng-bind="lock.data.schema.charAt(0)"></span>
+                                                    </div>
+                                                    <div class="card-right">
+                                                        <table>
+                                                            <tr>
+                                                                <td><span ng-bind="lock.data.schema"></span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span
+                                                                    ng-bind="lock.data.schema === 'Contract' ? lock.data.model.contractNumber : lock.data.schema === 'Ticket' ? lock.data.model.ticketName : lock.data.model.orderNumber"></span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span ng-bind="lock.data.formName"></span></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td><span ng-bind="lock.data.user.nickName"></span></td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </md-card-content>
+                                            </md-card>
+                                            {{redisLockList.length}}
+                                            New lock<br>
+                                            <md-card ng-repeat="lock in redisLockList" ng-click="openLockModel(lock)"
+                                                     class="card-padding">
+                                                <md-card-content>
+                                                    <div class="card-left card-red">
+                                                        <span ng-bind="lock.doc.charAt(0)"></span>
+                                                    </div>
+                                                    <div class="card-right">
+                                                        <table>
+                                                            <tr>
+                                                                <td><span ng-bind="lock.doc"></span></td>
+                                                            </tr>
+
+                                                            <tr>
+                                                                <td><span ng-bind="lock.nickName"></span></td>
+                                                            </tr>
+
+                                                        </table>
+                                                    </div>
+                                                </md-card-content>
+                                            </md-card>
+                                            {{ngivrLockService.locks.size}} saját lock
+                                            <md-card ng-repeat="(key, value) in ngivrLockService.locks"
+                                                     ng-click="openLockModel(lock)" class="card-padding">
+                                                <md-card-content>
+
+                                                    <div class="card-right">
+                                                        <table>
+                                                            <tr>
+                                                                <td><span>Key: {{key}}, value: {{value}}</span></td>
+                                                            </tr>
+
+
+                                                        </table>
+                                                    </div>
+                                                </md-card-content>
+                                            </md-card>
+                                        </md-tab-body>
+                                    </md-tab>
+                                    <md-tab id="tab2">
+                                        <md-tab-label>{{ ngivr.strings.title.activeUsers }}</md-tab-label>
+                                        <md-tab-body>
+
+                                        </md-tab-body>
+                                    </md-tab>
+                                </md-tabs>
+                            </div>
+
+                        </div>
+
+                    </md-content>
+
+                </md-sidenav>
+                <!-- END RIGHT SIDEBAR -->
+            </div>
+
+            <div>
+                <!-- END STYLE CUSTOMIZER -->
+
+                <div class="col-md-12 col-slim-left-padding col-slim-right-padding">
+                    <div ui-view="">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- END CONTENT -->
+</div>
+<!-- END CONTAINER -->
+<!-- BEGIN FOOTER -->
+<div ng-if="$root.user.role" ng-class="{'page-footer': !isElectron }" id="footer">
+    <div class="page-footer-inner" ng-if="!isElectron" style="float: right; white-space: nowrap;"
+         ng-bind-html="$root.banner | ngivrRawHtml"></div>
+
+
+
+</div>
+<!-- END FOOTER -->
+
+
+<div id="ngivr-global-overlay" style="display: none;">
+    <!-- <i class="fa fa-cog fa-spin fa-4x"></i> -->
+    <div>
+        {{ ngivr.strings.button.processing }}
+    </div>
+</div>
+
+<!-- google charts loading deferred-->
+<!--  To cache or copy of the google chart's files are prohibited by the terms-->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+</body>
+
+</html>

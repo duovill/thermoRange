@@ -1,0 +1,68 @@
+<!-- <ngivr-list ngivr-schema="ticket" ngivr-ref="this" ngivr-query="ngivrQuery"> -->
+<ngivr-list ngivr-url="/api/statistics/stockLog" ngivr-ref="this" ngivr-query="ngivrQuery"
+            id="stockLog_{{::$ctrl.$id}}">
+    <ngivr-list-buttons>
+        <ngivr-button-excel-export ngivr-add-date="1" ngivr-filename="$ctrl.filename"
+                                   ngivr-url='/api/statistics/stockLog'
+                                   ngivr-server-query="query.search"></ngivr-button-excel-export>
+    </ngivr-list-buttons>
+    <ngivr-list-searcher>
+        <md-input-container class="md-block md-select-card" >
+            <label>Kereső</label>
+            <input ng-model="ref.textSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+
+    </ngivr-list-searcher>
+    <ngivr-list-header>
+
+        <div hl-sticky offset-top="$root.hlStickyTopOffset" class="ngivr-list-header-column" layout="row" layout-wrap layout-padding>
+            <div flex>
+                <strong>{{ngivr.strings.headers.expiry}}</strong>
+            </div>
+            <div flex>
+                <strong>{{ngivr.strings.headers.contractNumber}}</strong>
+            </div>
+            <div flex>
+                <strong>{{ngivr.strings.headers.rate}}</strong>
+            </div>
+            <div flex>
+                <strong>{{ngivr.strings.headers.total}}</strong>
+            </div>
+            <div flex>
+                <strong>{{ngivr.strings.headers.notHedged}}</strong>
+            </div>
+            <div flex>
+                <strong>{{ngivr.strings.headers.partFull}}</strong>
+            </div>
+        </div>
+
+
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+        <div class="ngivr-list-tickets-without-invoice">
+            <div layout="row" class="ngivr-list-tickets-without-invoice-title">
+                <div flex>
+                    <strong>{{ngivr.strings.headers.expiry}}</strong>
+                </div>
+                <div flex>
+                    <strong>{{ngivr.strings.headers.contractNumber}}</strong>
+                </div>
+                <div flex>
+                    <strong>{{ngivr.strings.headers.rate}}</strong>
+                </div>
+                <div flex>
+                    <strong>{{ngivr.strings.headers.total}}</strong>
+                </div>
+                <div flex>
+                    <strong>{{ngivr.strings.headers.notHedged}}</strong>
+                </div>
+                <div flex>
+                    <strong>{{ngivr.strings.headers.partFull}}</strong>
+                </div>
+            </div>
+        </div>
+    </ngivr-list-template>
+
+</ngivr-list>

@@ -1,0 +1,52 @@
+<ngivr-list ngivr-schema="measuringInstrument" ngivr-sort="$ctrl.sort" ngivr-ref="this" ngivr-query="$ctrl.query">
+
+    <ngivr-list-searcher>
+       <md-input-container class="md-block">
+            <label>{{ $root.ngivr.strings.title.search}}</label>
+            <input ng-model="ref.$ctrl.searchModel.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+
+
+        <div layout="column" layout-gt-xs="row" layout-padding layout-align="start start" layout-align-gt-xs="start center" hl-sticky offset-top="$root.hlStickyTopOffset" class="ngivr-list-header-column" >
+            <div flex flex-gt-xs>
+                <strong>Név</strong>
+            </div>
+            <div flex-gt-xs="20">
+                <strong>MAC ID</strong>
+            </div>
+            <div flex-gt-xs="10">
+                <strong>Műveletek</strong>
+            </div>
+        </div>
+
+
+
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+        <div layout="column" layout-gt-xs="row" layout-padding layout-align="start start" layout-align-gt-xs="start center">
+
+            <div flex flex-gt-xs ng-click="ref.$ctrl.view({ doc: doc})">
+                {{doc.name }}
+            </div>
+            <div flex-gt-xs="20" ng-click="ref.$ctrl.view({ doc: doc})">
+                {{doc.macId }}
+            </div>
+            <div flex-gt-xs="10" >
+                <!--
+                <ngivr-icon-fa ngivr-icon-fa="fa-remove" ngivr-tooltip="{{ $root.ngivr.strings.tooltip.delete }}" ng-click="ref.$ctrl.delete({ doc: doc})"></ngivr-icon-fa>
+                &nbsp;
+                -->
+                <ngivr-icon-fa ngivr-icon-fa="fa-gear" ngivr-tooltip="{{ $root.ngivr.strings.button.show }}" ng-click="ref.$ctrl.view({ doc: doc})"></ngivr-icon-fa>
+                &nbsp;
+                <ngivr-icon-fa ngivr-icon-fa="fa-cubes" ngivr-tooltip="Mérőműszer megjelenitese" ng-click="ref.$ctrl.display({ doc: doc})"></ngivr-icon-fa>
+            </div>
+        </div>
+
+        <md-divider ng-if="$index < docs.length - 1"/>
+    </ngivr-list-template>
+</ngivr-list>

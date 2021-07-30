@@ -1,0 +1,34 @@
+<ngivr-list ngivr-schema="thermoRangeBatchPointCloud" ngivr-query="ngivrQuery" ngivr-restricted="ngivrRestricted" ngivr-ref="this">
+    <ngivr-list-header>
+        <div flex layout="column" layout-gt-sm="row" class="ngivr-list-header-column" layout-padding>
+            <div flex="25">
+                Indítás
+            </div>
+            <div flex="25">
+                Elkészült
+            </div>
+            <div flex="25">
+                Térfogat
+            </div>
+            <div flex="25" style="text-align: right">
+            </div>
+        </div>
+    </ngivr-list-header>
+    <ngivr-list-template>
+        <div flex layout="column" layout-gt-sm="row" layout-padding>
+            <div flex="25">
+                {{ doc.startedAt | ngivrDate:true  }}
+            </div>
+            <div flex="25">
+                {{ doc.completeAt | ngivrDate:true }}
+            </div>
+            <div flex="25">
+                {{ !doc.volume ? 0 : doc.volume}} &#13221; <!-- &#13220; -->
+            </div>
+            <div flex="25" style="text-align: right;">
+                <ngivr-icon-fa ngivr-icon-fa="fa-cloud" ng-click="ref.showPointCloud({ doc: doc})" style="position: relative; left: -5px; top: -0px;"></ngivr-icon-fa>
+            </div>
+        </div>
+
+    </ngivr-list-template>
+</ngivr-list>

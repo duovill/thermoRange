@@ -1,0 +1,169 @@
+<md-dialog aria-label="">
+    <form name="depositForm" ng-cloak novalidate>
+        <md-toolbar>
+            <div class="md-toolbar-tools portlet-title">
+                <h2>Előleg</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon class="fa fa-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <div layout="row">
+
+                    <!--
+                    ********************
+                    Partner
+                    ********************
+                    -->
+                    <div flex="60">
+                        <md-input-container class="md-block">
+                            <label>Partner</label>
+                            <input type="text" name="partner" ng-model="deposit.partner" disabled/>
+                        </md-input-container>
+                    </div>
+
+                    <!--
+                    ********************
+                    Szerződés
+                    ********************
+                    -->
+                    <div ng-if="deposit.contractNumber" flex>
+                        <md-input-container class="md-block">
+                            <label>Szerződés száma</label>
+                            <input type="text" name="contractNumber" ng-model="deposit.contractNumber" disabled/>
+                        </md-input-container>
+                    </div>
+
+                </div>
+
+                <div layout="row">
+
+                    <!--
+                    ********************
+                    Termény
+                    ********************
+                    -->
+                    <div flex="60" style="margin-top: 2px;">
+                        <md-input-container class="md-block">
+                            <label>Cikk</label>
+                            <ngivr-autocomplete-product ng-model="deposit.product" item-type="'sygnus'"
+                                                        ng-disabled="deposit.contractNumber"
+                            ></ngivr-autocomplete-product>
+                        </md-input-container>
+                    </div>
+
+                    <!--
+                    ********************
+                    Irány
+                    ********************
+                    -->
+                    <div flex>
+                        <md-input-container class="md-block md-select-margin">
+                            <label>Irány</label>
+                            <md-select md-no-ink name="type2" ng-model="deposit.direction"
+                                       ng-disabled="deposit.contractNumber">
+                                <md-option value="in">Bejövő</md-option>
+                                <md-option value="out">Kimenő</md-option>
+                            </md-select>
+                        </md-input-container>
+                    </div>
+
+                </div>
+
+                <div layout="row">
+
+                    <!--
+                    ********************
+                    Összeg
+                    ********************
+                    -->
+                    <div flex="45">
+                        <md-input-container class="md-block">
+                            <label>{{ngivr.strings.field.amount}}</label>
+                            <ngivr-input-number name="amount" ng-model="deposit.amount"
+                                                ng-required="true"></ngivr-input-number>
+                        </md-input-container>
+
+                        <div ng-messages="depositForm.amount.$error"
+                             ng-if="ngivr.form.message.show(depositForm, 'amount')">
+                            <div ng-message="required">Kötelező</div>
+                        </div>
+                    </div>
+
+                    <!--
+                    ********************
+                    Deviza
+                    ********************
+                    -->
+                    <div flex="15" style="margin-top: 6px;">
+                        <md-input-container class="md-block md-container-md-select-fix">
+                            <label>{{ ngivr.strings.financialDocument.field.currency }}</label>
+                            <ngivr-select-currency-string ng-model="deposit.currency"
+                                                          ng-disabled="deposit.contractNumber"></ngivr-select-currency-string>
+                        </md-input-container>
+                    </div>
+
+                    <div flex>
+                        <md-input-container class="md-block">
+                            <label>{{ngivr.strings.field.paymentDate}}</label>
+                            <ngivr-input-date ng-model="deposit.paymentDate" name="paymentDate"
+                                              required></ngivr-input-date>
+                        </md-input-container>
+
+                        <div ng-messages="depositForm.paymentDate.$error"
+                             ng-if="ngivr.form.message.show(depositForm, 'paymentDate')">
+                            <div ng-message="required">Kötelező</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div layout="row">
+                    <div flex="45">
+                        <ngivr-input-switch ng-model="deposit.paid"
+                                            style="width: 100%"
+                                            ngivr-caption="Fizetve"
+                                            ngivr-off-display="ngivr.strings.inputSwitch.default.off"
+                                            ngivr-on-display="ngivr.strings.inputSwitch.default.on"
+                        ></ngivr-input-switch>
+                    </div>
+                    <div flex="40" flex-offset="15">
+                        <md-input-container class="md-block">
+                            <label>{{ngivr.strings.field.payDate}}</label>
+                            <ngivr-input-date ng-model="deposit.payDate" name="payDate"
+                                              ng-required="deposit.paid"></ngivr-input-date>
+                        </md-input-container>
+
+                        <div ng-messages="depositForm.payDate.$error"
+                             ng-if="ngivr.form.message.show(depositForm, 'payDate')">
+                            <div ng-message="required">Kötelező</div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <ngivr-button ng-click="cancel() || ngivr.growl('close')">
+                <ng-md-icon icon="close"></ng-md-icon>
+                <md-tooltip>Mégse</md-tooltip>
+                Mégse
+            </ngivr-button>
+            <ngivr-button ng-click="answer('save') || ngivr.growl('save')">
+                <ng-md-icon icon="save"></ng-md-icon>
+                <md-tooltip>Mentés</md-tooltip>
+                Mentés
+            </ngivr-button>
+            <ngivr-button-pdf></ngivr-button-pdf>
+        </md-dialog-actions>
+    </form>
+</md-dialog>
+
+

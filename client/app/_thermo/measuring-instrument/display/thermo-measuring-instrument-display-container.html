@@ -1,0 +1,102 @@
+<ngivr-portlet ngivr-title="{{ equipment.name }} műszer" ngivr-icon-fa="fa fa-microchip">
+    <ngivr-portlet-action>
+        <ngivr-button ng-click="back()" ngivr-type="portal">
+            <ng-md-icon icon="arrow_back"></ng-md-icon>
+            Vissza
+        </ngivr-button>
+    </ngivr-portlet-action>
+
+    <ngivr-portlet-body class="ngivr-portlet-clean">
+
+        <md-tabs md-stretch-tabs="always" md-dynamic-height>
+
+            <md-tab label="Pontfelhő" >
+                <md-content>
+                    <div layout="column" layout-gt-md="row">
+                        <div flex="50">
+                            <ngivr-button ng-click="pointcloudMeasureDisabled || pointcloudMeasure()" ng-disabled="pointcloudMeasureDisabled">Mérés indítása</ngivr-button>
+                            <span ng-if="pointcloudMeasureDisabled" style="color: red">
+                                Jelenleg éppen mérés történik.
+                            </span>
+                            <br/>
+                            <thermo-measuring-instrument-list-measure thermo-equipment-macid="equipmentMacId"></thermo-measuring-instrument-list-measure>
+                        </div>
+                        <div flex="50">
+                            <ngivr-button ng-click="showInfo = !showInfo">INFO</ngivr-button>
+                            <ngivr-button ng-click="reset()">Reset</ngivr-button>
+                            <div id="thermo-measuring-instrument-display-3d"></div>
+                            <fieldset ng-if="showInfo">
+                                <legend>
+                                    A 3d képernyőn használata:&nbsp;&nbsp;
+                                </legend>
+                                <div>
+                                    Mozgás: Jobb klikk és ez egér mozgés
+                                </div>
+                                <div>
+                                    Forgás: Bal klikk és az egér mozgás
+                                </div>
+                                <div>
+                                    Zoom: wheel
+                                </div>
+                            </fieldset>
+                        </div>
+                        <div style="clear: both"></div>
+                        </div>
+                    </div>
+
+                </md-content>
+            </md-tab>
+
+            <md-tab label="Hő kamera">
+                <md-content>
+                    <div layout="column" layout-gt-md="row">
+                        <div flex="50">
+                            <ngivr-button ng-click="thermalCameraMeasureDisabled || thermalCameraMeasure()" ng-disabled="thermalCameraMeasureDisabled">Mérés indítása</ngivr-button>
+                            <span ng-if="thermalCameraMeasureDisabled" style="color: red">
+                                Jelenleg éppen mérés történik.
+                            </span>
+                            <br/>
+
+                            <thermo-measuring-instrument-list-batch thermo-equipment-macid="equipmentMacId" set-video="setVideo" batch-id="batchId"></thermo-measuring-instrument-list-batch>
+                        </div>
+                        <div flex="50" ng-show="videoConfig.sources.length > 0">
+                            <videogular vg-theme="videoConfig.theme" vg-player-ready="videoConfig.onPlayerReady($API)" >
+                                <vg-media vg-src="videoConfig.sources"
+                                          vg-tracks="videoConfig.tracks">
+                                </vg-media>
+                                <vg-controls>
+                                    <vg-play-pause-button></vg-play-pause-button>
+                                    <vg-time-display>{{ currentTime | date:'mm:ss' }}</vg-time-display>
+                                    <vg-scrub-bar>
+                                        <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+                                    </vg-scrub-bar>
+                                    <vg-time-display>{{ timeLeft | date:'mm:ss' }}</vg-time-display>
+                                    <!--
+                                    volume ki lesz kapcsolva
+                                    -->
+                                    <vg-volume>
+                                        <vg-mute-button></vg-mute-button>
+                                        <vg-volume-bar></vg-volume-bar>
+                                    </vg-volume>
+                                    <vg-fullscreen-button></vg-fullscreen-button>
+                                    <vg-playback-button></vg-playback-button>
+                                </vg-controls>
+
+                                <vg-overlay-play></vg-overlay-play>
+                            </videogular>
+                        </div>
+                    </div>
+
+                </md-content>
+            </md-tab>
+
+        </md-tabs>
+
+
+
+
+
+
+    </ngivr-portlet-body>
+
+</ngivr-portlet>

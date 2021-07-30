@@ -1,0 +1,106 @@
+<ngivr-list ngivr-schema="order" ngivr-ref="this" ngivr-query="ngivrQuery">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+        <div hl-sticky offset-top="$root.hlStickyTopOffset" class="ngivr-list-header-column"
+
+             layout-padding>
+
+            <div layout="row" layout-wrap>
+
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Diszpozíció száma</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Irány</strong>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <strong>Partner</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Termény</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" style="text-align: right">
+                    <strong style="margin-right: 10px">Tervezett mennyiség</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" style="text-align: right">
+                    <strong style="margin-right: 20px">Teljesült mennyiség</strong>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <strong>Felrakóhely</strong>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <strong>Lerakóhely</strong>
+                </div>
+
+                <div flex-gt-md="5" flex="33" flex-xs="50" style="text-align: right">
+                    <strong>Zsákok (db)</strong>
+                </div>
+                <!--<div flex>-->
+
+                <!--</div>-->
+            </div>
+
+
+        </div>
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+
+        <div class="ngivr-list-tickets-without-invoice">
+            <div layout="row" class="center-in-table"
+                 layout-wrap>
+
+                <div flex-gt-md="10" flex="33" flex-xs="50" class="ngivr-list-tickets-without-invoice-title-hoverable">
+                    <span ng-click="loadFromDispo(doc)" ng-bind="doc.orderNumber"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                          <span ng-bind="doc.direction === 'in' ? 'Beszállítás'
+                                : doc.direction === 'out' ? 'Kiszállítás'
+                                : doc.direction === 'external_in' ? 'Külső beszállítás'
+                                : doc.direction ==='internal' ? 'Belső áttárolás'
+                                : 'Partner kiszállítás hajóból' "></span>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50" ngivr-ellipsis>
+                    <md-tooltip md-direction="top">{{doc.partner[0].name}}</md-tooltip>
+                    <span ng-bind="doc.partner[0].name"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <span ng-bind="doc.orderProduct[0].name"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" style="text-align: right">
+                    <span style="margin-right: 10px" ng-bind="(doc.volume | number: 3) + ' mt'">
+
+                    </span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" style="text-align: right">
+                    <span style="margin-right: 20px" ng-bind="(doc.performed | number: 3) + ' mt'"></span>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <span ng-bind="doc.loadLocation.length ? doc.loadLocation[0].name :
+                                            doc.loadLocation.name ? doc.loadLocation.name :
+                                            doc.loadLocationSettlement[0] ? doc.loadLocationSettlement[0].name : 'N/A'"></span>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <span ng-bind="doc.unloadLocation.length ? doc.unloadLocation[0].name :
+                                            doc.unloadLocation.name ? doc.unloadLocation.name :
+                                            doc.loadLocationSettlement[0] ? doc.loadLocationSettlement[0].name : 'N/A'"></span>
+                </div>
+
+                <div flex-gt-md="5" flex="33" flex-xs="50" style="text-align: right">
+                    <span ng-bind="doc.sackDb ? (doc.sackDb | number: 0) : '---'"></span>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="ngivr-list-tickets-without-invoice-divider"></div>
+
+    </ngivr-list-template>
+</ngivr-list>

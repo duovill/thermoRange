@@ -1,0 +1,7 @@
+@import "variables";
+
+.ngivr-disabled {
+  opacity: 0.5;
+  background-color: $color-icon-background !important;
+  color: white !important;
+}

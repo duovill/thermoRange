@@ -1,0 +1,161 @@
+<md-dialog aria-label="unused" class="ngivr-dialog-default-size">
+    <form novalidate name="ngivrOtherDocumentForm" ng-submit="submit()">
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2 flex md-truncate>{{ options.type === 'new' ? $root.ngivr.strings.otherDocuments.form.doc.new :
+                    $root.ngivr.strings.otherDocuments.form.doc.edit }}</h2>
+                <md-button class="md-icon-button" ng-click="cancel({force: true})" aria-label="unused">
+                    <ng-md-icon icon="close"></ng-md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <md-content layout-padding>
+                <fieldset ng-disabled="!enabled">
+
+                    <md-input-container class="md-block" ng-if="model.createdBy.fullName">
+                        <label>Feltöltő felhasználó</label>
+
+                        <input readonly disabled ng-model="model.createdBy.fullName"
+                               name="createdBy"/>
+
+                    </md-input-container>
+
+                    <md-input-container class="md-block" ng-if="model._id">
+                        <label>Feltöltés dátuma</label>
+
+                        <input readonly disabled ng-value="model.createdAt | ngivrDate"
+                               name="createdBy"/>
+
+                    </md-input-container>
+
+
+                    <md-input-container class="md-block">
+                        <label>{{ $root.ngivr.strings.autocomplete.otherDocumentTemplate.label }}</label>
+
+                        <ngivr-autocomplete-other-document-template ng-if="options.preloadedTemplate === undefined" ng-model="helperModel.templateType"
+                                                                    name="templateType" required
+                                                                    ngivr-validation-mongoose></ngivr-autocomplete-other-document-template>
+
+                        <input ng-if="options.preloadedTemplate !== undefined" readonly disabled ng-value="helperModel.templateType.label" ng-model="helperModel.templateType"
+                                                                    name="templateType" required
+                                                                    ngivr-validation-mongoose />
+
+                        <div ng-messages="ngivrOtherDocumentForm.templateType.$error"
+                             ng-show="$root.ngivr.form.message.show(ngivrOtherDocumentForm, 'templateType')">
+                            <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                            <div ng-message="ngivrValidationMongoose">
+                                {{$root.ngivr.form.error.message(ngivrOtherDocumentForm, 'templateType')}}
+                            </div>
+                        </div>
+
+                    </md-input-container>
+
+                    <div ng-repeat="field in helperModel.templateType.fields">
+                        <!--
+                        <div style="clear: both;">{{ field.type }}</div>
+                        -->
+                        <md-input-container class="md-block">
+                            <label ng-if="field.type !== 'related'">{{ field.label }}</label>
+
+                            <input ng-if="field.type === 'text'" type="text" ng-required="hasValidation({ name: 'all-required', field: field })" name="{{ field.id }}" ng-model="model.fieldsAndsValues[field.id]"/>
+
+                            <ngivr-input-date ng-if="field.type === 'date'" ng-required="hasValidation({ name: 'all-required', field: field })" name="{{ field.id }}"  ng-model="model.fieldsAndsValues[field.id]"></ngivr-input-date>
+
+                            <input ng-if="field.type === 'mask'" type="text" ng-required="hasValidation({ name: 'all-required', field: field })" name="{{ field.id }}" mask="{{ field.metadata['mask-format'] }}"  ng-model="model.fieldsAndsValues[field.id]"/>
+
+                            <input ng-if="field.type === 'number' && !hasValidation({ name: 'number-integer', field: field })" type="number" ng-required="hasValidation({ name: 'all-required', field: field })" name="{{ field.id }}" ng-model="model.fieldsAndsValues[field.id]"/>
+
+                            <input ng-if="field.type === 'number' && hasValidation({ name: 'number-integer', field: field })" type="number" step="1" ng-required="hasValidation({ name: 'all-required', field: field })" name="{{ field.id }}" ng-model="model.fieldsAndsValues[field.id]"/>
+
+                            <textarea ng-if="field.type === 'textarea'" ng-required="hasValidation({ name: 'all-required', field: field })" name="{{ field.id }}" ng-model="model.fieldsAndsValues[field.id]"/>
+
+                            <md-select ng-if="field.type === 'select'" ng-required="hasValidation({ name: 'all-required', field: field })" name="{{ field.id }}" ng-model="model.fieldsAndsValues[field.id]">
+                                <md-option ng-if="!hasValidation({ name: 'all-required', field: field })">
+                                </md-option>
+                                <md-option ng-repeat="option in field.metadata.option" ng-value="option.label">
+                                    {{ option.label }}
+                                </md-option>
+                            </md-select>
+
+                            <md-autocomplete
+                                ng-if="field.type === 'related'"
+                                name="{{ field.id }}"
+                                md-input-name="{{ field.id }}"
+                                md-selected-item-change="getRelatedSelectedItemChange(item)"
+                                md-search-text-change="getRelatedSearchTextChange(item, field)"
+                                md-selected-item="selectedItem"
+                                md-search-text="searchText"
+                                md-require-match="true"
+                                md-input-id="ngivr-other-document-form-{{ field.id }}"
+                                md-items="item in getRelated(field, searchText)"
+                                md-item-text="item.name"
+                                md-floating-label="{{ field.label }}"
+                                ng-init="searchText=model.fieldsAndsValues[field.id].name"
+                                ng-required="hasValidation({ name: 'all-required', field: field })"
+                            >
+                                <md-item-template>
+                                    {{item.name}}
+                                </md-item-template>
+                                <md-not-found>
+                                    Nincs találat.
+                                </md-not-found>
+                            </md-autocomplete>
+
+                            <div ng-messages="ngivrOtherDocumentForm[field.id].$error"
+                                 ng-show="$root.ngivr.form.message.show(ngivrOtherDocumentForm, field.id)">
+                                <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                                <div ng-message="md-require-match">Pontos element kell választani.</div>
+                            </div>
+                        </md-input-container>
+
+                        <!--
+                        <md-input-container class="md-block" ng-if="hasValidation({ name: 'date-with-time', field: field })">
+                            <label>{{ $root.ngivr.strings.otherDocuments.label.dateTime }}</label>
+
+                            <input type="time" ng-required="hasValidation({ name: 'all-required', field: field })" name="{{ field.id + '-time' }}" ng-model="model.fieldsAndsValues[field.id + '-time']"/>
+
+
+                            <div ng-messages="ngivrOtherDocumentForm[field.id + '-time'].$error"
+                                 ng-show="$root.ngivr.form.message.show(ngivrOtherDocumentForm, field.id + '-time')">
+                                <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                            </div>
+                        </md-input-container>
+                         -->
+
+                    </div>
+
+                </fieldset>
+
+            </md-content>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row" layout-align="end end">
+
+            <ngivr-button-pdf-qr ng-if="model._id"  ngivr-template="other-document-label" ngivr-data="{ otherDocument: model }" ngivr-style="'width: 98%'"></ngivr-button-pdf-qr>
+            &nbsp;
+            <ngivr-lock ngivr-lock="lock">
+                <ngivr-lock-unlocked>
+                    <ngivr-button type="submit" ng-if="enabled">
+                        <ng-md-icon icon="{{ options.type === 'new' ? 'add' : 'save'}}"></ng-md-icon>
+                        {{ options.type === 'new' ? $root.ngivr.strings.button.new : $root.ngivr.strings.button.save
+                        }}
+                    </ngivr-button>
+                    <ngivr-button ng-if="disabled" ng-click="edit()">
+                        <ng-md-icon icon="edit"></ng-md-icon>
+                        {{ $root.ngivr.strings.button.edit }}
+                    </ngivr-button>
+                </ngivr-lock-unlocked>
+            </ngivr-lock>
+
+
+            <ngivr-button ng-click="cancel()">
+                <ng-md-icon icon="close"></ng-md-icon>
+                {{ enabled ? $root.ngivr.strings.button.cancel : $root.ngivr.strings.button.close }}
+            </ngivr-button>
+
+        </md-dialog-actions>
+
+    </form>
+</md-dialog>

@@ -1,0 +1,175 @@
+<ng-form name="reQualificationForm">
+
+
+    <div layout="column" flex layout-gt-lg="row">
+
+        <div layout="column" layout-gt-md="row" flex="100" flex-gt-md="50">
+
+            <!--
+            **********************
+            Forrás telephely
+            **********************
+            -->
+            <div flex>
+                <md-input-container class="md-block">
+                    <label>Telephely</label>
+                    <ngivr-autocomplete-site name="srcSite" ng-model="model.srcSite"
+                                             ng-disabled="userSite"
+                                             get-depots-for-moving="getDepots(options)"
+                    ></ngivr-autocomplete-site>
+                </md-input-container>
+
+                <!--<div ng-messages="reQualificationForm.srcSite.$error"-->
+                <!--ng-show="ngivr.form.message.show(reQualificationForm, 'srcSite')" style="height: auto !important;">-->
+                <!--<div ng-message="required">{{ngivr.strings.form.validation.required}}</div>-->
+                <!--</div>-->
+            </div>
+
+        </div>
+
+        <div layout="column" layout-gt-md="row" flex="100" flex-gt-md="50">
+
+            <!--
+           ******************
+           Az átminősítendő cikk
+           ******************
+           -->
+            <div flex flex-gt-md="30">
+                <md-input-container class="md-block">
+                    <label>Átminősítendő cikk</label>
+                    <ngivr-autocomplete-product name="product" ng-model="model.product" item-type="'sygnus'"
+                                                get-depots="getDepots(options)"
+                                                required></ngivr-autocomplete-product>
+                </md-input-container>
+
+                <div ng-messages="reQualificationForm.product.$error"
+                     ng-show="ngivr.form.message.show(reQualificationForm, 'product')" style="height: auto !important;">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                </div>
+            </div>
+
+
+            <!--
+                      ******************
+                      Amire átminősítünk
+                      ******************
+                      -->
+            <div flex flex-gt-md="30">
+                <md-input-container class="md-block">
+                    <label>Új cikk</label>
+                    <ngivr-autocomplete-product name="newProduct" ng-model="model.newProduct" item-type="'sygnus'"
+                                                product-group-name="model.product.productGroupName"
+                                                disabled-product-id="model.product._id"
+                                                required></ngivr-autocomplete-product>
+                </md-input-container>
+
+                <div ng-messages="reQualificationForm.newProduct.$error"
+                     ng-show="ngivr.form.message.show(reQualificationForm, 'newProduct')" style="height: auto !important;">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!--
+    ***************************************
+    Nincs forrás vagy termék kiválasztva
+    ***************************************
+    -->
+    <div ng-if="!model.srcSite" class="padding-top-15">
+        Válasszon forrás telephelyet és cikket!
+    </div>
+
+
+    <!--
+    ******************************
+    Raktárkészlet lista
+    ******************************
+    -->
+    <div ng-if="model.depotsWithProduct.length" class="padding-top-15">
+        <div>
+            <!-- ide kerül be a lista -->
+            <div layout="row" class="table-head">
+                <div flex="20">
+                    Raktár
+                </div>
+                <div flex="20">
+                    Termény
+                </div>
+                <div flex="15" style="text-align: right">
+                    Összes mennyiség
+                </div>
+                <div flex="15" style="text-align: right">
+                    Befoglalt mennyiség
+                </div>
+                <div flex="15" style="text-align: right">
+                    Szabad mennyiség
+                </div>
+                <div flex="15" style="text-align: right">
+                    Átminősítendő mennyiség (mt)
+                </div>
+
+            </div>
+            <md-divider></md-divider>
+            <div ng-repeat="depot in model.depotsWithProduct">
+                <div layout="row">
+
+                    <div flex="20" style="margin-top: 12px">
+                        {{depot.depotName + ' (' + depot.siteName + ')'}}
+                    </div>
+                    <div flex="20" style="margin-top: 12px">
+                        {{depot.product}}
+                    </div>
+                    <div flex="15" style="margin-top: 12px; text-align: right">
+                        {{(depot.total | number : 3) + ' mt'}}
+                    </div>
+                    <div flex="15" style="margin-top: 12px; text-align: right">
+                        {{(depot.reserved | number : 3) + ' mt'}}
+                    </div>
+                    <div flex="15" style="margin-top: 12px; text-align: right">
+                        {{(depot.free | number : 3) + ' mt'}}
+                    </div>
+                    <div flex="10" flex-offset="5">
+                        <ngivr-input-number name="{{'quantity' + $index}}" ng-model="depot.amount"
+                                            set-disabled="setDisabled($index, value)" ng-disabled="isDisabled($index)"
+                                            idx="$index"
+                                            max="Math.round(depot.free * 100) / 100"></ngivr-input-number>
+                        <div ng-messages="reQualificationForm['quantity' + $index].$error">
+                            <div ng-message="wrongNumber">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                        </div>
+                    </div>
+                    <md-divider></md-divider>
+                </div>
+                <md-divider></md-divider>
+            </div>
+        </div>
+    </div>
+
+    <!--
+    ************************
+    Nincs raktárkészlet
+    ************************
+    -->
+    <div ng-if="!model.depotsWithProduct.length && model.partner && model.product && model.srcSite">
+        Nincs raktárkészlet!
+    </div>
+
+    <!--
+    ***************
+    Mentés
+    ***************
+    -->
+    <div layout="row">
+        <div flex layout-padding layout-align="end">
+            <ngivr-button type="submit" class="pull-right" ng-click="submitReQualification(reQualificationForm)">
+                Mentés
+            </ngivr-button>
+        </div>
+    </div>
+</ng-form>
+<!--</ngivr-portlet-body>-->
+<!--</ngivr-portlet>-->

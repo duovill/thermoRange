@@ -1,0 +1,156 @@
+<ngivr-list ngivr-schema="ship" ngivr-ref="this" ngivr-query="ngivrQuery">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+        <div hl-sticky offset-top="$root.hlStickyTopOffset" class="ngivr-list-header-column"
+
+             layout-padding>
+
+            <div layout="row" layout-wrap>
+
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <strong>Hajó neve</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Hajóállás</strong>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <strong>Nominálás neve</strong>
+                </div>
+                <div flex-gt-md="20" flex="33" flex-xs="50">
+                    <strong>Partner</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Rakodás iránya</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" style="text-align: right">
+                    <strong style="margin-right: 10px">Rakodott mennyiség</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Állapot</strong>
+                </div>
+
+                <div flex-gt-md="5" flex="33" flex-xs="50">
+                    <strong>Bogár</strong>
+                </div>
+
+                <div flex-gt-md="5" flex="33" flex-xs="50">
+                    <strong>Gáz</strong>
+                </div>
+            </div>
+
+
+        </div>
+    </ngivr-list-header>
+
+
+    <ngivr-list-template>
+
+        <div class="ngivr-list-tickets-without-invoice">
+            <div layout="row" ng-click="loadShip(doc)"
+                 layout-wrap>
+
+                <div flex-gt-md="15" flex="33" flex-xs="50" class="ngivr-list-tickets-without-invoice-title-hoverable">
+                    <span ng-bind="doc.name"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <span ng-bind="doc.quayBerth"></span>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <span ng-bind="doc.cargoPlanName">
+
+                    </span>
+                </div>
+                <div flex-gt-md="20" flex="33" flex-xs="50">
+                    <span ng-bind="doc.partner[0].name">
+
+                    </span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <span ng-bind="doc.shipDirection === 'in' ? 'Kirakodás' : 'Berakodás'"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" style="text-align: right">
+                    <span style="margin-right: 10px"
+                          ng-bind="doc.loadedQuantity ? (doc.loadedQuantity | number : 3) + ' mt' : '---'"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <span ng-bind="doc.deleted ? 'Törölt' : doc.isClosed ? 'Lezárt' : 'Nyitott'"></span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50">
+                    <span ng-bind="doc.bug ? 'Igen' : 'Nem'"></span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50">
+                    <span ng-bind="doc.gas ? 'Igen' : 'Nem'"></span>
+                </div>
+                <!--<div flex-gt-md="5" flex="33" flex-xs="50">-->
+                <!--<button-->
+                <!--class="waves-effect waves-whitesmoke btn btn-toleft-toright  margin-bottom-3"-->
+                <!--ng-click="loadShip(doc);">-->
+                <!--<md-tooltip md-direction="top">Hajó lezárásaa</md-tooltip>-->
+                <!--L-->
+                <!--</button>-->
+                <!--</div>-->
+
+
+            </div>
+        </div>
+        <div class="ngivr-list-tickets-without-invoice-divider"></div>
+
+        <!--<md-card class="card-padding" style="clear: both;">-->
+        <!--<md-card-content>-->
+        <!--<div class="card-right" style="padding-left: 15px">-->
+        <!--<table>-->
+        <!--<tr>-->
+        <!--<td>-->
+        <!--<span ng-bind="doc.name">-->
+        <!--<md-tooltip md-direction="top">Hajó neve</md-tooltip>-->
+        <!--</span>-->
+        <!--</td>-->
+        <!--<td>-->
+        <!--<span ng-bind="doc.cargoPlanName">-->
+        <!--<md-tooltip md-direction="top">Nominálás neve</md-tooltip>-->
+        <!--</span>-->
+        <!--</td>-->
+        <!--<td>-->
+        <!--<span ng-bind="doc.shipDirection === 'in' ? 'Kirakodás' : 'Berakodás'">-->
+        <!--<md-tooltip md-direction="top">Rakodás iránya</md-tooltip>-->
+        <!--</span>-->
+        <!--</td>-->
+        <!--<td class="btn-toleft-toright-container">-->
+        <!--<button-->
+        <!--class="waves-effect waves-whitesmoke btn btn-toleft-toright  margin-bottom-3"-->
+        <!--ng-click="loadShip(doc);">-->
+        <!--<md-tooltip md-direction="top">Hajó lezárásaa</md-tooltip>-->
+        <!--L-->
+        <!--</button>-->
+        <!--</td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+        <!--<td>-->
+        <!--<span>{{doc.loadedQuantity}} mt-->
+        <!--<md-tooltip md-direction="top">Rakodott mennyiség</md-tooltip></span-->
+        <!--&gt;</td>-->
+        <!--<td></td>-->
+        <!--<td>-->
+        <!--<span>{{doc.isClosed ? 'Lezárt' : 'Nyitott'}}-->
+        <!--<md-tooltip md-direction="top">Állapot</md-tooltip></span>-->
+        <!--</td>-->
+        <!--</tr>-->
+        <!--<tr class="card-third-row">-->
+        <!--<td colspan="3">-->
+        <!--<span ng-bind="doc.comment"><md-tooltip>{{'Megjegyzés: ' + doc.comment}}</md-tooltip>-->
+        <!--</span>-->
+        <!--</td>-->
+        <!--</tr>-->
+        <!--</table>-->
+        <!--</div>-->
+        <!--</md-card-content>-->
+        <!--</md-card>-->
+    </ngivr-list-template>
+</ngivr-list>

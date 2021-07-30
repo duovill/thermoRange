@@ -1,0 +1,69 @@
+@import "../metronic/sass/global/_variables-md.scss";
+//@import "../metronic/sass/admin/layout2/themes/light";
+
+// > 600
+
+// <= 600
+$screen-small:     600px !default;
+
+// <= 960
+$screen-medium:     960px !default;
+
+// <= 1280
+$screen-large:     1280px !default;
+
+// <= 1920
+$screen-huge:     1920px !default;
+
+/**
+template
+.template {
+  // > 600
+
+  // <= 600
+  @media screen and (min-width: $screen-small) {
+  }
+  // <= 960
+  @media screen and (min-width: $screen-medium) {
+  }
+  // <= 1280
+  @media screen and (min-width: $screen-large) {
+  }
+
+  // <= 1920
+  @media screen and (min-width: $screen-huge) {
+  }
+}
+*/
+
+
+
+$color-primary: #3c4ce7;
+$color-warning: #e74c3c;
+$color-error: $color-warning;
+$color-error-text: white;
+$color-info: #eeeeee;
+$color-success: #008000;
+
+$color-accent: #eee;
+
+$button-flat-bg: #eee;
+$button-flat-text: darken($button-flat-bg, 50%);
+
+$button-flat-active-bg: $color-primary;
+$button-flat-active-text: white;
+
+$color-resize: darken($color-info, 5%);;
+
+$color-icon-background: #D8DBDF;
+
+$size-checkbox: 24px;
+$size-font-awesome-stack: 15px;
+
+$color-blue: #0b58a2;
+
+$color-black: black;
+
+$ng-message-color: red;
+$ng-message-bg: rgba(240, 240, 240, 0.8);
+$ng-message-border-radius: 3px;

@@ -1,0 +1,69 @@
+<!--Bal oldali szerkeszto-->
+<ngivr-portlet ngivr-title="Szerkesztő" ngivr-icon-fa="fa-edit" class="col-md-8">
+
+  <ngivr-portlet-action>
+
+      <span ng-if="command.schema.data && template.html">
+
+         <ngivr-button-pdf-preview ngivr-type="flat" ngivr-template-raw="template" ngivr-data="command.schema.data" ngivr-templates="setting.htmlTemplates"></ngivr-button-pdf-preview>
+
+        <md-button aria-label="{{ngivr.strings.button.livePdf}}"  ng-click="command.togglePdfPreview()" ng-class="command.showPdfPreview() ? 'md-button-active': ''">
+            <ng-md-icon icon="chrome_reader_mode"></ng-md-icon>
+            {{ngivr.strings.button.livePdf}}
+        </md-button>
+
+        <md-button aria-label="{{ngivr.strings.button.livePreviewHtml}}" ng-click="command.togglePreview()" ng-class="command.showPreview() ? 'md-button-active': ''">
+          <ng-md-icon icon="chrome_reader_mode"></ng-md-icon>
+          {{ngivr.strings.button.livePreviewHtml}}
+        </md-button>
+
+        <md-button type="submit" aria-label="{{ngivr.strings.button.livePreview}}">
+          <ng-md-icon icon="save"></ng-md-icon>
+          {{ngivr.strings.button.save}}
+        </md-button>
+
+      </span>
+
+  </ngivr-portlet-action>
+  <ngivr-portlet-body class="ngivr-portlet-clean">
+
+    <md-tabs md-dynamic-height md-selected="setting.activeTab">
+      <md-tab>
+        <md-tab-label>{{ ngivr.strings.title.code }}</md-tab-label>
+        <md-tab-body>
+          <ui-codemirror style="height: 1000px;" ui-codemirror="{ onLoad : command.editor.codemirrorLoaded.bind(command) }"
+                         ui-codemirror-opts="setting.codeMirrorOptions"
+                         ng-model="template.html"></ui-codemirror>
+        </md-tab-body>
+      </md-tab>
+      <md-tab>
+        <md-tab-label>{{ ngivr.strings.title.html }}</md-tab-label>
+        <md-tab-body>
+            <textarea name="html" ui-tinymce="setting.tinymceOptions" ng-model="template.html"
+                      ngivr-validation-mongoose required></textarea>
+        </md-tab-body>
+      </md-tab>
+
+      <md-tab ng-if="!command.showPreview()">
+        <md-tab-label>{{ ngivr.strings.title.preview }}</md-tab-label>
+        <md-tab-body>
+          <ngivr-view-html-template ngivr-data="command.schema.data"
+                                    ngivr-template-raw="template"></ngivr-view-html-template>
+        </md-tab-body>
+    </md-tabs>
+
+    <div ng-if="command.showPreview()">
+      <ngivr-view-html-template ngivr-data="command.schema.data"
+                                ngivr-template-raw="template"></ngivr-view-html-template>
+    </div>
+
+    <div ng-if="command.showPdfPreview()">
+
+      <ngivr-view-html-template-pdf ngivr-template-raw="template" ngivr-data="command.schema.data" ngivr-templates="setting.htmlTemplates"></ngivr-view-html-template-pdf>
+
+    </div>
+
+
+  </ngivr-portlet-body>
+
+</ngivr-portlet>

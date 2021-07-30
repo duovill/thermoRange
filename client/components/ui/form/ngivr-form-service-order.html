@@ -1,0 +1,13 @@
+<ngivr-form ngivr-close="ngivrClose()" ngivr-schema="serviceOrder" ngivr-id="ngivrId" ng-model="model">
+    <h1>bla</h1>
+    <ngivr-form-body>
+        <md-input-container class="md-block">
+            <label>Megrendelés neve</label>
+            <input name="serviceOrderName" required ng-model="currentServiceOrder.name"/>
+            <div ng-messages="serviceOrderForm.serviceOrderName.$error"
+                 ng-show="ngivr.form.message.show(serviceOrderForm, 'serviceOrderName')">
+                <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+            </div>
+        </md-input-container>
+    </ngivr-form-body>
+</ngivr-form>

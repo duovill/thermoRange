@@ -1,0 +1,27 @@
+@import "mixins";
+
+md-tabs.ngivr-tab-pure {
+  @include shadow-top();
+}
+
+md-tabs.ngivr-tab-pure > md-tabs-wrapper  {
+  background-color: $color-primary;
+}
+
+md-tabs.ngivr-tab-pure md-tabs-content-wrapper > md-tab-content {
+  @include portlet();
+}
+
+md-tabs.ngivr-tab-pure > md-tabs-wrapper > md-prev-button > md-icon,
+md-tabs.ngivr-tab-pure > md-tabs-wrapper > md-next-button > md-icon {
+  color: white !important;
+}
+
+md-tabs.ngivr-tab-pure > md-tabs-wrapper > md-tabs-canvas > md-pagination-wrapper > md-tab-item {
+  color: rgba(white, 0.5);
+}
+
+md-tabs.ngivr-tab-pure > md-tabs-wrapper > md-tabs-canvas > md-pagination-wrapper > md-tab-item.md-active {
+  color: white !important;
+}
+

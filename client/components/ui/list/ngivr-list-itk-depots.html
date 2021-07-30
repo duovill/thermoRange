@@ -1,0 +1,49 @@
+<ngivr-list ngivr-schema="depot" ngivr-ref="this" ngivr-query="ngivrQuery" ngivr-url="{{ngivrUrl}}" dont-clear="true">
+
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-template>
+        <md-card class="card-expandable" flex="100" style="margin-left: 0; margin-right: 0; clear: both">
+            <md-card-content ng-click="selectDepot(doc)">
+                <div layout="row" style="font-weight: bold; font-size: medium; text-align: right">
+                    <div flex style="text-align: left">
+                        <span ng-bind="doc._id.depotName"></span>
+                    </div>
+                    <div flex>
+                        Összes (mt)
+                    </div>
+                    <div flex>
+                        Foglalt (mt)
+                    </div>
+                    <div flex>
+                        Szabad (mt)
+                    </div>
+                </div>
+                <div ng-repeat="product in doc.products">
+
+                    <div layout="row" style="font-weight: bold; font-size: small; text-align: right">
+                        <div flex="20" flex-offset="5" style="text-align: left">
+                            <span ng-bind="product.product"></span>
+                        </div>
+                        <div flex>
+                            <span ng-bind="product.partners[0].total | number : 3"></span>
+                        </div>
+                        <div flex>
+                            <span ng-bind="product.partners[0].reserved | number : 3"></span>
+                        </div>
+                        <div flex>
+                            <span ng-bind="product.partners[0].free | number : 3"></span>
+                        </div>
+                    </div>
+                </div>
+            </md-card-content>
+        </md-card>
+    </ngivr-list-template>
+</ngivr-list>
+

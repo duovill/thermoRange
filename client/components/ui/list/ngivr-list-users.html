@@ -1,0 +1,77 @@
+<ngivr-list ngivr-schema="user" ngivr-ref="this">
+
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+        <div hl-sticky offset-top="$root.hlStickyTopOffset" class="ngivr-list-header-column"
+
+             layout-padding>
+
+            <div layout="row" layout-wrap>
+
+                <div flex-gt-md="20" flex="33" flex-xs="50">
+                    <strong>Teljes név</strong>
+                </div>
+                <div flex-gt-md="20" flex="33" flex-xs="50">
+                    <strong>Felhasználónév</strong>
+                </div>
+                <div flex-gt-md="20" flex="33" flex-xs="50">
+                    <strong>Becenév</strong>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <strong>Típus</strong>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <strong>Állapot</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Műveletek</strong>
+                </div>
+            </div>
+
+
+        </div>
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+        <div class="ngivr-list-tickets-without-invoice">
+            <div layout="row"
+                 layout-wrap >
+
+                <div flex-gt-md="20" flex="33" flex-xs="50" class="ngivr-list-tickets-without-invoice-title-hoverable">
+                    <span ng-bind="doc.fullName"></span>
+                </div>
+                <div flex-gt-md="20" flex="33" flex-xs="50">
+                    <span ng-bind="doc.name"></span>
+                </div>
+                <div flex-gt-md="20" flex="33" flex-xs="50">
+                    <span ng-bind="doc.nickName"></span>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <span ng-bind="ngivr.strings.user.role[doc.role]"></span>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <span ng-bind="doc.approved ? ngivr.strings.field.approved : ngivr.strings.field.forbidden"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" ng-style="{'text-align': $mdMedia('gt-md') ? 'center' : 'initial'}">
+                    <ngivr-icon-fa
+                        ng-click="showForm(doc._id)"
+                        ngivr-tooltip="{{ ngivr.strings.button.show }}"
+                        ngivr-tooltip-direction="left"
+                        ngivr-icon-fa="fa-wrench"
+                    ></ngivr-icon-fa>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="ngivr-list-tickets-without-invoice-divider"></div>
+    </ngivr-list-template>
+</ngivr-list>

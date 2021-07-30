@@ -1,0 +1,316 @@
+<!-- <ngivr-list ngivr-schema="ticket" ngivr-ref="this" ngivr-query="ngivrQuery"> -->
+<ngivr-list ngivr-ref="this" ngivr-url="{{ngivrUrl}}" ngivr-schema="orderVehicle" id="vehicleList_{{::$ctrl.$id}}">
+    <ngivr-list-searcher>
+    <span style="float: right; margin-right: 5px;"><ngivr-button-excel-export ngivr-add-date="1" ngivr-filename="fileName"
+                                                                              ngivr-url="{{'/api/statistics/bfkInfo/' + dispo._id}}"
+                                                                              style="padding-right: 5px"></ngivr-button-excel-export></span>
+
+        <!--Csak akkor kell, ha dispo.sygnus = true-->
+        <div class="md-block" ng-disabled="dispo.orderClosed" ng-if="dispo.sygnus">
+
+            <div layout="row">
+                <div>
+                    <ngivr-input-switch ng-disabled="query.docs.length == 0 || dispo.orderClosed"
+                                        ng-model="dispo.selectAll"
+                                        ng-click="ref.$ctrl.selectAllVehicles(query.docs)"
+                                        ngivr-caption="Összes kijelölése"
+                                        ngivr-off-display="ngivr.strings.inputSwitch.default.off"
+                                        ngivr-on-display="ngivr.strings.inputSwitch.default.on" ngivr-on-value="true"
+                                        ngivr-off-value="false"></ngivr-input-switch>
+                </div>
+                <div style="margin-left: 10px">
+                    <ngivr-button
+                        ng-click="(query.docs.length == 0 || selected.length == 0) || ref.$ctrl.deleteAllVehicle(query.docs)"
+                        class="pull-right"
+                        ng-disabled="query.docs.length == 0 || selected.length == 0">
+                        <ng-md-icon icon="delete"></ng-md-icon>
+                        Kiválasztott járművek törlése
+                    </ngivr-button>
+                </div>
+            </div>
+
+
+        </div>
+
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+
+
+        <div>
+            <div class="{{cssPrefix}}-table-row {{cssPrefix}}-table-row-header">
+                <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-first-to-eighth">
+
+                    <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-attributes {{cssPrefix}}-group-1-2-3-4">
+                        <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-1-2">
+                            <div class="{{cssPrefix}}-column {{cssPrefix}}-col-1">
+                                <div layout="column">
+                                    {{dispo.bfkd ? 'Mérlegjegy' : 'EKAER'}}
+                                </div>
+                            </div>
+                            <div class="{{cssPrefix}}-column {{cssPrefix}}-col-2">
+                                <div layout="column">
+                                    {{dispo.bfkd ? 'Súly' : 'Szállítmányozó'}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-3-4">
+                            <div class="{{cssPrefix}}-column {{cssPrefix}}-col-3">
+                                <div layout="column">
+                                    {{(dispo.bfkd ? 'Rakodás' : 'Felrakás') + ' dátuma'}}
+                                </div>
+                            </div>
+                            <div class="{{cssPrefix}}-column {{cssPrefix}}-col-4">
+                                <div layout="column">
+                                    {{dispo.bfkd ? 'Hajó' : 'Felrakott súly'}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-5-6-7-8">
+                        <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-5-6">
+                            <div class="{{cssPrefix}}-column {{cssPrefix}}-col-5">
+                                <div layout="column">
+                                    Vontató
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-nineth-to-sixteenth">
+                    <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-9-10-11-12">
+                        <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-9-10">
+                            <div class="{{cssPrefix}}-column {{cssPrefix}}-col-9">
+                                <div layout="column">
+                                    {{dispo.bfkd? 'Kapcsolódó diszpozíció' : 'Lerakott súly'}}
+                                </div>
+                            </div>
+                            <div class="{{cssPrefix}}-column {{cssPrefix}}-col-10">
+                                <div layout="column">
+                                    Raktárpozíció
+                                </div>
+                            </div>
+                        </div>
+                        <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-11-12">
+                            <div class="{{cssPrefix}}-column {{cssPrefix}}-col-11">
+                                <div layout="column">
+                                    {{dispo.bfkd ? 'Mérlegjegy (be)' : 'Száll. eltérés'}}
+                                </div>
+                            </div>
+                            <div class="{{cssPrefix}}-column {{cssPrefix}}-col-12">
+                                <div layout="column">
+                                    Állapot
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-13-14-15-16">
+                        <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-13-14">
+                            <div class="{{cssPrefix}}-column {{cssPrefix}}-col-13">
+                                <div layout="column">
+                                </div>
+                            </div>
+                            <div class="{{cssPrefix}}-column {{cssPrefix}}-col-14"></div>
+                        </div>
+                        <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-15-16">
+                            <div class="{{cssPrefix}}-column {{cssPrefix}}-col-15"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ngivr-list-searcher>
+
+    <ngivr-list-template>
+        <div class="{{cssPrefix}}-table-row" ng-style="{background: doc.ticketDeleted ? 'yellow': 'inherit'}">
+            <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-first-to-eighth">
+                <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-attributes {{cssPrefix}}-group-1-2-3-4">
+                    <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-1-2">
+                        <div class="{{cssPrefix}}-column {{cssPrefix}}-col-1">
+                            <span ng-if="doc.tcnStatus == 'F'" class="badge badge-success ship-label pull-left">{{doc.tcn}}</span>
+                            <span ng-if="doc.tcnStatus == 'S'" class="badge badge-warning ship-label pull-left">{{doc.tcn}}</span>
+                            <span ng-if="doc.tcnStatus == 'I'" class="badge badge-danger ship-label pull-left">{{doc.tcn}}</span>
+                            <span ng-if="!doc.tcnStatus && !dispo.bfkd"
+                                  class="badge badge-default ship-label pull-left">Nincs igényelve</span>
+                            <span ng-if="dispo.bfkd"
+                                  class="badge badge-default ship-label pull-left"
+                                  ng-class="{'badge-danger' : doc.ticketDeleted}">{{doc.outTicket}}</span></div>
+                        <div class="{{cssPrefix}}-column {{cssPrefix}}-col-2">{{dispo.bfkd ? doc.unloadedWeight :
+                            doc.carrier.name}}
+                        </div>
+                    </div>
+                    <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-3-4">
+                        <div class="{{cssPrefix}}-column {{cssPrefix}}-col-3">{{doc.arrivalDate ? (doc.arrivalDate | date :
+                            'yyyy.MM.dd') : '---'}}
+                        </div>
+                        <div class="{{cssPrefix}}-column {{cssPrefix}}-col-4"
+                             style="text-align: right; margin-right: 15px">{{dispo.bfkd ? doc.shipName :
+                            doc.loadedWeight ?
+                            (doc.loadedWeight | number: 3) + ' mt' : '---'}}
+                        </div>
+                    </div>
+                </div>
+                <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-5-6-7-8">
+                    <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-5-6">
+                        <div class="{{cssPrefix}}-column {{cssPrefix}}-col-5">{{doc.plateNumber1 ? doc.plateNumber1 :
+                            '---'}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-nineth-to-sixteenth">
+                <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-9-10-11-12">
+                    <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-9-10">
+                        <div class="{{cssPrefix}}-column {{cssPrefix}}-col-9"
+                             style="text-align: right; margin-right: 20px"><div ng-repeat="order in doc.parentOrders">
+                            {{order }}
+                        </div>
+                        </div>
+                        <div class="{{cssPrefix}}-column {{cssPrefix}}-col-10" style="margin-left: 2px">
+                            {{doc.depotName ? doc.depotName : '---'}}
+                        </div>
+                    </div>
+                    <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-11-12">
+                        <div class="{{cssPrefix}}-column {{cssPrefix}}-col-11"
+                             style="text-align: right; margin-right: 20px">
+                            {{doc.parentTicketName ? doc.parentTicketName : '---'}}
+                        </div>
+                        <div class="{{cssPrefix}}-column {{cssPrefix}}-col-12">
+                            <div ng-if="dispo.sygnus">
+                                <div ng-if="dispo.cardType == 'ruralTour'">
+                                    <div ng-if="doc.ticketDeleted">
+                                        <div class="vehicle-paper-plane" ng-class="ref.$ctrl.ticketBackground(doc)" style="margin-right: 3px">
+                                            <i class="fa fa-paper-plane"></i>
+                                        </div>
+                                        <!--<ngivr-icon-fa calss="ngivr-icon-circle"-->
+                                                       <!--ngivr-color="{{ref.$ctrl.ticketBackground(doc)}}"-->
+                                                       <!--ngivr-icon-fa="fa-paper-plane"/>-->
+                                        <!--<md-button class="md-fab md-mini red-background" ng-disabled="true"">-->
+                                        <!--<img style="max-height: 24px;" src="../assets/icons/static/send.png">-->
+                                        <!--</md-button>-->
+                                        <div class="vehicle-paper-plane" ng-class="ref.$ctrl.ticketBackground(doc)">
+                                            <i class="fa fa-paper-plane"></i>
+                                        </div>
+                                        <!--<ngivr-icon-fa calss="ngivr-icon-circle"-->
+                                                       <!--ngivr-color="{{ref.$ctrl.ticketBackground(doc)}}"-->
+                                                       <!--ngivr-icon-fa="fa-paper-plane"/>-->
+                                        <!--<md-button class="md-fab md-mini red-background" ng-disabled="true">-->
+                                        <!--<img style="max-height: 24px;" src="../assets/icons/static/send.png">-->
+                                        <!--</md-button>-->
+                                    </div>
+                                    <div ng-if="!doc.ticketDeleted">
+                                        <div class="vehicle-paper-plane" ng-class="ref.$ctrl.ticketBackground(doc)">
+                                            <i class="fa fa-paper-plane"></i>
+                                        </div>
+                                        <!--<ngivr-icon-fa-->
+                                            <!--ngivr-color="{{ref.$ctrl.rualTourTicketBackground(doc, 'in')}}"-->
+                                            <!--ngivr-icon-fa="fa-paper-plane"/>-->
+
+                                        <!--<md-button class="md-fab md-mini" ng-disabled="true" ng-class="ref.$ctrl.rualTourTicketBackground(doc, 'in')">-->
+                                        <!--<img style="max-height: 24px;" src="../assets/icons/static/send.png">-->
+                                        <!--</md-button>-->
+                                        <div class="vehicle-paper-plane" ng-class="ref.$ctrl.ticketBackground(doc)">
+                                            <i class="fa fa-paper-plane"></i>
+                                        </div>
+                                        <!--<ngivr-icon-fa calss="ngivr-icon-circle"-->
+                                                       <!--ngivr-color="{{ref.$ctrl.rualTourTicketBackground(doc, 'out')}}"-->
+                                                       <!--ngivr-icon-fa="fa-paper-plane"/>-->
+
+                                        <!--<md-button class="md-fab md-mini" ng-disabled="true" ng-class="ref.$ctrl.rualTourTicketBackground(doc, 'out')">-->
+                                        <!--<img style="max-height: 24px;" src="../assets/icons/static/send.png">-->
+                                        <!--</md-button>-->
+                                    </div>
+                                </div>
+                                <div ng-if="dispo.cardType == 'order'">
+                                    <div ng-if="doc.ticketDeleted">
+                                        <div class="vehicle-paper-plane" ng-class="ref.$ctrl.ticketBackground(doc)">
+                                            <i class="fa fa-paper-plane"></i>
+                                        </div>
+                                        <!--<ngivr-icon-fa calss="ngivr-icon-circle"-->
+                                                       <!--ngivr-color="{{ref.$ctrl.ticketBackground(doc)}}"-->
+                                                       <!--ngivr-icon-fa="fa-paper-plane"/>-->
+                                        <!--<md-button class="md-fab md-mini red-background" ng-disabled="true">-->
+                                        <!--<img style="max-height: 24px;" src="../assets/icons/static/send.png">-->
+                                        <!--</md-button>-->
+                                    </div>
+                                    <div ng-if="!doc.ticketDeleted">
+                                        <div class="vehicle-paper-plane" ng-class="ref.$ctrl.ticketBackground(doc)">
+                                            <i class="fa fa-paper-plane"></i>
+                                        </div>
+                                        <!--<ngivr-icon-fa calss="ngivr-icon-circle"-->
+                                                       <!--ngivr-color="{{ref.$ctrl.ticketBackground(doc)}}"-->
+                                                       <!--ngivr-icon-fa="fa-paper-plane"/>-->
+
+                                    </div>
+                                </div>
+                                <div ng-if="dispo.direction == 'internal'">
+                                    <div ng-if="doc.ticketDeleted">
+                                        <div class="vehicle-paper-plane" ng-class="ref.$ctrl.ticketBackground(doc)">
+                                            <i class="fa fa-paper-plane"></i>
+                                        </div>
+                                        <!--<ngivr-icon-fa calss="ngivr-icon-circle"-->
+                                                       <!--ngivr-color="{{ref.$ctrl.ticketBackground(doc)}}"-->
+                                                       <!--ngivr-icon-fa="fa-paper-plane"/>-->
+                                        <!--<md-button class="md-fab md-mini red-background" ng-disabled="true">-->
+                                        <!--<img style="max-height: 24px;" src="../assets/icons/static/send.png">-->
+                                        <!--</md-button>-->
+                                    </div>
+                                    <div ng-if="!doc.ticketDeleted">
+                                        <div class="vehicle-paper-plane" ng-class="ref.$ctrl.ticketBackground(doc)">
+                                            <i class="fa fa-paper-plane"></i>
+                                        </div>
+                                        <!--<ngivr-icon-fa calss="ngivr-icon-circle"-->
+                                                       <!--ngivr-color="{{ref.$ctrl.ticketBackground(doc)}}"-->
+                                                       <!--ngivr-icon-fa="fa-paper-plane"/>-->
+                                        <!--<md-button class="md-fab md-mini" ng-disabled="true" ng-class="ref.$ctrl.ticketBackground(doc)">-->
+                                        <!--<img style="max-height: 24px;" src="../assets/icons/static/send.png">-->
+                                        <!--</md-button>-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div ng-if="!dispo.sygnus">
+                                ---
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-13-14-15-16">
+                        <div class="{{cssPrefix}}-wrapper {{cssPrefix}}-group-13-14">
+                            <div class="{{cssPrefix}}-column {{cssPrefix}}-col-13">
+                                <div layout="row" class="pull-right" ng-if="dispo.sygnus">
+                                    <md-checkbox id="cb_ekaer"
+                                                 ng-disabled="isDisabled.ekaerCheckbox(doc) || ref.$ctrl.isVehicleLocked(doc)"
+                                                 name="checkTcn{{$index}}" aria-label="0"
+                                                 ng-model="doc.checkedTcn"
+                                                 ng-checked="ref.$ctrl.exists(doc, selected)"
+                                                 ng-click="(isDisabled.ekaerCheckbox(doc) || ref.$ctrl.isVehicleLocked(doc)) || ref.$ctrl.toggle(doc, selected, doc.tcn, query.docs)">
+                                    </md-checkbox>
+                                    <ngivr-popup-vehicle ng-model="doc" ekaer="dispo.ekaer" card-type="dispo.cardType"
+                                                         ng-if="!dispo.bfkd"
+                                                         vehicles="query.docs" dispos="dispos"
+                                                         ngivr-disabled="ref.$ctrl.isVehicleLocked(doc) || (!dispo.ekaer && (doc.inTicket && doc.outTicket) && doc.tcnStatus === 'F') || doc.ticketDeleted "
+                                                         ng-buy-contract="dispo"></ngivr-popup-vehicle>
+                                    <ngivr-icon-fa
+                                        ng-disabled="ref.$ctrl.isVehicleLocked(doc) || doc.ticketDeleted  || dispo.orderClosed "
+                                        ngivr-tooltip="Jármű törlése" ngivr-icon-fa="fa-times"
+                                        ng-click="(ref.$ctrl.isVehicleLocked(doc) || doc.ticketDeleted) || dispo.orderClosed ||  ref.$ctrl.deleteAllVehicle([doc], true)"/>
+
+                                    <!--<ngivr-icon-static count="23" ng-click="(ref.$ctrl.isVehicleLocked(doc) || doc.ticketDeleted) || ref.$ctrl.deleteAllVehicle([doc])"-->
+                                    <!--style="margin-left: 10px; margin-right: 10px" ngivr-disabled="(ref.$ctrl.isVehicleLocked(doc) || doc.ticketDeleted) || ref.$ctrl.deleteAllVehicle([doc])"-->
+                                    <!--ngivr-icon="close" ngivr-tooltip="Jármű törlése"/>-->
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </ngivr-list-template>
+
+</ngivr-list>

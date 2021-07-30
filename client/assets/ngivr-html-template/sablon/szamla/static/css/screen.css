@@ -1,0 +1,24 @@
+@media screen {
+    body {
+        background-color: grey;
+    }
+
+    .page {
+        background-color: white;
+        border: 0.6pt solid black;
+        display: block;
+        left: 0;
+        margin: 1cm auto;
+        padding: 0;
+		padding-bottom: 5cm;
+        position: relative;
+        top: 0;
+    }
+
+    .page:first-child {
+        margin-top: 0;
+    }
+
+    
+
+}

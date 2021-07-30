@@ -1,0 +1,47 @@
+<ngivr-list ngivr-schema="htmlTemplateComment" ngivr-ref="this">
+
+  <ngivr-list-searcher>
+    <div style="float: right; margin-right: 5px;">
+      <ngivr-icon-fa ng-click="ref.form()" ngivr-tooltip="Új megjegyzés sablon" ngivr-icon-fa="fa-plus"></ngivr-icon-fa>
+    </div>
+
+
+    <div layout="row" layout-wrap style="font-weight: bold; font-size: 120%;">
+      <div flex="75">
+        Megjegyzés sablon
+      </div>
+      <div flex="25">
+        &nbsp;
+      </div>
+    </div>
+    <div>
+      &nbsp;
+    </div>
+  </ngivr-list-searcher>
+
+  <ngivr-list-template>
+
+    <div layout="row" layout-wrap style="margin-bottom: 10px;">
+      <div flex="75">
+        {{ doc.name }}
+      </div>
+      <div flex="25" style="text-align: right;">
+        <div style=" margin-right: 5px;">
+          <ngivr-icon-fa
+            ng-click="ref.form(doc._id)"
+            ngivr-tooltip="{{ ngivr.strings.button.show }}"
+            ngivr-icon-fa="{{ ngivr.settings.fa.show}}"
+          ></ngivr-icon-fa>
+          &nbsp;
+          <ngivr-icon-fa
+            ng-click="command.remove(doc._id)"
+            ngivr-tooltip="{{ ngivr.strings.button.remove }}"
+            ngivr-icon-fa="{{ ngivr.settings.fa.remove }}"
+          ></ngivr-icon-fa>
+        </div>
+      </div>
+    </div>
+
+  </ngivr-list-template>
+
+</ngivr-list>

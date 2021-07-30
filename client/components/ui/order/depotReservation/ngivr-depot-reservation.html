@@ -1,0 +1,72 @@
+<!--<div layout="row">-->
+<!--<div style="width: 100%;" ng-if="depots.length > 0">-->
+<div layout="row" class="table-head" ng-if="(depots | ngivrDepotsWithProductFilter : edited).length">
+    <div flex="15" ng-if="!sygnus">
+        Szolg. szerz.
+    </div>
+    <div flex="{{sygnus ? 30 : 15}}">
+        Raktár
+    </div>
+
+
+    <div flex="15" style="text-align: right">
+        Összes mennyiség
+    </div>
+    <div flex="15" style="text-align: right">
+        Befoglalt mennyiség
+    </div>
+    <div flex="15" style="text-align: right">
+        Szabad mennyiség
+    </div>
+    <div flex="10" style="text-align: right">
+        Tervezett (mt)
+    </div>
+    <div flex="10" style="text-align: right">
+        Teljesült (mt)
+    </div>
+    <div flex="5">
+
+    </div>
+</div>
+
+<div ng-repeat="depot in (depots | ngivrDepotsWithProductFilter : edited)">
+    <div layout="row">
+        <div flex="15" style="margin-top: 12px" ng-if="!sygnus">
+            {{depot.serviceContractName ? depot.serviceContractName : '---'}}
+        </div>
+        <div flex="{{sygnus ? 30 : 15}}" style="margin-top: 12px">
+            {{depot.depotName}}
+        </div>
+
+
+        <div flex="15" style="margin-top: 12px; text-align: right">
+            {{(depot.total | number : 3) + ' mt'}}
+        </div>
+        <div flex="15" style="margin-top: 12px; text-align: right">
+            {{(depot.reserved | number : 3) + ' mt'}}
+        </div>
+        <div flex="15" style="margin-top: 12px; text-align: right">
+            {{(depot.free | number : 3) + ' mt'}}
+        </div>
+        <div flex="10" style="margin-top: 6px">
+            <ngivr-input-number name="{{'quantity' + $index}}" ng-model="depot.quantity" watch-max="true"
+                                max="setMax(depot)" min="setMin(depot)" ng-disabled="!edited">
+            </ngivr-input-number>
+            <div ng-messages="form['quantity' + $index].$error">
+                <div ng-message="wrongNumber">{{ngivr.strings.form.validation.wrongNumber}}</div>
+            </div>
+        </div>
+        <div flex="10" style="margin-top: 12px; text-align: right" disabled>
+            {{ (depot.performed ? (depot.performed | number : 3) : '---' )+ ' mt'}}
+        </div>
+        <div flex="5">
+            <ngivr-icon-fa ng-if="depot.quantity" ng-disabled="!edited" ngivr-tooltip="Foglalás törlése"
+                           ngivr-icon-fa="fa-trash-o" ng-click="!edited || clearReservation(depot, $index)"
+                           style="margin-left: 10px; top: 10px"/>
+
+        </div>
+        <md-divider></md-divider>
+    </div>
+</div>
+<!--</div>-->
+<!--</div>-->

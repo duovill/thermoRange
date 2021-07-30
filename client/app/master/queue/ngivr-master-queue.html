@@ -1,0 +1,24 @@
+<ngivr-portlet ngivr-title="Queue Bull Arena" ngivr-icon-fa="fa-list-ol">
+  <ngivr-portlet-action>
+
+    <ngivr-button ng-click="$ctrl.refresh()" ngivr-type="portal">
+      <ng-md-icon icon="refresh"></ng-md-icon>
+      {{ ngivr.strings.button.refresh }}
+    </ngivr-button>
+
+
+    <ngivr-button ng-click="$ctrl.go('master')" ngivr-type="portal">
+      <ng-md-icon icon="arrow_back"></ng-md-icon>
+      {{ ngivr.strings.title.master }}
+    </ngivr-button>
+  </ngivr-portlet-action>
+
+  <ngivr-portlet-body class="ngivr-portlet-clean">
+    <div>
+    </div>
+    <iframe id="ngivr-master-queue-iframe" src="{{ url }}" frameborder="0" style="min-height: 800px; width: 100%; height: 100%; resize: vertical" ></iframe>
+
+  </ngivr-portlet-body>
+
+</ngivr-portlet>
+

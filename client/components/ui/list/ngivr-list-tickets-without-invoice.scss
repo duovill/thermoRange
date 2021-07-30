@@ -1,0 +1,30 @@
+.ngivr-list-tickets-without-invoice {
+  margin-bottom: 0px;
+  border: solid transparent;
+    position: relative;
+}
+
+.ngivr-list-tickets-without-invoice-highlight {
+  border: solid rgba(128, 128, 128, 0.2) !important;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.ngivr-list-tickets-without-invoice-divider {
+  border-bottom: solid rgba(128, 128, 128, 0.2) !important;
+  border-radius: 4px;
+}
+
+.ngivr-list-tickets-without-invoice-title {
+  padding-top: 4px;
+
+
+}
+
+.ngivr-list-tickets-without-invoice-title-hoverable:hover {
+  font-weight: bold;
+}
+.ngivr-list-tickets-without-invoice-title-highlight {
+  background-color: rgba(128, 128, 128, 0.1) !important;
+  font-weight: bold;
+}

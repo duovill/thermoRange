@@ -1,0 +1,175 @@
+<ngivr-list ngivr-schema="halfTicket" ngivr-ref="this" ngivr-query="ngivrQuery">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+        <div hl-sticky offset-top="$root.hlStickyTopOffset" class="ngivr-list-header-column"
+
+             layout-padding>
+
+            <div layout="row" layout-wrap>
+
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Diszpozíció száma</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Irány</strong>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <strong>Tulajdonos</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" style="text-align: center">
+                    <strong>Rendszám</strong>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <strong>Termény</strong>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <strong>Raktár</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" style="text-align: center">
+                    <strong>Mérés ideje</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" style="text-align: right">
+                    <strong>Mennyiség</strong>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" style="text-align: right">
+                    <strong>Zsákok (db)</strong>
+                </div>
+                <div flex>
+
+                </div>
+            </div>
+
+
+        </div>
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+        <div class="ngivr-list-tickets-without-invoice">
+            <div layout="row" class="center-in-table"
+                 layout-wrap ng-click="halfTicketSelected(doc)">
+
+                <div flex-gt-md="10" flex="33" flex-xs="50" class="ngivr-list-tickets-without-invoice-title-hoverable">
+                    <span ng-bind="doc.ledger[0].orderNumber"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <span ng-bind="doc.direction === 'in' ? 'Beszállítás'
+                                    : doc.direction === 'out' ? 'Kiszállítás'
+                                    : doc.direction === 'external_in' ? 'Külső beszállítás'
+                                    : doc.direction ==='internal_in' ||  doc.direction ==='internal_out' ? 'Belső áttárolás'
+                                    : 'Partner kiszállítás hajóból' "></span>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <md-tooltip md-direction="top">{{doc.ownerName}}</md-tooltip>
+                    <span ng-bind="doc.ownerName"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" style="text-align: center">
+                    <span ng-bind="doc.plateNumber1 + (doc.plateNumber2 ? '/' + doc.plateNumber2 : '')">
+
+                    </span>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <span ng-bind="doc.productName"></span>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <span ng-bind="doc.depot.name"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" style="text-align: center">
+                    <span ng-bind="doc.createdAt | date: 'yyyy.MM.dd. HH:mm'"></span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" style="text-align: right">
+                    <md-tooltip md-direction="top">{{doc.taraWeight ? 'Tára tömeg' : 'Bruttó tömeg'}}</md-tooltip>
+                    <span style="margin-right: 10px"
+                          ng-bind="(doc.taraWeight || doc.bruttoWeight ? (doc.taraWeight || doc.bruttoWeight | number: 3): '-') + ' mt'"></span>
+                </div>
+                <div flex-gt-md="5" flex="33" flex-xs="50" style="text-align: right">
+                    <!--<md-tooltip md-direction="top">{{doc.taraWeight ? 'Tára tömeg' : 'Bruttó tömeg'}}</md-tooltip>-->
+                    <!--<span style="margin-right: 10px" ng-bind="(doc.taraWeight || doc.bruttoWeight ? (doc.taraWeight || doc.bruttoWeight | number: 3): '-') + ' mt'"></span>-->
+                </div>
+                <div flex layout="row">
+
+                    <md-button style="font-size: 8pt"
+                               class="waves-effect waves-whitesmoke btn-very-small btn btn-red"
+                               ng-click="$parent.ref.$ctrl.deleteHalfticket(doc, $event)">
+                        Törlés
+                    </md-button>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="ngivr-list-tickets-without-invoice-divider"></div>
+
+        <!--<md-card class="card-padding" style="height: 80px; clear: both;">-->
+        <!--<md-card-content ng-click="halfTicketSelected(doc)">-->
+        <!--<div class="card-right" style="padding-left: 15px">-->
+        <!--<table>-->
+        <!--<tr>-->
+        <!--<td colspan="2"><span ng-bind="doc.ledger[0].orderNumber"><md-tooltip-->
+        <!--md-direction="top">Diszpozíció száma</md-tooltip></span></td>-->
+        <!--<td colspan="4"><span ng-bind="doc.ownerName"><md-tooltip-->
+        <!--md-direction="top">Tulajdonos</md-tooltip></span></td>-->
+
+        <!--<td colspan="2"><span class="label label-grey" style="margin-top: 0; color: black">{{'Vontató: ' + doc.plateNumber1}}</span>-->
+        <!--<md-tooltip md-direction="top">Vontató rendszáma</md-tooltip>-->
+        <!--</td>-->
+        <!--<td style="text-align: right">Bruttó:</td>-->
+        <!--<td style="text-align: right; padding-right: 5px">{{(doc.bruttoWeight ?-->
+        <!--(doc.bruttoWeight | number: 3) : '-') + ' mt'}}-->
+        <!--<md-tooltip md-direction="top">Bruttó súly</md-tooltip>-->
+        <!--</td>-->
+
+        <!--<td colspan="2">-->
+        <!--<md-button style="font-size: 8pt; width: 127px"-->
+        <!--class="waves-effect waves-whitesmoke btn-very-small btn btn-red"-->
+        <!--ng-click="$parent.ref.$ctrl.deleteHalfticket(doc, $event)">-->
+        <!--Törlés-->
+        <!--</md-button>-->
+        <!--</td>-->
+        <!--</tr>-->
+        <!--<tr>-->
+        <!--<td colspan="2"><span ng-bind="doc.productName"><md-tooltip-->
+        <!--md-direction="top">Termék</md-tooltip></span></td>-->
+        <!--<td colspan="4"><span>{{doc.createdAt | date: 'yyyy.MM.dd. HH:mm'}}<md-tooltip-->
+        <!--md-direction="top">Mérés dátuma</md-tooltip></span></td>-->
+        <!--<td colspan="2"><span>{{'Vontatmány: ' + ((doc.plateNumber2 != null) ? doc.plateNumber2 : "Nincs")}}<md-tooltip-->
+        <!--md-direction="top">Vontatmány rendszáma</md-tooltip></span>-->
+        <!--</td>-->
+        <!--<td style="text-align: right">Tara:</td>-->
+        <!--<td style="text-align: right; padding-right: 5px">{{(doc.taraWeight ? (doc.taraWeight |-->
+        <!--number: 3): '-') + ' mt'}}-->
+        <!--<md-tooltip md-direction="top">Tára súly</md-tooltip>-->
+        <!--</td>-->
+        <!--&lt;!&ndash;<td colspan="2"><span>{{'Tára: ' + (doc.taraWeight ?  (doc.taraWeight | number: 3): '-') + ' mt'}}<md-tooltip md-direction="top">Tára súly</md-tooltip></span></td>&ndash;&gt;-->
+        <!--</tr>-->
+        <!--<tr class="card-third-row">-->
+        <!--<td colspan="2"><span ng-bind=" doc.depot.name"><md-tooltip-->
+        <!--md-direction="top">Raktár</md-tooltip></span></td>-->
+        <!--<td colspan="4"><span ng-if="doc.ship" ng-bind="doc.ship.name "><md-tooltip-->
+        <!--md-direction="top">Hajó neve</md-tooltip></span></td>-->
+        <!--<td colspan="4"><span-->
+        <!--ng-if="doc.sygnus"-->
+        <!--class="label label-danger label-table"-->
+        <!--style="margin-top: 10px; padding: 3px; font-size: 8px">Sygnus</span>-->
+        <!--<span-->
+        <!--ng-if="!doc.sygnus"-->
+        <!--class="label label-blue label-table"-->
+        <!--style="margin-top: 10px; padding: 3px; font-size: 8px">Partner</span></td>-->
+        <!--<td colspan="2"><span class="label label-grey label-table"-->
+        <!--style="margin-top: 0; text-align: center"-->
+        <!--ng-bind="doc.direction === 'in' ? 'Beszállítás' : doc.direction === 'out' ? 'Kiszállítás' : doc.direction === 'external_in' ? 'Külső beszállítás' : 'Partner kiszállítás hajóból' "></span>-->
+        <!--</td>-->
+        <!--</tr>-->
+        <!--</table>-->
+
+        <!--</div>-->
+        <!--</md-card-content>-->
+        <!--</md-card>-->
+    </ngivr-list-template>
+</ngivr-list>

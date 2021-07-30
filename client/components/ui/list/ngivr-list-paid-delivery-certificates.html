@@ -1,0 +1,315 @@
+<!-- <ngivr-list ngivr-schema="ticket" ngivr-ref="this" ngivr-query="ngivrQuery"> -->
+<ngivr-list ngivr-url="/api/statistics/paidDeliveryCertificates" ngivr-ref="this" ngivr-query="ngivrQuery"
+            id="paiddelivery{{::$ctrl.$id}}">
+
+    <ngivr-list-buttons>
+        <ng-md-icon icon="file_download" ng-click="downloadFile()"></ng-md-icon>
+    </ngivr-list-buttons>
+
+    <ngivr-list-searcher>
+        <md-input-container class="md-block md-select-card" >
+            <label>Kereső</label>
+            <input ng-model="ref.textSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+
+        <div  layout="column" layout-gt-sm="row">
+            <md-input-container flex="50" class="md-block md-select-card">
+                <label>Év</label>
+                <!-- <input type="text" mask="2029.19.39" restrict="reject" ng-model="$ctrl.from" ng-change="$ctrl.search(query)" /> -->
+                <ngivr-input-number ng-model="ref.year" ng-change="ref.$ctrl.search(query)"/>
+            </md-input-container>
+
+            <md-input-container flex="50" class="md-block md-select-card">
+                <label>Hónap</label>
+                <!-- <input type="text" mask="2029.19.39" restrict="reject" ng-model="$ctrl.to" ng-change="$ctrl.search(query)" /> -->
+                <ngivr-input-number ng-model="ref.month" ng-change="ref.$ctrl.search(query)"/>
+            </md-input-container>
+        </div>
+
+
+        <div class="" hl-sticky="" container="stockLog_{{$ctrl.$id}}" offset-top="{{$ctrl.topOffset}}"
+             sticky-class="paiddelivery-sticky-properties">
+            <div class="paiddelivery-table-row paiddelivery-table-row-header">
+                <div class="paiddelivery-wrapper paiddelivery-first-to-eighth">
+
+                    <div class="paiddelivery-wrapper paiddelivery-attributes paiddelivery-group-1-2-3-4">
+                        <div class="paiddelivery-wrapper paiddelivery-group-1-2">
+                            <div class="paiddelivery-column paiddelivery-col-1">
+                                <div layout="column">
+
+                                    {{doc.incoming ? 'Iktatószám' : 'Bizonylatszám'}}
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.number" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                            <div class="paiddelivery-column paiddelivery-col-2">
+                                <div layout="column">
+
+                                    Partner
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.partner" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="paiddelivery-wrapper paiddelivery-group-3-4">
+                            <div class="paiddelivery-column paiddelivery-col-3">
+                                <div layout="column">
+
+                                    Szerződésszám
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.contractNumber" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                            <div class="paiddelivery-column paiddelivery-col-4">
+                                <div layout="column">
+
+                                    P. szerződészám
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.partnerContractNumber" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="paiddelivery-wrapper paiddelivery-group-5-6-7-8">
+                        <div class="paiddelivery-wrapper paiddelivery-group-5-6">
+                            <div class="paiddelivery-column paiddelivery-col-5">
+                                <div layout="column">
+
+                                    Termény
+
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.product" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+
+                            </div>
+                            <div class="paiddelivery-column paiddelivery-col-6">
+                                <div layout="column">
+
+                                    Összérték
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.sum" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="paiddelivery-wrapper paiddelivery-group-7-8">
+                            <div class="paiddelivery-column paiddelivery-col-7">
+                                <div layout="column">
+
+                                    Kifizetett összeg
+
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.sustainability" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                            <!--<div class="paiddelivery-column paiddelivery-col-8">Termény</div>-->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="paiddelivery-wrapper paiddelivery-nineth-to-sixteenth">
+                    <div class="paiddelivery-wrapper paiddelivery-group-9-10-11-12">
+                        <div class="paiddelivery-wrapper paiddelivery-group-9-10">
+                            <div class="paiddelivery-column paiddelivery-col-9">
+                                <div layout="column">
+
+                                    Telj dátuma
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.goodsSent" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                            <div class="paiddelivery-column paiddelivery-col-10">
+                                <div layout="column">
+
+                                    Kiáll dátuma
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.dateOfCreate" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="paiddelivery-wrapper paiddelivery-group-11-12">
+                            <div class="paiddelivery-column paiddelivery-col-11">
+                                <div layout="column">
+
+                                    Kifizetés dátuma
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.fulfillmentDate" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                            <div class="paiddelivery-column paiddelivery-col-12">
+                                <div layout="column">
+
+                                    Paritás
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.parity" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="paiddelivery-wrapper paiddelivery-group-13-14-15-16">
+                        <div class="paiddelivery-wrapper paiddelivery-group-13-14">
+                            <div class="paiddelivery-column paiddelivery-col-13">
+                                <div layout="column">
+
+                                    Partner számlaszáma
+
+                                    <!--<input class="ngivr-input-raw" ng-model="$ctrl.accountNumber" ng-change="$ctrl.search(query)"/>-->
+
+                                </div>
+                            </div>
+                            <div class="paiddelivery-column paiddelivery-col-14"></div>
+                        </div>
+                        <div class="paiddelivery-wrapper paiddelivery-group-15-16">
+                            <div class="paiddelivery-column paiddelivery-col-15"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="container--unsticky"></div> -->
+            </div>
+            <!-- <div class="container--unsticky"></div> -->
+
+
+        </div>
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+        <div class="ngivr-list-tickets-invoice-statement"
+             ng-class="{ 'ngivr-list-tickets-invoice-statement-highlight': detailedInvoices.includes(doc._id) }">
+            <div class="paiddelivery-table-row">
+                <div class="paiddelivery-wrapper paiddelivery-first-to-eighth">
+                    <div class="paiddelivery-wrapper paiddelivery-attributes paiddelivery-group-1-2-3-4">
+                        <div class="paiddelivery-wrapper paiddelivery-group-1-2">
+                            <div class="paiddelivery-column paiddelivery-col-1">
+                                <div layout="row" ng-click="showDetails(doc._id)">
+                                    <div flex>
+                                        <ng-md-icon ng-if="!detailedInvoices.includes(doc._id)"
+                                                    icon="chevron_right"></ng-md-icon>
+                                        <ng-md-icon ng-if="detailedInvoices.includes(doc._id)"
+                                                    icon="expand_more"></ng-md-icon>
+                                        <span>{{doc.number ? doc.number : doc.referenceNumber}}</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="paiddelivery-column paiddelivery-col-2">{{doc.buyer ? doc.buyer[0].name :
+                                doc.incomingSeller ?
+                                doc.incomingSeller[0].name : doc.seller.name}}
+                            </div>
+                        </div>
+                        <div class="paiddelivery-wrapper paiddelivery-group-3-4">
+                            <div class="paiddelivery-column paiddelivery-col-3">{{doc.relatedContract.contractNumber ||
+                                '---'}}
+                            </div>
+                            <div class="paiddelivery-column paiddelivery-col-4">
+                                {{doc.relatedContract.partnerContractNumber || '---'}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="paiddelivery-wrapper paiddelivery-group-5-6-7-8">
+                        <div class="paiddelivery-wrapper paiddelivery-group-5-6">
+                            <div class="paiddelivery-column paiddelivery-col-5">{{!doc.incoming && (doc.type ===
+                                'product' || doc.type ===
+                                'correction' ||
+                                doc.type === 'storno' || doc.compensationPercent) ? doc.items[0].product.name : '---'}}
+                            </div>
+                            <div class="paiddelivery-column paiddelivery-col-6" style="text-align: right">
+                                {{(doc.vatBase? doc.vatBase :
+                                (doc.netto + doc.compensation)) |
+                                currency : doc.currency : 0}}
+                            </div>
+                        </div>
+                        <div class="paiddelivery-wrapper paiddelivery-group-7-8">
+                            <div class="paiddelivery-column paiddelivery-col-7">{{doc.paidSum |currency : doc.currency :
+                                0 }}
+                                <!--{{doc.relatedContract ? doc.relatedContract.sustainability-->
+                                <!--=== 'Nem fenntartható' ? 'Nem' : doc.relatedContract.sustainability : '-&#45;&#45;'}}-->
+                            </div>
+                            <!--<div class="paiddelivery-column paiddelivery-col-8"></div>-->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="paiddelivery-wrapper paiddelivery-nineth-to-sixteenth">
+                    <div class="paiddelivery-wrapper paiddelivery-group-9-10-11-12">
+                        <div class="paiddelivery-wrapper paiddelivery-group-9-10">
+                            <div class="paiddelivery-column paiddelivery-col-9">
+                                {{((doc.goodsSent ? doc.goodsSent : doc.fulfillmentDate) |
+                                date:
+                                'yyyy.MM.dd') || '---'}}
+                            </div>
+                            <div class="paiddelivery-column paiddelivery-col-10">{{((doc.created ? doc.created :
+                                doc.dateOfInvoice) |
+                                date: 'yyyy.MM.dd')
+                                || '---'}}
+                            </div>
+                        </div>
+                        <div class="paiddelivery-wrapper paiddelivery-group-11-12">
+                            <div class="paiddelivery-column paiddelivery-col-11">{{(doc.payments[0].date | date:
+                                'yyyy.MM.dd') || '---'}}
+                            </div>
+                            <div class="paiddelivery-column paiddelivery-col-12">{{doc.relatedContract ?
+                                doc.relatedContract.parity :
+                                '---'}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="paiddelivery-wrapper paiddelivery-group-13-14-15-16">
+                        <div class="paiddelivery-wrapper paiddelivery-group-13-14">
+                            <div class="paiddelivery-column paiddelivery-col-13">{{doc.accountNumber ? doc.accountNumber
+                                :
+                                doc.bankAccountNumber ?
+                                doc.bankAccountNumber : '---'}}
+                            </div>
+                            <div class="paiddelivery-column paiddelivery-col-14">
+                                <div layout="row">
+
+
+                                    <ngivr-icon-fa ng-disabled="disabled2" ngivr-tooltip="Megtekintés"
+                                                   ngivr-icon-fa="fa-eye"
+                                                   ng-click="disabled2 || showDetailsPopup(null, doc)"/>
+
+                                    &nbsp;&nbsp;
+                                    <ngivr-button-pdf-existing-popup
+                                        ngivr-schema="{{doc.incomingInvoiceNumber ? 'IncomingInvoice' : doc.compensationPercent !== undefined ? 'DeliveryCertificate' : 'OutgoingInvoice'}}"
+                                        ngivr-id="{{ doc._id }}"></ngivr-button-pdf-existing-popup>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!--<div class="paiddelivery-wrapper paiddelivery-group-15-16">-->
+                        <!--<div class="paiddelivery-column paiddelivery-col-15">-->
+                        <!---->
+                        <!--</div>-->
+                        <!--</div>-->
+                    </div>
+                </div>
+            </div>
+
+            <!--
+            *****************
+            Részletek
+            *****************
+            -->
+            <div ng-if="detailedInvoices.includes(doc._id)" style="margin-left: 25px; margin-right: 25px">
+                <ngivr-invoice-details></ngivr-invoice-details>
+            </div>
+
+        </div>
+    </ngivr-list-template>
+
+</ngivr-list>

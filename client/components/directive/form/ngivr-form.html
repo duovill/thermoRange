@@ -1,0 +1,93 @@
+<form name="{{formName}}" ng-submit="command.save()" novalidate id="{{ formName}}">
+    <fieldset ng-disabled="!enabled">
+        <!--
+            <ngivr-button type="button" ngivr-click="command.test()" ngivr-type="flat">
+              ngivr-click test
+            </ngivr-button>
+            -->
+        <span ng-if="ngModel._id">
+            <div>
+                <label>{{ ngivr.strings.title.created }}</label>
+                <div>
+                    {{ ngModel.createdAt | ngivrDate : 'true' }}
+                </div>
+            </div>
+            <div>
+                <label>{{ ngivr.strings.title.updated }}</label>
+                <div>
+                    {{ ngModel.updatedAt | ngivrDate : 'true' }}
+                </div>
+            </div>
+        </span>
+        <!-- <span ng-if="!ngModel._id">
+            {{ ngivr.strings.title.new }}
+            </span>-->
+        <div ng-transclude="body"></div>
+    </fieldset>
+    <div ng-if="!saveble" style="text-align: right; font-size: 125%;">
+        <i class="fa fa-trash"></i>
+        {{ ngivr.strings.message.removed }}
+    </div>
+    <div>
+        <div>
+            <ngivr-button ngivr-type="flat" ng-if="ngivr.config.local && !lock.locked && ngModel._id" ng-click="command.clone()">
+                <ng-md-icon icon="content_copy"></ng-md-icon>
+                {{ngivr.strings.button.clone}}
+            </ngivr-button>
+            <ngivr-button ng-if="ngivrClose&&!ngivrFormPinned && !ngivrFormNoQuit" ngivr-type="flat" type="button"
+                ng-click="command.quit()">
+                <ng-md-icon icon="exit_to_app"></ng-md-icon>
+                {{ngivr.strings.button.quit}}
+            </ngivr-button>
+            <ngivr-button ng-show="ngivrFormPinned" ngivr-type="flat" type="button"
+                ng-click="command.clear(true)">
+                <ng-md-icon icon="add"></ng-md-icon>
+                {{newButtonCaption||ngivr.strings.button.new}}
+            </ngivr-button>
+            <span ng-if="enabled && ngModel._id && !ngivrFormPinned">
+                <ngivr-button type="button" ngivr-type="flat" ng-click="command.close();">
+                    <ng-md-icon icon="close"></ng-md-icon>
+                    {{ngivr.strings.button.close}}
+                </ngivr-button>
+            </span>
+            <span ng-if="enabled">
+                <div>
+                    <ngivr-button type="button" ng-click="command.undo()" ngivr-type="flat" ng-disabled="originalSame">
+                        <md-tooltip md-direction="top">{{ ngivr.strings.message.undo.form }} </md-tooltip>
+                        <ng-md-icon icon="undo"></ng-md-icon>
+                        {{ngivr.strings.button.undo}}
+                    </ngivr-button>
+                    <ngivr-button disabled="disabled" ng-show="processing" style="opacity: 0.75">
+                        <i class="fa fa-spinner fa-pulse fa-fw"></i>
+                        {{ngivr.strings.button.processing}}
+                    </ngivr-button>
+                    <ngivr-button type="submit" ng-hide="processing">
+                        <ng-md-icon icon="save"></ng-md-icon>
+                        {{ngivr.strings.button.save}}
+                    </ngivr-button>
+                    <div ng-repeat="button in customSaveButtons">
+                        <ngivr-button ng-click="button.isDisabled(ngModel) || command.save(button.options)"
+                            ng-if="button.show(ngModel)" ng-disabled="button.isDisabled(ngModel)">
+                            <ng-md-icon icon="{{button.icon}}"></ng-md-icon>
+                            {{button.name}}
+                        </ngivr-button>
+                    </div>
+                </div>
+            </span>
+
+            <ngivr-lock ngivr-lock="lock">
+                <ngivr-lock-unlocked>
+                    <span ng-if="!ngivrFormPinned">
+                        <span ng-if="!enabled && saveble">
+                            <ngivr-button type="button" ng-click="command.edit();">
+                                <ng-md-icon icon="edit"></ng-md-icon>
+                                {{ngivr.strings.button.edit}}
+                            </ngivr-button>
+                        </span>
+                    </span>
+                </ngivr-lock-unlocked>
+            </ngivr-lock>
+
+        </div>
+    </div>
+</form>

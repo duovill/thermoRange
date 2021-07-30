@@ -1,0 +1,14 @@
+<!--
+<div style="float: right">
+    <br/>
+    <md-button class="md-raised md-primary" ng-click="new()">New</md-button>
+    <br/>
+</div>
+-->
+
+<md-slider min="10" max="1000" ng-model="points"  md-discrete  class="md-primary"></md-slider>
+
+Pontok: {{ points }}. A convex hull merete {{ volume }} cm3, <md-button ng-click="new()" class="md-raised md-accent">UJ</md-button>
+<md-switch ng-model="rotateHull">{{ rotateHull ? 'Automatikus forgatás' : 'Nincs autmatikus forgatás' }}</md-switch>
+
+<div id="thermo-tests-convex-hull-3d"></div>

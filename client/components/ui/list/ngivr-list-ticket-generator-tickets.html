@@ -1,0 +1,172 @@
+<ngivr-list ngivr-schema="ticket" ngivr-ref="this" ngivr-query="ngivrQuery">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+        <ng-include ng-if="showFilter" src="'app/stockStatement/template/stock-log-filter.html'"
+        ></ng-include>
+
+        <div hl-sticky offset-top="$root.hlStickyTopOffset" class="ngivr-list-header-column"
+
+             layout-padding>
+
+            <div layout="row" layout-wrap>
+
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Diszpozíció száma</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Irány</strong>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50">
+                    <strong>Tulajdonos</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" style="text-align: center">
+                    <strong>Rendszám</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Termény</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <strong>Raktár / Hajó</strong>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" style="text-align: center">
+                    <strong>Mérés{{$state.current.name === 'stockStatement.changedTickets' ? '/teljesítés' : ''}}
+                        ideje</strong>
+                </div>
+                <div flex-gt-md="25" flex="33" flex-xs="50" style="text-align: right" layout="row">
+                    <div flex>
+                        <strong>Bruttó</strong>
+                    </div>
+                    <div flex>
+                        <strong>Tára</strong>
+                    </div>
+                    <div flex>
+                        <strong>Nettó</strong>
+                    </div>
+                    <div flex>
+                        <strong>Zsákok (db)</strong>
+                    </div>
+                    <div flex="20">
+
+                    </div>
+                    <!--<strong>Bruttó</strong>-->
+                </div>
+                <!--<div flex-gt-md="5" flex="33" flex-xs="50" style="text-align: right">-->
+                <!--<strong>Tára</strong>-->
+                <!--</div>-->
+                <!--<div flex-gt-md="5" flex="33" flex-xs="50" style="text-align: right">-->
+                <!--<strong>Nettó</strong>-->
+                <!--</div>-->
+                <!--<div flex-gt-md="10" flex="33" flex-xs="50" style="text-align: right">-->
+
+                <!--<strong>Zsákok (db)</strong>-->
+                <!--</div>-->
+                <!--<div flex-gt-md="5" flex="33" flex-xs="50">-->
+
+                <!--</div>-->
+            </div>
+
+
+        </div>
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+
+        <div class="ngivr-list-tickets-without-invoice">
+            <div layout="row" class="center-in-table"
+                 layout-wrap ng-click="ticketSelected(doc)">
+
+                <div flex-gt-md="10" flex="33" flex-xs="50" class="ngivr-list-tickets-without-invoice-title-hoverable"
+
+                     ng-style="{'color': doc.deleted ? 'red' : doc.changed ? 'orange' : 'inherit'}">
+                    <span ng-bind="doc.ledger[0].orderNumber ? doc.ledger[0].orderNumber : doc.ticketType === 'possessionTransfer' ? 'Tulajdonátruházó' : doc.ticketType === 'sweep' ? doc.direction === 'in' ? 'Fellelt készlet' : 'Készlet kivezetés' :  '---'"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <span ng-bind="doc.direction === 'in' ? 'Beszállítás'
+                                    : doc.direction === 'out' ? 'Kiszállítás'
+                                    : doc.direction === 'external_in' ? 'Külső beszállítás'
+                                    : doc.direction ==='internal_in' ||  doc.direction ==='internal_out' ? 'Belső áttárolás'
+                                    : 'Partner kiszállítás hajóból' "></span>
+                </div>
+                <div flex-gt-md="15" flex="33" flex-xs="50" ngivr-ellipsis>
+                    <md-tooltip md-direction="top">{{doc.ownerName}}</md-tooltip>
+                    <span ng-bind="doc.ownerName"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" style="text-align: center">
+                    <span
+                        ng-bind="doc.plateNumber1 ? doc.plateNumber1 + (doc.plateNumber2 ? '/' + doc.plateNumber2 : '') : '---'">
+
+                    </span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <span ng-bind="doc.productName"></span>
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50">
+                    <span ng-bind="getPlace(doc)"></span>
+
+                    <!--<span ng-bind="doc.depot.name + (doc.ship.name ? ' / ' + doc.ship.name : '')"></span>-->
+                </div>
+                <div flex-gt-md="10" flex="33" flex-xs="50" style="text-align: center">
+                    <span
+                        ng-bind="doc.weighingHouse ? (doc.createdAt | date: 'yyyy.MM.dd. HH:mm') : doc.fulfillmentDate | date: 'yyyy.MM.dd'"></span>
+                </div>
+
+                <div flex-gt-md="25" flex="33" flex-xs="50" style="text-align: right" layout="row"
+                     class="center-in-table">
+                    <div flex>
+                        <span style="margin-right: 10px"
+                              ng-bind="doc.bruttoWeight ? ((doc.bruttoWeight | number: 3) + ' mt') : '---'"></span>
+                    </div>
+                    <div flex>
+                        <span style="margin-right: 10px"
+                              ng-bind="doc.taraWeight ? ((doc.taraWeight | number: 3) + ' mt') : '---'"></span>
+                    </div>
+                    <div flex>
+                        <span style="margin-right: 10px"
+                              ng-bind="((doc.nettoWeight ? doc.nettoWeight : doc.sumWeight) | number: 3) + ' mt'"></span>
+                    </div>
+                    <div flex layout="row">
+                        <div flex="70" style="margin-top: 0">
+                            {{doc.numberOfPackings ? doc.numberOfPackings : '---'}}
+                        </div>
+
+                    </div>
+                    <div flex="20">
+                        <div layout="row">
+                            <div flex style="margin-right: 6px">
+                                <ngivr-button-pdf-existing-popup ngivr-schema="Ticket"
+                                                                 ngivr-id="{{ doc._id }}"></ngivr-button-pdf-existing-popup>
+                            </div>
+                            <div flex>
+                                <ngivr-icon-fa ng-if="!doc.deleted && doc.deletable" style="float: right"
+                                               ng-click="deleteOutTicketAndVehicleFromBfk(doc, $event)"
+                                               ngivr-tooltip="{{ ngivr.strings.button.delete }}"
+                                               ngivr-tooltip-direction="top"
+                                               ngivr-icon-fa="fa-trash"
+                                ></ngivr-icon-fa>
+                            </div>
+                            <div flex>
+                                <ngivr-popup-change-order-in-ticket
+                                    ng-if="doc.ledger.length === 1 && (doc.direction !== 'out' || (doc.direction === 'out' && !doc.parentTicketId)) && !doc.childTicket && !doc.linkToWeighing"
+
+                                    ng-model="doc"></ngivr-popup-change-order-in-ticket>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+        <div class="ngivr-list-tickets-without-invoice-divider"></div>
+
+    </ngivr-list-template>
+</ngivr-list>

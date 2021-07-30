@@ -1,0 +1,99 @@
+header{
+	width: 94%;
+	padding-bottom: 0.5%;
+	border-bottom: 1px solid black;
+	margin:2% 3% 0;
+	display: inline-block;
+}
+
+.logo{
+	margin-left: 5%;
+}
+
+header ul {
+    margin: 2% 14% 0;
+}
+
+.seller-container {
+    width: 65%;
+}
+
+.seller{
+	float: left;
+	margin: 2% 5% 5% 0;
+}
+
+.seller td, .seller th {
+    padding-bottom: 0.5em;
+}
+
+.seller-container ul{
+	display: inline-block;
+	float: left;
+	margin-top: 2%;
+	margin-left: 5%;
+}
+
+.purchaser-container {
+    width: 35%;
+}
+
+.purchaser-container p{
+    margin: 4% 0;
+}
+
+.purchaser li {
+    margin-bottom: 3%;
+}
+
+.purchaser li:nth-child(1) {
+    margin-bottom:5%;
+}
+
+.taxID{
+	width: 90%;
+	margin: 3% 0 3% 5% !important;
+}
+
+.billcopy{
+	margin:0 0 3%;
+}
+
+.paddingbottom td, .paddingbottom th {
+    padding-bottom: 0.25em;
+}
+
+.notes{
+	display: inline-block;
+	float:left;
+}
+
+.notes li:nth-child(1) {
+    padding-bottom: 0.5em;
+}
+
+.notes li {
+    padding-bottom: 0;
+}
+
+.notes li:last-child {
+    padding-top: 0.5em;
+}
+
+.qrcode1{
+	display: inline-block !important;
+}
+
+.qrcode2{
+	display: none !important;
+}
+
+.qrcode3{
+	display: none !important;
+	margin-top: 3%;
+}
+
+.qrcode4{
+	display: none !important;
+	margin-top: 3%;
+}

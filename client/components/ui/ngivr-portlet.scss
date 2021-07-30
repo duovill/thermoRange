@@ -1,0 +1,26 @@
+@import "../../assets/metronic/sass/global/variables";
+@import "../../assets/sass/variables";
+
+.portlet.box > .portlet-body.ngivr-portlet-clean {
+  padding: 0px !important;
+}
+
+ngivr-portlet > div.portlet.box.red {
+  background-color: white !important;
+}
+
+ngivr-portlet {
+  .ngivr-portlet-title {
+    position: relative;
+  }
+}
+
+.scrollable-row {
+  display: flex;
+  overflow-x: auto;
+
+  ngivr-portlet:nth-child(n+2) {
+    margin-left: 20px;
+  }
+}
+

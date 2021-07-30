@@ -1,0 +1,31 @@
+<div ng-if="query.total > query.limit" style="text-align: center; clear: both;" ng-class="ngivr.config.mobile ? 'ngivr-list-paginator-button-mobile' : ''" >
+
+  <div style="float: left; margin-left: 5px;">
+    <ngivr-button ng-if="query.pages >= minShowButtons" ng-disabled="query.page == 1" ngivr-type="flat" class="ngivr-list-paginator-button" ng-click="$ctrl.first()">
+      <i class="fa fa-angle-double-left"/>
+    </ngivr-button>
+
+    <ngivr-button  ng-if="query.pages >= minShowButtons" ng-disabled="query.page == 1" ngivr-type="flat" class="ngivr-list-paginator-button" ng-click="$ctrl.prev()">
+      <i class="fa fa-angle-left"/>
+    </ngivr-button>
+  </div>
+
+  <div style="float: right; margin-right: 5px;">
+    <ngivr-button  ng-if="query.pages >= minShowButtons " ng-disabled="query.page == query.pages" ngivr-type="flat" class="ngivr-list-paginator-button" ng-click="$ctrl.next()">
+      <i class="fa fa-angle-right"/>
+    </ngivr-button>
+
+    <ngivr-button  ng-if="query.pages >= minShowButtons" ng-disabled="query.page == query.pages" ngivr-type="flat" class="ngivr-list-paginator-button" ng-click="$ctrl.last()">
+      <i class="fa fa-angle-double-right"/>
+    </ngivr-button>
+  </div>
+
+  <span ng-repeat="page in $ctrl.showPages()">
+    <ngivr-button  ng-disabled="page == query.page" ngivr-type="flat" ngivr-active="page == query.page"  class="ngivr-list-paginator-button" ng-click="$ctrl.page(page)">
+      {{ page }}
+    </ngivr-button>
+  </span>
+
+</div>
+
+<div style="clear: both;"></div>

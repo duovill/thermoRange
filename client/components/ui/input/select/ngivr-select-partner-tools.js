@@ -1,0 +1,44 @@
+'use strict';
+ngivr.angular.directive('ngivrSelectPartnerTools', function (ngivrService, ngivrInput) {
+
+    return {
+        restrict: 'E',
+        require: 'ngModel',
+        scope: {
+            model: '=ngModel'
+        },
+        template: `
+<md-select class="ngivr-select"  ng-model="model" ng-model-options="{ trackBy: '$value._id'}">
+  <md-option ng-repeat="tool in partnerTools" ng-value="tool"  >
+    {{ tool.toolType }}
+  </md-option>
+</md-select>
+<!--<pre>{{partnerTools | json}}</pre>-->
+`,
+        link: function (scope, element, attrs, ngModel) {
+            ngivrInput.select.link(scope);
+
+            const dataQuery = ngivrService.data.query({
+                $scope: scope,
+                schema: 'partnerTool',
+                subscribe: async (promise) => {
+                    try {
+                        const response = await promise;
+                        const data = Object.assign({}, response.data);
+                        scope.partnerTools = data.docs;
+
+                        delete data['docs'];
+                    } catch (e) {
+                        ngivr.growl.error(e);
+                    }
+                }
+            });
+
+            dataQuery.query({
+                limit: 0,
+                sort: 'toolType',
+            });
+
+        },
+    }
+});

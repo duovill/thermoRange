@@ -1,0 +1,23 @@
+
+  <md-dialog aria-label=""  style="min-width: 95%">
+
+    <md-toolbar>
+      <div class="md-toolbar-tools portlet-title">
+        <h2>{{doc.incomingInvoiceNumber ? doc.incomingInvoiceNumber : doc.number}}</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon class="fa fa-close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <ngivr-invoice-details></ngivr-invoice-details>
+      </div>
+
+    </md-dialog-content>
+
+  </md-dialog>
+
+

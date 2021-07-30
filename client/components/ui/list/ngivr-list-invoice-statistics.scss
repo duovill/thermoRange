@@ -1,0 +1,278 @@
+//this will be the unique prefix for the grid
+//change it to individually set column widths use the prefixed class names in the HTML
+.invstat {
+/*You can use up to 16 columns please adapt column width and width calculations*/
+/*
+ * Define the widths: play around with these
+ * to get a best fit.
+ * Set 0px to unused columns!
+ */
+
+$col-1-width: 80px;
+$col-2-width: 80px;
+$col-3-width: 0px;
+$col-4-width: 0px;
+$col-5-width: 120px;
+$col-6-width: 0px;
+$col-7-width: 0px;
+$col-8-width: 0px;
+$col-9-width: 140px;
+$col-10-width: 0px;
+$col-11-width:0px;
+$col-12-width:0px;
+$col-13-width:120px;
+$col-14-width:160px;
+$col-15-width:0px;
+$col-16-width:0px;
+
+/*
+ * Basic styles, good for a large display. Everything fits in
+ * one row, no wrapping. All text based cells grow equally.
+ */
+// Main container - row container
+&-table-row {
+  display: flex;          display: -webkit-flex;
+  flex-direction: row;    -webkit-flex-direction: row;
+  flex-wrap: no-wrap;     -webkit-flex-wrap: no-wrap;
+  width: 100%;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+
+
+&-table-row {
+  border-bottom: 1px solid #e0e0e0;
+  border-collapse: collapse;
+  padding-top: 2px;
+}
+
+&-table-row-header {
+	min-height:50px;
+	align-items:center;
+	margin-top:20px;
+	font-weight:600;
+	border-top:1px solid grey;
+	border-bottom:3px double grey;
+	background-color: #fafafa;
+}
+
+// Wrappers around cells and other wrappers
+&-wrapper {
+  display: flex; display: -webkit-flex;
+  flex-direction: row; -webkit-flex-direction: row;
+}
+
+// leaf level containers (cells): common properties
+&-column {
+  flex-grow: 0; -webkit-flex-grow: 0;
+  flex-shrink: 0; -webkit-flex-shrink: 0;
+  vertical-align: top;
+}
+
+// leaf level containers: widths
+&-col-1 { width: $col-1-width; }
+&-col-2 { width: $col-2-width; }
+&-col-3 { width: $col-3-width; }
+&-col-4 { width: $col-4-width; }
+&-col-5 { width: $col-5-width; }
+&-col-6 { width: $col-6-width; }
+&-col-7 { width: $col-7-width; }
+&-col-8 { width: $col-8-width; }
+&-col-9 { width: $col-9-width; }
+&-col-10 { width: $col-10-width; }
+&-col-11 { width: $col-11-width; }
+&-col-12 { width: $col-12-width; }
+&-col-13 { width: $col-13-width; }
+&-col-14 { width: $col-14-width; }
+&-col-15 { width: $col-15-width; }
+&-col-16 { width: $col-16-width; }
+
+
+&-col-1 {
+  font-weight: bold;
+  color: #337AB5;
+}
+
+&-col-2 {
+  width: $col-2-width;
+}
+
+// ellipsis to show truncated text
+&-col-1, &-col-2 {
+  flex-grow: 1; -webkit-flex-grow: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 4px;
+}
+
+/* growable wrappers */
+&-group-1-2, &-group-1-2-3-4, &-group-5-6-7-8, &-group-3-4, &-group-5-6, &-group-7-8, &-group-9-10, &-group-9-10-11-12, &-group-11-12, &-group-13-14-15-16, &-group-13-14, &-group-15-16, &-attributes, &-first-to-eighth, &-nineth-to-sixteenth  {
+  flex-grow: 1; -webkit-flex-grow: 1;
+}
+
+/*
+ * Media queries: optimize for different screen widths&-
+ */
+
+
+// Wrapper widths
+$group-1-2-width: max($col-1-width, $col-2-width);
+$group-3-4-width: max($col-3-width, $col-4-width);
+$group-1-2-3-4-width: max($col-1-width, $col-2-width,$col-3-width,$col-4-width );
+$group-5-6-width: max($col-5-width, $col-6-width);
+$group-7-8-width: max($col-7-width,$col-8-width);
+$all-attributes-width: max($col-1-width, $col-2-width,$col-3-width,$col-4-width);
+$group-5-6-7-8-width: max($col-7-width,$col-8-width,$col-5-width,$col-6-width);
+$group-9-10-width: max($col-9-width,$col-10-width);
+$group-11-12-width: max($col-11-width,$col-12-width);
+$group-9-10-11-12-width: max($col-9-width,$col-10-width,$col-11-width,$col-12-width);
+$group-13-14-15-16-width: max($col-13-width,$col-14-width,$col-15-width,$col-16-width);
+$group-13-14-width: max($col-13-width,$col-14-width);
+$group-15-16-width: max($col-15-width,$col-16-width);
+@mixin horizontal(){
+  flex-direction: row;        -webkit-flex-direction: row;
+}
+
+@mixin vertical(){
+  // Let the wrapper flex vertically, so we get 2 rows
+  flex-direction: column;     -webkit-flex-direction: column;
+  // can't have the children grow, since this now means vertical growth
+  div {
+    flex-grow: 0;  -webkit-flex-grow: 0;
+  }
+}
+
+@mixin vertical-growing(){
+  @include vertical();
+  > div {
+    // Let immediate child divs grow horizontally, 100% to fill the wrapper
+    width: 100%;
+  }
+}
+
+&-group-13-14 {
+  text-align: right;
+}
+
+/*
+ * Media breaks.
+ */
+
+// First break: as many 2-row fields as possible.
+@media all and (max-width: 1600px) {
+  &-group-1-2 {
+    @include vertical-growing();
+    width: $group-1-2-width;
+  }
+  &-group-3-4 {
+    // @include vertical();
+	@include vertical-growing();
+	width: $group-3-4-width;
+  }
+  &-group-5-6 {
+    // @include vertical();
+	@include vertical-growing();
+	width: $group-5-6-width;
+  }
+  &-group-7-8 {
+    @include vertical-growing();
+    width: $group-7-8-width;
+  }
+  &-group-9-10 {
+    @include vertical-growing();
+    width: $group-9-10-width;
+  }
+  &-group-11-12 {
+    @include vertical-growing();
+    width: $group-11-12-width;
+  }
+  &-group-13-14 {
+	  @include vertical-growing();
+  	  width: $group-13-14-width;
+	  flex-direction: column;
+  }
+  &-group-15-16 {
+	  @include vertical-growing();
+  	  width: $group-15-16-width;
+  }
+
+}
+
+
+// break: 4 columns:
+@media all and (max-width: 1000px ) {
+
+  // looks better with a little padding on mobile devices
+  &-table-row {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+  &-group-3-4 {
+    @include horizontal();
+  }
+  &-group-1-2-3-4 {
+    @include vertical-growing();
+    width: $group-1-2-3-4-width;
+  }
+  &-group-5-6-7-8 {
+    @include vertical-growing();
+    width: $group-5-6-7-8-width;
+  }
+  &-group-9-10-11-12 {
+    @include vertical-growing();
+	width: $group-9-10-11-12-width;
+  }
+  &-group-13-14-15-16 {
+    @include vertical-growing();
+	width: $group-13-14-15-16-width;
+  }
+
+  &-attributes {
+    @include vertical-growing();
+    width: $all-attributes-width;
+	flex-shrink: 0;
+
+  }
+  &-group-3-4, &-group-5-6 {
+	  @include vertical-growing();
+  }
+
+  &-table-row-header {
+		 	align-items: normal;
+  }
+
+  //sticky timest
+  &-sticky-properties {
+      top:0px;
+  }
+
+
+}
+
+@media all and (max-width: 580px ) {
+	&-first-to-eighth, &-nineth-to-sixteenth {
+		flex-direction: column;
+		flex-grow: 1;
+	}
+}
+
+//sticky timest
+&-sticky-properties {
+    margin-top:0px;
+    background-color: #fafafa;
+}
+
+
+// //sticky experimental
+// .controls-fixed{
+//   background-color:rgba(0, 0, 0, 0.1);
+//   bottom:0;
+//   left:0;
+//   padding:10px 15px;
+//   position:fixed;
+//   top:77px;
+//   // width:100%;
+// }
+}

@@ -1,0 +1,211 @@
+<ngivr-list ngivr-schema="hedgeContract" ngivr-ref="this">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+    <ngivr-list-template>
+        <md-card  class="card-sm">
+            <md-card-content>
+                <div ng-style="doc.speculation ? {'color':'blue'} :{'color':'black'}" layout="row"
+                     ng-click="toggleRedsChange($index)">
+                    <div flex="20">
+                        <strong>{{$index+1}}</strong>
+                        <md-tooltip md-direction="left">id: {{doc._id}}</md-tooltip>
+                    </div>
+                    <div flex="20" ng-bind="doc.rate">
+                        <md-tooltip md-direction="left">Árfolyam</md-tooltip>
+                    </div>
+                    <div flex="20" ng-bind="doc.expiry | date: 'yyyy.MM.dd'">
+                        <md-tooltip md-direction="left">Lejárat</md-tooltip>
+                    </div>
+                    <div flex="20">
+                        <span>{{(doc.quantity| number: 0) + ' / '+ (doc.remain | number : 0)}}</span>
+                        <md-tooltip md-direction="left">Volumen</md-tooltip>
+                    </div>
+                    <div flex="20" ng-bind="doc.contractDate | date: 'yyyy.MM.dd'">
+                        <md-tooltip md-direction="left">Szerződés dátuma</md-tooltip>
+                    </div>
+                    <div flex="20" ng-bind="doc.bank">
+                        <md-tooltip md-direction="left">Bank</md-tooltip>
+                    </div>
+                </div>
+                <div ng-style="doc.speculation ? {'color':'blue'} :{'color':'black'}" layout="row"
+                     ng-click="toggleRedsChange($index)">
+                    <div flex="40" ng-bind="'Szabad tétel: ' + calcFreeVolume(hedgeContract)"></div>
+                    <div flex="40" ng-bind="'Sorszám: ' + doc.number"></div>
+                    <div flex="20">
+                        <a class="waves-effect waves-whitesmoke btn-small btn btn-today"
+                           ng-if="calcFreeVolume(hedgeContract, true) > 0" href="#"
+                           ng-click="hedgeToBuyBank(hedgeContract)">Összekötés</a>
+                    </div>
+                </div>
+
+                <div ng-if="showReds[$index]" layout="row">
+                    <div flex="100">
+
+                        <div colspan="6">
+                            <div>
+                                <md-tabs md-dynamic-height md-border-bottom >
+                                    <md-tab label="Fedezett tételek">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <tbody>
+                                                <tr>
+                                                    <td>{{ 'Mennyiség: ' + (doc.quantity | number: 0) }}</td>
+                                                    <td>{{'Átlagár: ' + hedgedAvgPrice(doc.hedgedContract) }}</td>
+                                                </tr>
+                                                <tr ng-repeat="i in doc.hedgedContract| orderBy: date : true">
+                                                    <td ng-bind="i.contractNumber"></td>
+                                                    <td><span>{{ (i.eurprice | number: 0) + '/' + (i.toHedge-i.hedgeValue | number: 0)}}</span>
+                                                    </td>
+                                                    <td ng-bind="i.termTo | date : 'yyyy.MMMM d.'"></td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </md-tab>
+                                    <md-tab label="Zárás">
+                                        <div layout="row" class="margin-top-10 margin-bottom-5">
+                                            <div flex="100">
+                                                <span>Megjegyzés nyitáskor: </span>{{ doc.comment}}
+                                            </div>
+                                        </div>
+
+                                        <form name="hedgeForm">
+
+                                            <div layout="row">
+                                                <div flex="50">
+                                                    <md-input-container class="md-block">
+                                                        <label>Zárási mennyiség</label>
+                                                        <input type="number" min="1" max="{{doc.remain}}" name="quantity1"
+                                                               ng-model="doc.toClose.quantity" required/>
+                                                        <div ng-if="doc.toClose.quantity != null" class="num-to-text">
+                                                            <span ng-bind="numToText(doc.toClose.quantity)"></span>
+                                                        </div>
+                                                        <div ng-if="hedgeForm.quantity1.$dirty"
+                                                             ng-messages="hedgeForm.quantity1.$error">
+                                                            <p ng-message="max">Az összeg nem lehet nagyobb, mint
+                                                                {{doc.remain| number : 0}}</p>
+                                                            <p ng-message="min">Az összeg nem lehet kisebb, mint 1</p>
+                                                            <p ng-message="required">A mező kitöltése kötelező</p>
+                                                        </div>
+
+                                                    </md-input-container>
+
+                                                </div>
+                                                <div flex="50">
+                                                    <md-input-container class="md-block">
+                                                        <label>Árfolyam</label>
+                                                        <input type="number" name="hedgeRate" ng-model="doc.toClose.rate"
+                                                               required/>
+                                                        <div ng-if="doc.toClose.quantity != null" class="num-to-text">
+                                                            <span ng-bind="numToText(doc.toClose.rate)"></span>
+                                                        </div>
+                                                        <div ng-if="hedgeForm.hedgeRate.$dirty"
+                                                             ng-messages="hedgeForm.hedgeRate.$error">
+                                                            <p ng-message="required">A mező kitöltése kötelező</p>
+                                                        </div>
+                                                    </md-input-container>
+                                                </div>
+                                            </div>
+
+                                            <div layout="row" class="row-margin-fix-1">
+                                                <div flex="30">
+                                                    <md-input-container class="md-block">
+                                                        <label>Év</label>
+                                                        <md-select md-no-ink name="year" ng-model="closeDate[0]" required>
+                                                            <md-option ng-repeat="i in years" value="{{ i}}">{{ i}}</md-option>
+                                                        </md-select>
+                                                    </md-input-container>
+                                                </div>
+                                                <div flex="40">
+                                                    <md-input-container class="md-block">
+                                                        <label>Hónap</label>
+                                                        <md-select md-no-ink name="month" ng-model="closeDate[1]" required>
+                                                            <md-option ng-repeat="i in months" value="{{ i}}">{{ i}}</md-option>
+                                                        </md-select>
+                                                    </md-input-container>
+                                                </div>
+                                                <div flex="30">
+                                                    <md-input-container class="md-block">
+                                                        <label>Nap</label>
+                                                        <input class="day-fix-1" name="quantity" type="number" ng-model="closeDate[2]"
+                                                               required/>
+                                                    </md-input-container>
+                                                </div>
+                                                <div flex="33">
+                                                    <a ng-click="addToday(true)"
+                                                       class="waves-effect waves-whitesmoke btn-small btn btn-today margin-top-15 margin-left-10"><span>Mai nap</span></a>
+                                                </div>
+                                            </div>
+
+                                            <div layout="row">
+                                                <div flex="100">
+                                                    <md-input-container class="md-block">
+                                                        <label>Megjegyzés</label>
+                                                        <textarea name="comment" ng-model="doc.toClose.comment"
+                                                                  rows="3"></textarea>
+                                                    </md-input-container>
+                                                </div>
+                                            </div>
+
+                                        </form>
+
+                                        <div layout="row" class="margin-bottom-20">
+                                            <div flex="50" class="padding-right-10">
+                                                <md-button aria-label="0" ng-disabled="hedgeForm.$invalid"
+                                                           ng-click="closeHedge(hedgeContract, closeDate, $index)"
+                                                           class="fw-btn md-raised"><span>Zárás</span></md-button>
+                                            </div>
+                                            <div flex="50" class="padding-left-10">
+                                                <md-button aria-label="0" ng-click="toggleRedsChange($index)"
+                                                           class="fw-btn md-raised"><span>Mégse</span></md-button>
+                                            </div>
+                                        </div>
+                                    </md-tab>
+                                    <md-tab label="Történet">
+                                        <div class="table-responsive">
+                                            <table class="table">
+                                                <tbody>
+                                                <tr>
+                                                    <td>Nyitotta: <b ng-bind="doc.by"></b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Megjegyzés nyitáskor: <b ng-bind="doc.comment"></b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Zárások:</td>
+                                                </tr>
+                                                <div>
+                                                    <tr ng-repeat="i in doc.close| orderBy: date : true">
+                                                        <td ng-bind="i.date | date : 'yyyy.MMMM d.'"></td>
+                                                        <td ng-bind="i.quantity | number: 0"></td>
+                                                        <td ng-bind="i.by"></td>
+                                                        <td>{{'Megjegyzés: ' + i.comment}}</td>
+                                                    </tr>
+                                                    <!-- <tr>
+                                                            <td>{{'Megjegyzés: ' + i.comment}}</td>
+                                                    </tr> -->
+                                                </div>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+
+                                    </md-tab>
+
+                                </md-tabs>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </md-card-content>
+        </md-card>
+    </ngivr-list-template>
+
+</ngivr-list>

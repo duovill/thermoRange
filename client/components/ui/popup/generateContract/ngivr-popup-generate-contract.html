@@ -1,0 +1,463 @@
+<md-dialog aria-label="">
+    <form name="contractGeneratorForm" novalidate ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools portlet-title">
+                <h2>Normál szerződés(ek) generálása a(z) {{optionContract.contractNumber}} sz. szerződésből</h2>
+
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon class="fa fa-close" aria-label="Ablak bezérésa"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+
+            <div class="md-dialog-content" id="contractGenerator">
+                <!--
+                *******************
+                Statikus adatok
+                *******************
+                -->
+
+
+                <div layout="row" layout-xs="column">
+
+                    <div flex="50" flex-xs="100"
+                         ng-style="{'padding-right' : $mdMedia('gt-sm') ? '2px' : '0', 'padding-left' : $mdMedia('gt-sm') ? '2px' : '0'}">
+                        <ul class="list-group">
+                            <li class="list-group-item"> Partner
+                                <span class="badge badge-default" ng-bind="optionContract.partner[0].name"></span>
+                            </li>
+                            <li class="list-group-item"> Partner címe
+                                <span class="badge badge-default" ng-bind="optionContract.partner[0].address.zipCode.zipCode + ' ' + optionContract.partner[0].address.city +
+            (optionContract.partner[0].address.address !== '' && optionContract.partner[0].address.address !== undefined? ', ' : '') +
+            optionContract.partner[0].address.address"></span>
+                            </li>
+                            <li class="list-group-item"> Adószám a szerződésen
+                                <span
+                                    class="badge badge-default"
+                                    ng-bind="optionContract.partnerContractVatNumber"></span>
+                            </li>
+                            <li class="list-group-item"> Mintavételi szabvány
+                                <span class="badge badge-default" ng-bind="optionContract.sampleStandard"></span>
+                            </li>
+                            <li class="list-group-item">Szállítási határidő
+                                <span class="badge badge-default"
+                                      ng-bind="(optionContract.termFrom | date:'yyyy.MM.dd.') + '-' + (optionContract.termTo | date:'yyyy.MM.dd.')"></span>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                    <div flex="50" flex-xs="100"
+                         ng-style="{'padding-right' : $mdMedia('gt-sm') ? '2px' : '0', 'padding-left' : $mdMedia('gt-sm') ? '2px' : '0'}">
+                        <ul class="list-group">
+                            <li class="list-group-item"> Sygnus üzletkötő
+                                <span class="badge badge-default"
+                                      ng-bind="optionContract.owner[0].fullName"></span>
+                            </li>
+                            <li class="list-group-item"> Paritás szerződés szerint
+                                <span class="badge badge-default">
+                                {{optionContract.parity[0].name + ' ' +
+                                (optionContract.parity[0].name === 'FOB' ? optionContract.fobDestination :
+                                 getParityPlaces(optionContract))}}</span>
+
+                            </li>
+                            <li class="list-group-item"> Fenntarthatóság
+                                <span class="badge badge-default" ng-bind="optionContract.sustainability"></span>
+                            </li>
+
+                            <li class="list-group-item">Fizetési határidő
+                                <span class="badge badge-default"
+                                      ng-bind="optionContract.paymentDeadline"></span>
+
+                            </li>
+                            <li class="list-group-item">Szerződésekhez használható mennyiség
+                                <span class="badge badge-default"
+                                      ng-bind="actualRemain"></span>
+
+                            </li>
+                            <li ng-if="optionContract.prePaid" class="list-group-item">Előre fizetés(ek) összege a
+                                szerződésben
+                                <span class="badge badge-default"
+                                      ng-bind="origBeforeTransport | currency : optionContract.currency"></span>
+
+                            </li>
+                            <li ng-if="optionContract.deposit" class="list-group-item">Előleghez használható
+                                összeg
+                                <span class="badge badge-default"
+                                      ng-bind="actualDeposit | currency : optionContract.currency"></span>
+
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+                <!--
+                *******************
+                Új adatok
+                *******************
+                -->
+                <div ng-repeat="contract in contracts">
+
+                    <ngivr-divider ng-if="$first"></ngivr-divider>
+                    <div layout="row">
+                        <div flex="5" style="margin-top: 30px">
+                            {{($index + 1) + '.'}}
+                        </div>
+
+                        <div flex="15">
+                            <md-input-container class="md-block md-select-card">
+                                <label>{{ngivr.strings.field.contractProduct}}</label>
+                                <md-select class="ngivr-select" name="{{'contractProduct_' + $index}}" required
+                                           ng-model="contract.product[0]" ng-model-options="{ trackBy: '$value._id'}">
+                                    <md-option ng-repeat="product in optionContract.optionProducts" ng-value="product">
+                                        {{product.name}}
+                                    </md-option>
+                                </md-select>
+                            </md-input-container>
+
+                            <div ng-messages="$parent.contractGeneratorForm['contractProduct_' + $index].$error">
+                                <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                            </div>
+                        </div>
+                        <div flex="15">
+                            <md-input-container class="md-block">
+                                <label>Egységár</label>
+                                <ngivr-input-number name="price" ng-model="contract.price" idx="$index"
+                                                    calculate-sum-price="calculateSumPrice(idx, field, value)"></ngivr-input-number>
+                            </md-input-container>
+                        </div>
+                        <div flex="15">
+                            <md-input-container class="md-block">
+                                <label>{{ngivr.strings.field.quantity}}</label>
+                                <ngivr-input-number name="{{'quantity_' + $index}}" max="contract.maxQuantity"
+                                                    field="'quantity_' + $index"
+                                                    ng-model="contract.quantity" idx="$index"
+                                                    calculate-sum-price="calculateSumPrice(idx, field, value)"></ngivr-input-number>
+                            </md-input-container>
+
+                            <div ng-messages="$parent.contractGeneratorForm['quantity_' + $index].$error">
+                                <div ng-message="wrongNumber">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                            </div>
+                        </div>
+                        <div flex="10">
+                            <md-input-container class="md-block">
+                                <label>Végösszeg</label>
+                                <ngivr-input-number name="sumPrice" ng-disabled="false"
+                                                    ng-model="contract.sumPrice"></ngivr-input-number>
+                            </md-input-container>
+                        </div>
+                        <div flex="10">
+                            <md-input-container class="md-block md-select-card" style="bottom: 2px">
+                                <label>{{ngivr.strings.field.parity}}</label>
+                                <ngivr-select-parity required name="{{'parity_' + $index}}"
+                                                     ng-model="contract.parity[0]"></ngivr-select-parity>
+
+                            </md-input-container>
+
+                            <div ng-messages="$parent.contractGeneratorForm['parity_' + $index].$error">
+                                <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                            </div>
+                        </div>
+                        <div flex="15">
+                            <div layout="row" ng-if="contract.parity[0].river">
+                                <!-- viszonylatok -->
+                                <div flex="100">
+                                    <md-input-container class="md-block md-select-card" style="bottom: 2px">
+                                        <label>{{ngivr.strings.field.fobDestination}}</label>
+                                        <ngivr-select-fob-destination just-name="true" required
+                                                                      name="{{'fobDestination_' + $index}}"
+                                                                      ng-model="contract.fobDestination">
+
+                                        </ngivr-select-fob-destination>
+                                    </md-input-container>
+                                    <div
+                                        ng-messages="$parent.$parent.contractGeneratorForm['fobDestination_' + $index].$error">
+                                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div layout="row" ng-if="!contract.parity[0].river">
+                                <div flex="100">
+                                    <ngivr-chips-parity-place ng-model="contract.parityPlaces" is-required="true"
+                                                              name="{{'parityPlace_' + $index}}"
+                                                              chips-name="'parityPlace_' + $index"
+                                    ></ngivr-chips-parity-place>
+                                    <div
+                                        ng-messages="$parent.$parent.contractGeneratorForm['parityPlace_' + $index].$error">
+                                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div flex="10">
+                            <md-input-container class="md-block">
+                                <label>Felrakóhely</label>
+                                <input name="loadCity" type="text" ng-model="contract.loadCity"/>
+
+                            </md-input-container>
+                        </div>
+                        <div flex style="margin-top: 22px">
+                            <ngivr-icon-fa class="pull-right"
+                                           ng-click="removeContract($index)"
+                                           ngivr-tooltip="Szerződés törlése"
+                                           ngivr-icon-fa="fa-trash-o"/>
+                        </div>
+
+                    </div>
+                    <!--<pre>{{contract.uniqueQuality | json}}</pre>-->
+
+                    <div layout="row">
+                        <!--
+                        ***********************
+                        Minőségi paraméterek
+                        ***********************
+                        -->
+                        <div flex="50">
+                            <div class="ngivr-cargo-plan-border" style="margin-right: 5px">
+
+                                <span>Egyedi minőségi paraméterek</span>
+
+
+                                <div ng-repeat="parameter in contract.uniqueQuality"
+                                     ng-if="contract.uniqueQuality.length > 0 && contract.uniqueQuality[0].value !== null">
+
+                                    <div layout="row">
+                                        <div flex="80">
+                                            <md-input-container class="md-block">
+                                                <label>Paraméter</label>
+                                                <ngivr-select-quality-params ng-model="parameter.name"
+                                                                             product="contract.product[0]"></ngivr-select-quality-params>
+                                            </md-input-container>
+                                        </div>
+                                        <div flex="10">
+                                            <md-input-container>
+                                                <label>Érték</label>
+                                                <ngivr-input-number ng-model="parameter.value"></ngivr-input-number>
+                                            </md-input-container>
+                                        </div>
+                                        <div flex style="margin-top: 22px">
+                                            <ngivr-icon-fa
+                                                ng-click="removeParam(contract, $index)"
+                                                ngivr-tooltip="Paraméter törlése"
+                                                ngivr-icon-fa="fa-trash-o"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div layout="row">
+                                    <div flex="100">
+                                        <ngivr-button ng-click="addParam(contract)">Új paraméter
+                                        </ngivr-button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!--
+                        *************************
+                        Előre fizetés
+                        *************************
+                        -->
+                        <div flex="50">
+                            <div class="ngivr-cargo-plan-border" style="margin-right: 5px" ng-if="contract.prePaid">
+                                Előre fizetés
+                                <div ng-repeat="i in contract.beforeTransportDetails">
+
+                                    <div layout="row">
+                                        <div flex="20">
+                                            <md-input-container class="md-block">
+                                                <label>{{ngivr.strings.field.sum}}</label>
+                                                <ngivr-input-number idx="$index" ng-model="i.sum" max="i.maxSum"
+                                                                    contract-idx="$parent.$index"
+                                                                    calculate-before-transport="calculateBeforeTransport(options)"
+                                                                    name="{{'sum_' + $index}}">
+
+                                                </ngivr-input-number>
+
+                                            </md-input-container>
+
+                                            <div
+                                                ng-messages="$parent.$parent.$parent.contractGeneratorForm['sum_' + $index].$error">
+                                                <div ng-message="wrongNumber">
+                                                    {{ngivr.strings.form.validation.wrongNumber}}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div flex="20">
+                                            <md-input-container class="md-block">
+                                                <label>Százalék</label>
+                                                <ngivr-input-number idx="$index" ng-model="i.percent"
+                                                                    contract-idx="$parent.$index"
+                                                                    calculate-before-transport="calculateBeforeTransport(options)"
+                                                                    name="{{'percent_' + $index}}">
+
+                                                </ngivr-input-number>
+
+                                            </md-input-container>
+                                        </div>
+
+                                        <div flex="25" ng-if="!i.beforeTransport">
+                                            <md-input-container class="md-block">
+                                                <label>{{ngivr.strings.field.dueDate}}</label>
+                                                <ngivr-input-date ng-model="i.date" ng-required="!i.beforeTransport"
+                                                                  name="{{'dueDate_' + $index}}"
+                                                                  ng-disabled="i.beforeTransport">
+
+                                                </ngivr-input-date>
+
+                                            </md-input-container>
+
+                                            <div
+                                                ng-messages="$parent.$parent.$parent.contractGeneratorForm['dueDate_' + $index].$error">
+                                                <div ng-message="required">
+                                                    {{ngivr.strings.form.validation.required}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div flex="30" flex-offset="{{i.beforeTransport ? 25 : 0}}"
+                                             style="margin-top: 4px">
+                                            <ngivr-input-switch ng-model="i.beforeTransport" ng-click=""
+                                                                ngivr-caption="Szállítás előtt"
+                                                                ngivr-off-display="'nem'"
+                                                                ngivr-on-display="'igen'" ngivr-on-value="on"
+                                                                ngivr-off-value="false"></ngivr-input-switch>
+                                        </div>
+                                        <div flex style="margin-top: 22px">
+                                            <ngivr-icon-fa
+                                                ng-click="removeBeforeTransport(contract, $index, $parent.$index)"
+                                                ngivr-tooltip="Előre fizetés törlése"
+                                                ngivr-icon-fa="fa-trash-o"/>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                                <div layout="row">
+                                    <div flex="100">
+                                        <ngivr-button ng-click="addBeforeTransport(contract)"
+                                                      ng-disabled="contract.sumPrice === undefined">Előrefizetés
+                                            hozzáadása
+                                        </ngivr-button>
+                                    </div>
+                                </div>
+
+                                <div layout="row">
+                                    <div flex="100">
+                                        <md-input-container class="md-block">
+                                            <label>Végösszeg (Szállítás után)</label>
+                                            <ngivr-input-number ng-model="contract.sumAfter" left="true"
+                                                                ng-disabled="true"></ngivr-input-number>
+                                            <!--<input disabled name="sumforprepaidfter" ng-model="sumAfter"-->
+                                            <!--ng-required="content.prePaid && showAfter"/>-->
+                                            <!--<div ng-if="sumAfter != null" class="num-to-text margin-bottom-10">-->
+                                            <!--<span ng-bind="Common.numToText(sumAfter)"></span>-->
+                                            <!--</div>-->
+                                        </md-input-container>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--
+                            ******************
+                            Előleg
+                            ******************
+                            -->
+
+                            <div class="ngivr-cargo-plan-border" style="margin-right: 5px" ng-if="contract.deposit">
+                                Előleg
+                                <div layout="row">
+                                    <div flex="40">
+                                        <md-input-container>
+                                            <label>{{ngivr.strings.field.depositSum + ' (' +
+                                                optionContract.depositCurrency + ')'}}</label>
+                                            <ngivr-input-number name="{{'depositSum_' + $index}}"
+                                                                max="contract.maxDeposit"
+                                                                ng-disabled="!contract.sumPrice"
+                                                                ng-model="contract.depositSum"></ngivr-input-number>
+                                        </md-input-container>
+                                        <div
+                                            ng-messages="$parent.$parent.contractGeneratorForm['depositSum_' + $index].$error">
+                                            <div ng-message="wrongNumber">
+                                                {{ngivr.strings.form.validation.wrongNumber}}
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div flex>
+                                        <md-input-container>
+                                            <label>Dátum</label>
+                                            <ngivr-input-date ng-model="contract.depositDate"></ngivr-input-date>
+                                        </md-input-container>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--
+                            *****************
+                            Fenntarthatóság
+                            *****************
+                            -->
+
+                            <div class="btn-group fw-btn-group btn-group-justified">
+                                <label class="btn fw-btn-2 btn-default btn-long-text-fix"
+                                       ng-model="contract.sustainability"
+                                       uib-btn-radio="'Nem fenntartható'">Nem
+                                    fenntartható</label>
+                                <label class="btn fw-btn-2 btn-default" ng-model="contract.sustainability"
+                                       uib-btn-radio="'ISCC'">ISCC</label>
+                                <label class="btn fw-btn-2 btn-default" ng-model="contract.sustainability"
+                                       uib-btn-radio="'BÜHG'">BÜHG</label>
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div layout="row">
+                        <div flex="100">
+                            <md-input-container class="md-block">
+
+                                <textarea placeholder="Megjegyzés" name="comment"
+                                          ng-model="contract.comment"></textarea>
+                            </md-input-container>
+                        </div>
+                    </div>
+                    <ngivr-divider></ngivr-divider>
+
+
+                </div>
+                <div layout="row">
+                    <div flex="100">
+                        <ngivr-button ng-click="addContract()">Új szerződés
+                        </ngivr-button>
+                    </div>
+                </div>
+            </div>
+
+
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <ngivr-button ng-click="cancel()">
+                <ng-md-icon icon="close"></ng-md-icon>
+                <md-tooltip>Mégse</md-tooltip>
+                {{ngivr.strings.button.cancel}}
+            </ngivr-button>
+            <ngivr-button ng-click="generateContract()">
+                <ng-md-icon icon="save"></ng-md-icon>
+                <md-tooltip>Generálás</md-tooltip>
+                Szerződés(ek) generálása
+            </ngivr-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

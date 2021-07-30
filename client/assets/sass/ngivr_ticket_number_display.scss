@@ -1,0 +1,567 @@
+$digit-width: 12px;
+$digit-vertical-height: 40px; /*függőleges*/
+$digit-horizontal-height: 40px; /*vízszintes*/
+$digit-color: red;
+$digit-radius: 10px;
+$horizontal-gap: 0px;
+$vertical-gap: 0px;
+
+.point {
+  position: absolute;
+  width: $digit-width;
+  height: $digit-width;
+  background: transparent;
+  -moz-border-radius: $digit-width/2;
+  -webkit-border-radius: $digit-width/2;
+  border-radius: $digit-width/2;
+  top:  2*$digit-vertical-height + 2*$digit-width + 4*$vertical-gap;
+  left: $digit-width/2;
+}
+
+.hexagon-horizontal {
+  position:absolute;
+  height: 2*$digit-width; /*50px;*/
+  width: $digit-horizontal-height; /*100px;*/
+  background: $digit-color; /*red;*/
+  top: $digit-vertical-height + $digit-width + 2*$vertical-gap; /*125*/
+  left: $digit-width + $horizontal-gap; /*25;*/
+  transform:scaleY(0.5);transform-origin: 0 0;
+}
+
+.hexagon-horizontal:before{
+ content: '';
+ position: absolute;
+ width: 0;
+ height: 0;
+ border-top: $digit-width solid transparent; /*25px solid transparent;*/
+ border-right: $digit-width solid red; /*25px solid red;*/
+ border-bottom: $digit-width solid transparent; /*25px solid transparent;*/
+ left: -$digit-width/2; /*+ $horizontal-gap; -12.5;*/
+ transform:scaleX(0.5); transform-origin: 0 0;
+}
+
+.hexagon-horizontal:after {
+ content: '';
+ position:absolute;
+ width: 0;
+ height: 0;
+ border-top: $digit-width solid transparent; /*25px solid transparent;*/
+ border-left: $digit-width solid red; /*25px solid red;*/
+ border-bottom: $digit-width solid transparent; /*25px solid transparent;*/
+ left: $digit-horizontal-height; /*+ $horizontal-gap;*/
+ transform:scaleX(0.5); transform-origin: 0 0;
+ margin:0;
+}
+
+
+.trapezoid-top-left {
+        position: absolute;
+	border-top: $digit-width solid transparent;
+	border-left: $digit-width solid red ;
+	height: $digit-vertical-height;
+	width: 0;
+	border-radius: $digit-radius 0 0 0px;
+	top: $vertical-gap;
+}
+
+.trapezoid-bottom-left {
+        position: absolute;
+	border-left: $digit-width solid red;
+	border-bottom: $digit-width solid transparent;
+	height: $digit-vertical-height;
+	width: 0;
+	border-radius: 0px 0 0 $digit-radius;
+	top:  $digit-vertical-height + 2*$digit-width + 3*$vertical-gap; /*150;*/
+}
+
+.trapezoid-top-right {
+        position: absolute;
+	border-top: $digit-width solid transparent;
+	border-right: $digit-width solid red;
+	height: $digit-vertical-height;
+	width: 0;
+	left: $digit-horizontal-height + $digit-width + 2*$horizontal-gap; /*125;*/
+	border-radius: 0 $digit-radius 0px 0;
+	top: $vertical-gap;
+}
+
+.trapezoid-bottom-right {
+
+        position: absolute;
+	border-right: $digit-width solid red;
+	border-bottom: $digit-width solid transparent;
+	height: $digit-vertical-height;
+	width: 0;
+	left: $digit-horizontal-height + $digit-width + 2*$horizontal-gap;
+	top: $digit-vertical-height + 2*$digit-width + 3*$vertical-gap;
+	border-radius: 0 0px $digit-radius 0;
+
+}
+
+
+.trapezoid-top {
+        position: absolute;
+	border-top: $digit-width solid red;
+	border-left: $digit-width solid transparent;
+	border-right: $digit-width solid transparent;
+	height: 0;
+	width: $digit-horizontal-height;
+	border-radius: $digit-radius $digit-radius 0 0;
+	left: $horizontal-gap
+}
+
+.trapezoid-bottom {
+        position: absolute;
+	border-bottom: $digit-width solid red;
+	border-left: $digit-width solid transparent;
+	border-right: $digit-width solid transparent;
+	height: 0;
+	width: $digit-horizontal-height;
+	border-radius: 0 0 $digit-radius $digit-radius;
+	top:  2*$digit-vertical-height + 2*$digit-width + 4*$vertical-gap; /*250;*/
+	left: $horizontal-gap;
+
+}
+
+
+.triangle-left-down {
+	width: 0;
+	height: 0;
+	border-left: $digit-width solid transparent;
+	border-right: $digit-width solid transparent;
+	border-top: $digit-width solid red;
+	position: absolute;
+	top: $digit-vertical-height + $digit-width + $vertical-gap; /*125;*/
+	transform: scale(0.5); transform-origin: 0 0;
+	left: /*$horizontal-gap*/ 0;
+}
+
+.triangle-left-up {
+	width: 0;
+	height: 0;
+	border-left: $digit-width  solid transparent;
+	border-right: $digit-width  solid transparent;
+	border-bottom: $digit-width  solid red;
+	position: absolute;
+	left: /*0 + $horizontal-gap;*/ 0;
+	top: $digit-vertical-height + $digit-width + $digit-width/2 + 3*$vertical-gap; /*137.5;*/
+	transform: scale(0.5); transform-origin: 0 0;
+
+
+}
+
+.triangle-right-down {
+	width: 0;
+	height: 0;
+	border-left: $digit-width solid transparent;
+	border-right: $digit-width solid transparent;
+	border-top: $digit-width solid red;
+	position: absolute;
+	left: $digit-horizontal-height + $digit-width + 2*$horizontal-gap;
+	top: $digit-vertical-height + $digit-width + $vertical-gap;
+	transform: scale(0.5); transform-origin: 0 0;
+}
+
+.triangle-right-up {
+	width: 0;
+	height: 0;
+	border-left: $digit-width solid transparent;
+	border-right: $digit-width solid transparent;
+	border-bottom: $digit-width solid red;
+	position: absolute;
+	left: $digit-horizontal-height + $digit-width + 2*$horizontal-gap;
+	top: $digit-vertical-height + $digit-width + $digit-width/2 + 3*$vertical-gap;
+	transform: scale(0.5); transform-origin: 0 0;
+
+
+}
+
+.digit-number-empty {
+    .trapezoid-top {
+        border-color: transparent;
+        background-color: transparent;
+    }
+    .trapezoid-top-left, .triangle-left-down {
+        border-color: transparent;
+        background-color: transparent;
+    }
+    .trapezoid-top-right, .triangle-right-down {
+        border-color: transparent;
+        background-color: transparent;
+    }
+    .hexagon-horizontal, .hexagon-horizontal:before, .hexagon-horizontal:after {
+        border-color: transparent;
+        background-color: transparent;
+    }
+    .trapezoid-bottom-left,  .triangle-left-up  {
+        border-color: transparent;
+        background-color: transparent;
+    }
+    .trapezoid-bottom-right, .triangle-right-up {
+        border-color: transparent;
+        background-color: transparent;
+    }
+
+    .trapezoid-bottom {
+        border-color: transparent;
+        background-color: transparent;
+    }
+}
+
+.digit-number-0 {
+
+  .trapezoid-top {
+
+  }
+  .trapezoid-top-left, .triangle-left-down {
+
+  }
+  .trapezoid-top-right, .triangle-right-down {
+
+  }
+  .hexagon-horizontal, .hexagon-horizontal:before, .hexagon-horizontal:after {
+    border-color: transparent;
+    background-color: transparent;
+  }
+  .trapezoid-bottom-left,  .triangle-left-up  {
+
+  }
+  .trapezoid-bottom-right, .triangle-right-up {
+
+  }
+
+  .trapezoid-bottom {
+
+
+  }
+
+
+}
+
+
+.digit-number-1 {
+
+  .trapezoid-top {
+    border-color: transparent;
+  }
+  .trapezoid-top-left {
+      border-color: transparent;
+  }
+  .trapezoid-top-right {
+
+  }
+  .hexagon-horizontal, .hexagon-horizontal:before, .hexagon-horizontal:after {
+     border-color: transparent;
+     background-color: transparent;
+  }
+  .trapezoid-bottom-left {
+     border-color: transparent;
+  }
+  .trapezoid-bottom-right {
+
+  }
+  .triangle-left-down {
+      border-color: transparent;
+  }
+  .triangle-left-up {
+      border-color: transparent;
+  }
+  .triangle-right-down {
+
+  }
+  .triangle-right-up {
+
+  }
+  .trapezoid-bottom {
+      border-color: transparent;
+
+  }
+}
+
+.digit-number-2 {
+
+  .trapezoid-top {
+
+  }
+  .trapezoid-top-left, .triangle-left-down {
+      border-color: transparent;
+  }
+  .trapezoid-top-right, .triangle-right-down {
+
+  }
+  .hexagon-horizontal, .hexagon-horizontal:before, .hexagon-horizontal:after {
+
+  }
+  .trapezoid-bottom-left,  .triangle-left-up  {
+
+  }
+  .trapezoid-bottom-right, .triangle-right-up {
+     border-color: transparent;
+  }
+
+  .trapezoid-bottom {
+
+
+  }
+
+}
+
+.digit-number-3 {
+
+  .trapezoid-top {
+
+  }
+  .trapezoid-top-left, .triangle-left-down {
+      border-color: transparent;
+  }
+  .trapezoid-top-right, .triangle-right-down {
+
+  }
+  .hexagon-horizontal, .hexagon-horizontal:before, .hexagon-horizontal:after {
+
+  }
+  .trapezoid-bottom-left,  .triangle-left-up  {
+     border-color: transparent;
+  }
+  .trapezoid-bottom-right, .triangle-right-up {
+
+  }
+
+  .trapezoid-bottom {
+
+
+  }
+
+  }
+  .digit-number-4{
+
+  .trapezoid-top {
+    border-color: transparent;
+  }
+  .trapezoid-top-left, .triangle-left-down {
+
+  }
+  .trapezoid-top-right, .triangle-right-down {
+
+  }
+  .hexagon-horizontal, .hexagon-horizontal:before, .hexagon-horizontal:after {
+
+  }
+  .trapezoid-bottom-left,  .triangle-left-up  {
+     border-color: transparent;
+  }
+  .trapezoid-bottom-right, .triangle-right-up {
+
+  }
+
+  .trapezoid-bottom {
+    border-color: transparent;
+
+  }
+
+
+}
+
+ .digit-number-5 {
+
+  .trapezoid-top {
+
+  }
+  .trapezoid-top-left, .triangle-left-down {
+
+  }
+  .trapezoid-top-right, .triangle-right-down {
+    border-color: transparent;
+  }
+  .hexagon-horizontal, .hexagon-horizontal:before, .hexagon-horizontal:after {
+
+  }
+  .trapezoid-bottom-left,  .triangle-left-up  {
+     border-color: transparent;
+  }
+  .trapezoid-bottom-right, .triangle-right-up {
+
+  }
+
+  .trapezoid-bottom {
+
+
+  }
+
+
+}
+
+
+.digit-number-6 {
+
+  .trapezoid-top {
+
+  }
+  .trapezoid-top-left, .triangle-left-down {
+
+  }
+  .trapezoid-top-right, .triangle-right-down {
+    border-color: transparent;
+  }
+  .hexagon-horizontal, .hexagon-horizontal:before, .hexagon-horizontal:after {
+
+  }
+  .trapezoid-bottom-left,  .triangle-left-up  {
+
+  }
+  .trapezoid-bottom-right, .triangle-right-up {
+
+  }
+
+  .trapezoid-bottom {
+
+
+  }
+
+
+}
+
+.digit-number-7 {
+
+  .trapezoid-top {
+
+  }
+  .trapezoid-top-left, .triangle-left-down {
+    border-color: transparent;
+  }
+  .trapezoid-top-right, .triangle-right-down {
+
+  }
+  .hexagon-horizontal, .hexagon-horizontal:before, .hexagon-horizontal:after {
+     border-color: transparent;
+     background-color: transparent;
+  }
+  .trapezoid-bottom-left,  .triangle-left-up  {
+     border-color: transparent;
+  }
+  .trapezoid-bottom-right, .triangle-right-up {
+
+  }
+
+  .trapezoid-bottom {
+     border-color: transparent;
+
+  }
+
+
+}
+
+
+.digit-number-8 {
+
+  .trapezoid-top {
+
+  }
+  .trapezoid-top-left, .triangle-left-down {
+
+  }
+  .trapezoid-top-right, .triangle-right-down {
+
+  }
+  .hexagon-horizontal, .hexagon-horizontal:before, .hexagon-horizontal:after {
+
+  }
+  .trapezoid-bottom-left,  .triangle-left-up  {
+
+  }
+  .trapezoid-bottom-right, .triangle-right-up {
+
+  }
+
+  .trapezoid-bottom {
+
+
+  }
+
+
+}
+
+.digit-number-9 {
+
+  .trapezoid-top {
+
+  }
+  .trapezoid-top-left, .triangle-left-down {
+
+  }
+  .trapezoid-top-right, .triangle-right-down {
+
+  }
+  .hexagon-horizontal, .hexagon-horizontal:before, .hexagon-horizontal:after {
+
+  }
+  .trapezoid-bottom-left,  .triangle-left-up  {
+   border-color: transparent;
+  }
+  .trapezoid-bottom-right, .triangle-right-up {
+
+  }
+
+  .trapezoid-bottom {
+
+
+  }
+
+
+}
+
+.digit-point {
+  .point {
+    background-color: red;
+  }
+
+  .trapezoid-top {
+    border-color: transparent;
+  }
+  .trapezoid-top-left, .triangle-left-down {
+    border-color: transparent;
+  }
+  .trapezoid-top-right, .triangle-right-down {
+    border-color: transparent;
+  }
+  .hexagon-horizontal, .hexagon-horizontal:before, .hexagon-horizontal:after {
+    border-color: transparent;
+    background-color: transparent;
+  }
+  .trapezoid-bottom-left,  .triangle-left-up  {
+     border-color: transparent;
+  }
+  .trapezoid-bottom-right, .triangle-right-up {
+border-color: transparent;
+  }
+   .trapezoid-bottom {
+   border-color: transparent;
+
+  }
+
+}
+
+.digit-container {
+
+ box-sizing: content-box;
+ position: relative;
+ background-color: black;
+ min-width: $digit-horizontal-height + 2*$digit-width + 2*$horizontal-gap /*+px*/;
+ max-width: $digit-horizontal-height + 2*$digit-width + 2*$horizontal-gap /*+px*/;
+ min-height: 2*$digit-vertical-height + 3*$digit-width + 4*$vertical-gap;
+ max-height: 2*$digit-vertical-height + 3*$digit-width + 4*$vertical-gap;
+
+}
+
+.digit-container.digit-point {
+  min-width: 2*$digit-width;
+  max-width: 2*$digit-width;
+  min-height: 2*$digit-vertical-height + 3*$digit-width + 4*$vertical-gap;
+  max-height: 2*$digit-vertical-height + 3*$digit-width + 4*$vertical-gap;
+}
+
+.digit-container-height {
+  min-height: 2*$digit-vertical-height + 3*$digit-width + 4*$vertical-gap;
+  max-height: 2*$digit-vertical-height + 3*$digit-width + 4*$vertical-gap;
+
+}

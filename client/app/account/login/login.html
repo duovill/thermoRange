@@ -1,0 +1,40 @@
+
+<div ng-controller="LoginCtrl">
+    <div class="logo-login" >
+        <img src="../../assets/images/logo.png" style="border-bottom: solid 1px black; padding-bottom: 5px;"/>
+    </div>
+    <div class="login-content">
+
+
+
+        <form name="ngivrLoginForm" ng-submit="login(ngivrLoginForm)" novalidate autocomplete="on">
+
+            <div ng-if="showTitle" class="form-title alert alert-info">Bejelentkezés</div>
+
+            <div ng-if="fillError" class="alert alert-danger">Írja be a felhasználónevét és jelszavát!</div>
+            <div ng-if="userError" class="alert alert-danger">A megadott felhasználónév hibás!</div>
+            <div ng-if="passwordError" class="alert alert-danger">A megadott jelszó hibás!</div>
+            <div ng-if="loginError" class="alert alert-danger">Hiba történt a bejelentkezés során!</div>
+
+            <div class="login-controls">
+                <div class="form-group has-feedback">
+                    <input required class="form-control" type="text" placeholder="Felhasználónév" name="name" ng-model="user.name"  autocomplete="on"/>
+                    <i class="glyphicon glyphicon-user form-control-feedback"></i>
+
+                </div>
+
+                <div class="form-group has-feedback">
+                    <input required class="form-control" type="password" placeholder="Jelszó" name="password" ng-model="user.password"  autocomplete="on"/>
+                    <i class="glyphicon glyphicon-lock form-control-feedback"></i>
+
+                </div>
+                <div class="form-actions">
+                    <ngivr-button style="width: 100%;" type="submit">Belépés</ngivr-button>
+                </div>
+            </div>
+        </form>
+      <div style="margin-top: 2px; opacity: 0.8; text-align: center;" ng-bind-html="$root.settings.dateString + ' | v' + $root.settings.version | ngivrRawHtml"></div>
+
+    </div>
+
+</div>

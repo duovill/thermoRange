@@ -1,0 +1,69 @@
+<ngivr-list ngivr-schema="deposit" ngivr-ref="this" ngivr-query="ngivrQuery">
+    <ngivr-list-searcher>
+        <md-input-container class="md-block">
+            <label>{{ $root.ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+    </ngivr-list-searcher>
+
+    <ngivr-list-template>
+        <md-card class="card-padding" style="clear: both;">
+            <!--								<md-card-content ng-click="expand(doc, doc._id)">-->
+            <md-card-content ng-click="$parent.ref.$ctrl.loadDeposit(doc)">
+                <div class="card-left card-green">
+                    <span ng-bind="'E'"></span>
+
+
+                </div>
+                <div class="card-right">
+                    <table>
+                        <tr>
+                            <td>
+                                <md-tooltip md-direction="top">Dátum</md-tooltip>
+                                <span>{{'Kiállítás dátuma: ' + (doc.created | date: 'yyyy.MM.dd')}}</span>
+                            <td></td>
+                            <td>
+                                <md-tooltip md-direction="top">Sorszám</md-tooltip>
+                                <span ng-bind="doc.number"></span></td>
+                            <!--<td>
+                              <md-tooltip md-direction="top">Vevő</md-tooltip>
+                              <span ng-bind="doc.buyer[0].name"></span></td>-->
+
+                        </tr>
+                        <tr>
+                            <td colspan="">
+                                <md-tooltip md-direction="top">Összeg</md-tooltip>
+                                <span>{{doc.amount | currency : doc.currency}}</span>
+                            <td colspan="">
+                                <md-tooltip md-direction="top">Irány</md-tooltip>
+                                <span>{{doc.direction === 'in' ? 'Bejövő' : 'Kimenő'}}</span>
+                            <td colspan="">
+                                <md-tooltip md-direction="top">Fizetési határidő</md-tooltip>
+                                <span>{{doc.paymentDate | date : 'yyyy.MM.dd'}}</span>
+
+                        </tr>
+
+                        <tr>
+                            <td colspan="">
+                                <md-tooltip md-direction="top">Előlegszámla</md-tooltip>
+                                <span>{{doc.depositInvoice.number || doc.depositInvoice.incomingInvoiceNumber}}</span>
+                            <td colspan="">
+                                <md-tooltip md-direction="top">Beszámolt összeg</md-tooltip>
+                                <span>{{((doc.depositInvoice.incomingInvoiceNumber ? doc.depositInvoice.incomingBrutto : doc.depositInvoice.endSum) - doc.depositInvoice.depositRemain)  | currency : doc.currency}}</span>
+                            <td colspan="">
+                                <md-tooltip md-direction="top">Szabad összeg</md-tooltip>
+                                <span>{{doc.depositInvoice.depositRemain | currency : doc.currency}}</span>
+
+                        </tr>
+
+
+                    </table>
+                </div>
+            </md-card-content>
+
+        </md-card>
+
+    </ngivr-list-template>
+
+</ngivr-list>

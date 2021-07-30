@@ -1,0 +1,56 @@
+<md-dialog aria-label="">
+  <form name="editDateForm" ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools portlet-title">
+        <h2>{{title}}</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()">
+          <md-icon class="fa fa-close" aria-label="Close dialog"></md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        <div layout="row">
+
+          <!--
+          ********************
+         Dátum
+          ********************
+          -->
+          <div flex="60" ng-if="field !=='ledgerHelper'">
+            <md-input-container class="md-block">
+              <ngivr-input-date ng-model="here.data"></ngivr-input-date>
+            </md-input-container>
+          </div>
+
+          <div flex="60" ng-if="field ==='ledgerHelper'">
+            <md-input-container class="md-block">
+              <label>NG IVR mozgásnem</label>
+              <ngivr-select-ledger-helper ng-model="here.data"></ngivr-select-ledger-helper>
+            </md-input-container>
+          </div>
+        </div>
+
+      </div>
+
+    </md-dialog-content>
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <ngivr-button ng-click="cancel() || ngivr.growl('close')">
+        <ng-md-icon icon="close"></ng-md-icon>
+        <md-tooltip>Mégse</md-tooltip>
+        Mégse
+      </ngivr-button>
+      <ngivr-button ng-click="answer('save') || ngivr.growl('save')">
+        <ng-md-icon icon="save"></ng-md-icon>
+        <md-tooltip>Mentés</md-tooltip>
+        Mentés
+      </ngivr-button>
+
+    </md-dialog-actions>
+  </form>
+</md-dialog>
+
+

@@ -1,0 +1,39 @@
+<ngivr-form ngivr-close="$ctrl.ngivrClose()" ngivr-schema="htmlTemplateComment" ngivr-id="ngivrId" ng-model="model">
+
+  <ngivr-form-body style="position: relative;">
+
+    <md-input-container class="md-block">
+      <label>Név</label>
+
+      <input ng-model="model.name" name="name" required ngivr-validation-mongoose/>
+
+    </md-input-container>
+
+    <div ng-messages="$parent[$parent.formName].name.$error"
+         ng-show="ngivr.form.message.show($parent[$parent.formName], 'name')">
+      <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+      <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message($parent[$parent.formName], 'name')}}
+      </div>
+    </div>
+
+    <md-input-container class="md-block">
+
+      <label>Szöveg</label>
+
+      <textarea name="text" ng-model="model.text"
+                ngivr-validation-mongoose required></textarea>
+
+    </md-input-container>
+
+    <div ng-messages="$parent[$parent.formName].text.$error"
+         ng-show="ngivr.form.message.show($parent[$parent.formName], 'text')">
+      <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+      <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message($parent[$parent.formName], 'text')}}
+      </div>
+    </div>
+
+  </ngivr-form-body>
+
+
+
+</ngivr-form>

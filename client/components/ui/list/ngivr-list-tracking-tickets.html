@@ -1,0 +1,52 @@
+<ngivr-list ngivr-schema="ticket" ngivr-url="{{ngivrUrl}}" ngivr-ref="this" ngivr-query="ngivrQuery">
+  <ngivr-list-searcher>
+    <md-input-container class="md-block">
+      <label>{{ ngivr.strings.title.search}}</label>
+      <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+             ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+    </md-input-container>
+  </ngivr-list-searcher>
+
+  <ngivr-list-template>
+    <md-card class="card-padding" style="clear: both;">
+
+      <md-card-content>
+        <md-card-content ng-click="loadNomination(cargoPlan)">
+
+          <div >
+            <table>
+              <tr>
+                <td style="width: 30%"><span ng-bind="doc.ledger.subTicketName"></span><md-tooltip md-direction="top">Mérlegjegy sorszáma</md-tooltip></td>
+                <td colspan="2"><span class="label label-grey" style="margin-top: 0; color: black">{{'Vontató: ' + doc.plateNumber1}}</span><md-tooltip md-direction="top">Vontató rendszáma</md-tooltip></td>
+                <td style="text-align: right">Felrakott:</td>
+                <td style="text-align: right; padding-right: 5px">{{(doc.ledger.loadedWeight | number: 3) + ' mt'}}<md-tooltip md-direction="top">Felrakott súly</md-tooltip></td>
+              </tr>
+              <tr>
+                <td><span>{{doc.fulfillmentDate | date : 'yyyy.MM.dd'}}</span><md-tooltip md-direction="top">Teljesítés dátuma</md-tooltip>
+                </td>
+                <td colspan="2"><span>{{'Vontatmány: ' + ((doc.plateNumber2 != null) ? doc.plateNumber2 : "Nincs")}}<md-tooltip md-direction="top">Vontatmány rendszáma</md-tooltip></span>
+                <td style="text-align: right">Lerakott:</td>
+                <td style="text-align: right; padding-right: 5px">{{(doc.ledger.unloadedWeight | number: 3) + ' mt'}}<md-tooltip md-direction="top">Lerakott súly</md-tooltip></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">Eltérés:</td>
+                <td style="text-align: right; padding-right: 5px">{{((doc.ledger.unloadedWeight - doc.ledger.loadedWeight) | number: 3) + ' mt'}}<md-tooltip md-direction="top">Eltérés</md-tooltip></td>
+
+              </tr>
+              <tr class="card-third-row">
+                <td colspan="2"><span
+                  ng-bind="doc.weighingDate| date: 'yyyy.MM.dd'"></span>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </md-card-content>
+      </md-card-content>
+    </md-card>
+
+  </ngivr-list-template>
+
+</ngivr-list>

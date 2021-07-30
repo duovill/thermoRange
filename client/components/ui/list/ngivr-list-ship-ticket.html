@@ -1,0 +1,174 @@
+<!-- <ngivr-list ngivr-schema="ticket" ngivr-ref="this" ngivr-query="ngivrQuery"> -->
+<ngivr-list ngivr-ref="this" ngivr-url="{{ngivrUrl}}" ngivr-schema="orderVehicle" id="vehicleShipList_{{::$ctrl.$id}}">
+    <ngivr-list-searcher>
+    <span style="float: right; margin-right: 5px;">
+        <!--<ngivr-button-excel-export-->
+        <!--ngivr-url="/api/statistics/orderVehicleList" ngivr-server-query="query.search" ngivr-columns="columns"-->
+        <!--ngivr-headers="headers" ngivr-add-date="1"></ngivr-button-excel-export>-->
+         <ngivr-button-excel-export ngivr-add-date="1" ngivr-filename="fileName"
+                                    ngivr-url="{{'/api/statistics/shipInfo/' + shipId}}"
+                                    style="padding-right: 5px; bottom: 3px"></ngivr-button-excel-export>
+    </span>
+
+
+        <md-input-container class="md-block">
+            <label>{{ ngivr.strings.title.search}}</label>
+            <input ng-model="ref.inputSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+
+
+
+    </ngivr-list-searcher>
+
+    <ngivr-list-header>
+        <div>
+            <div class="ssl-table-row ssl-table-row-header">
+                <div class="ssl-wrapper ssl-first-to-eighth">
+
+                    <div class="ssl-wrapper ssl-attributes ssl-group-1-2-3-4">
+                        <div class="ssl-wrapper ssl-group-1-2">
+                            <div class="ssl-column ssl-col-1">
+                                <div layout="column">
+                                    Mérlegjegy
+                                </div>
+                            </div>
+                            <div class="ssl-column ssl-col-2">
+                                <div layout="column">
+                                    Súly
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ssl-wrapper ssl-group-3-4">
+                            <div class="ssl-column ssl-col-3">
+                                <div layout="column">
+                                    Rakodás dátuma
+                                </div>
+                            </div>
+                            <div class="ssl-column ssl-col-4">
+                                <div layout="column">
+                                    Diszpozíció
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ssl-wrapper ssl-group-5-6-7-8">
+                        <div class="ssl-wrapper ssl-group-5-6">
+                            <div class="ssl-column ssl-col-5">
+                                <div layout="column">
+                                    Vontató
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ssl-wrapper ssl-nineth-to-sixteenth">
+                    <div class="ssl-wrapper ssl-group-9-10-11-12">
+                        <div class="ssl-wrapper ssl-group-9-10">
+                            <div class="ssl-column ssl-col-9">
+                                <div layout="column">
+                                    Vontatmány
+                                </div>
+                            </div>
+                            <div class="ssl-column ssl-col-10">
+                                <div layout="column">
+                                    Kapcsolódó diszpozíció(k)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ssl-wrapper ssl-group-11-12">
+                            <div class="ssl-column ssl-col-11">
+                                <div layout="column">
+                                    Raktárpozíció
+                                </div>
+                            </div>
+                            <div class="ssl-column ssl-col-12">
+                                <div layout="column">
+                                    Mérlegjegy (be)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ssl-wrapper ssl-group-13-14-15-16">
+                        <div class="ssl-wrapper ssl-group-13-14">
+                            <div class="ssl-column ssl-col-13">
+                                <div layout="column">
+                                </div>
+                            </div>
+                            <div class="ssl-column ssl-col-14"></div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ngivr-list-header>
+
+    <ngivr-list-template>
+        <div class="ssl-table-row">
+            <div class="ssl-wrapper ssl-first-to-eighth">
+                <div class="ssl-wrapper ssl-attributes ssl-group-1-2-3-4">
+                    <div class="ssl-wrapper ssl-group-1-2">
+                        <div class="ssl-column ssl-col-1">
+
+                            <span
+                                class="badge badge-default ship-label pull-left"
+                                ng-class="{'badge-danger' : doc.ticketDeleted}">{{doc._id}}</span>
+                        </div>
+                        <div class="ssl-column ssl-col-2">{{doc.unloadedWeight | number: 3 }}
+                        </div>
+                    </div>
+                    <div class="ssl-wrapper ssl-group-3-4">
+                        <div class="ssl-column ssl-col-3">{{doc.fullTicketDate | date :
+                            'yyyy.MM.dd HH:mm'}}
+                        </div>
+                        <div class="ssl-column ssl-col-4"
+                        >{{doc.order[0]}}
+                        </div>
+                    </div>
+                </div>
+                <div class="ssl-wrapper ssl-group-5-6-7-8">
+                    <div class="ssl-wrapper ssl-group-5-6">
+                        <div class="ssl-column ssl-col-5">{{doc.plateNumber1 ? doc.plateNumber1 :
+                            '---'}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ssl-wrapper ssl-nineth-to-sixteenth">
+                <div class="ssl-wrapper ssl-group-9-10-11-12">
+                    <div class="ssl-wrapper ssl-group-9-10">
+                        <div class="ssl-column ssl-col-9"
+                        >{{doc.plateNumber2 ? doc.plateNumber2 :
+                            '---'}}
+                        </div>
+                        <div class="ssl-column ssl-col-10" style="margin-left: 2px">
+                            <div ng-repeat="order in doc.parentOrders">
+                                {{order }}
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="ssl-wrapper ssl-group-11-12">
+                        <div class="ssl-column ssl-col-11">
+                            {{doc.depot ? doc.depot.name : '---'}}
+                        </div>
+                        <div class="ssl-column ssl-col-12">
+                            {{doc.parentTicketName}}
+                        </div>
+                    </div>
+                    <div class="ssl-wrapper ssl-group-13-14-15-16">
+                        <div class="ssl-wrapper ssl-group-13-14">
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </ngivr-list-template>
+
+</ngivr-list>

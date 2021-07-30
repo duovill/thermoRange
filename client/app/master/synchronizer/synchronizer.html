@@ -1,0 +1,13 @@
+<ngivr-portlet ngivr-title="{{ ngivr.strings.sychronizer.title }}" ngivr-icon-fa="fa-cloud">
+    <ngivr-portlet-action>
+       <ngivr-button ng-click="go('master')" ngivr-type="portal">
+        <ng-md-icon icon="arrow_back"></ng-md-icon>
+        {{ ngivr.strings.title.master }}
+      </ngivr-button>
+    </ngivr-portlet-action>
+    <ngivr-portlet-body class="ngivr-portlet-clean">
+ <div ng-include src="'app/master/synchronizer/ngivr-form-synchronizer.html'"/>
+
+    </ngivr-portlet-body>
+
+</ngivr-portlet>

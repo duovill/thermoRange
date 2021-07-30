@@ -1,0 +1,100 @@
+<md-dialog aria-label="" style="min-width: 250px">
+
+    <md-toolbar>
+        <div class="md-toolbar-tools portlet-title">
+            <h2>Cím</h2>
+            <span flex></span>
+            <md-button class="md-icon-button" ng-click="cancel()">
+                <md-icon class="fa fa-close" aria-label="Close dialog"></md-icon>
+            </md-button>
+        </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+        <div style="margin-right: 10px; margin-left: 10px; margin-bottom: 10px">
+
+            <form name="outTicketFromPossessionTransferForm">
+
+                <!--
+                ******************
+                Teljesítés dátuma
+                ******************
+                -->
+                <md-input-container class="md-block">
+                    <label>{{ngivr.strings.field.fulfillmentDate}}</label>
+                    <ngivr-input-date ng-model="model.fulfillmentDate" name="fulfillmentDate"
+                                      ngivr-validation-future-date-forbidden
+                                      ngivr-validation-date-before="18" required></ngivr-input-date>
+                </md-input-container>
+
+                <div ng-messages="outTicketFromPossessionTransferForm.fulfillmentDate.$error"
+                     ng-show="ngivr.form.message.show(outTicketFromPossessionTransferForm, 'fulfillmentDate')"
+                     style="height: auto !important;">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                    <div ng-message="ngivrValidationFutureDateForbidden">{{ngivr.strings.form.validation.futureDate}}
+                    </div>
+                    <div ng-message="ngivrValidationDateBefore">{{ngivr.strings.form.validation.validDate}}
+                    </div>
+                </div>
+
+                <!--
+                *****************
+                Mennyiség
+                *****************
+                -->
+
+                <md-input-container class="md-block">
+                    <label>{{ngivr.strings.field.quantity}}</label>
+                    <ngivr-input-number ng-model="model.loadedWeight" name="quantity" left="true"
+                                        max="maxQuantity"
+                                        required></ngivr-input-number>
+                </md-input-container>
+
+                <div ng-messages="outTicketFromPossessionTransferForm.quantity.$error"
+                     style="height: auto !important;">
+                    <div ng-message="wrongNumber">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                </div>
+
+                <div ng-messages="outTicketFromPossessionTransferForm.quantity.$error"
+                     ng-show="ngivr.form.message.show(outTicketFromPossessionTransferForm, 'quantity')"
+                     style="height: auto !important;">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                </div>
+
+                <!--
+                ********
+                Hajónév
+                ********
+                -->
+                <md-input-container class="md-block">
+                    <label>{{ngivr.strings.field.shipName}}</label>
+                    <input ng-model="model.shipName" name="shipName">
+                </md-input-container>
+
+                <!--
+                ********
+                Megjegyzés
+                ********
+                -->
+                <md-input-container class="md-block">
+                    <label>{{ngivr.strings.field.comment}}</label>
+                    <textarea ng-model="model.comments[0]" name="comment"></textarea>
+                </md-input-container>
+            </form>
+        </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+        <ngivr-button ng-click="cancel() || ngivr.growl('close')">
+            <ng-md-icon icon="close"></ng-md-icon>
+            <md-tooltip>Mégse</md-tooltip>
+            Mégse
+        </ngivr-button>
+        <ngivr-button ng-click="save() || ngivr.growl('save')">
+            <ng-md-icon icon="save"></ng-md-icon>
+            <md-tooltip>Rögzít</md-tooltip>
+            Rögzít
+        </ngivr-button>
+    </md-dialog-actions>
+
+</md-dialog>

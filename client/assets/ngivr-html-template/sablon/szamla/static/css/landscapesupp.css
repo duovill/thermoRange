@@ -1,0 +1,78 @@
+header{
+	width: 94%;
+	padding-bottom: 0.5%;
+	border-bottom: 1px solid black;
+	margin:2% 3% 0;
+	display: inline-block;
+}
+
+header ul {
+    margin: 2% 5% 0;
+}
+
+.seller-container {
+    width: 70%;
+}
+
+.seller {
+    margin: 2% 2% 5% 0;
+}
+
+.seller td, .seller th {
+    padding-bottom: 0.1em;
+}
+
+.seller-container ul{
+	margin-top: 3%;
+	margin-left: 3%;
+}
+
+.purchaser-container {
+    width: 30%;
+}
+
+.billcopy {
+    margin: 0 0 1%;
+}
+
+.notes{
+	margin-top:0;
+}
+
+.notes li:last-child {
+    padding-top: 0;
+}
+
+.pieces {
+    width: 33%;
+    margin: 5% 0 1% 2%;
+}
+
+.marketing{
+	margin-top:6%;
+	margin-left: 5%;
+}
+
+.qrcode1{
+	display: inline-block !important;
+}
+
+.qrcode2{
+	float: left;
+	margin-right: 1.5%;
+	display:none !important;
+}
+
+.qrcode3{
+	display: none !important;
+	float: left;
+	margin-left: 3%;
+	margin-right: 3%;
+}
+
+.qrcode4{
+	margin-bottom: 2%;
+	margin-right: 5%;
+	display:none !important;
+	float:right !important;
+}

@@ -1,0 +1,35 @@
+<md-dialog aria-label="{{ question }}">
+  <form ng-cloak>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+        <ng-md-icon icon="info"></ng-md-icon>
+        <h2>Kérdés</h2>
+        <span flex></span>
+        <md-button class="md-icon-button" ng-click="cancel()" aria-label="Mégse">
+          <ng-md-icon icon="cancel"></ng-md-icon>
+        </md-button>
+      </div>
+    </md-toolbar>
+
+    <md-dialog-content>
+      <div class="md-dialog-content">
+        {{ question }}
+      </div>
+    </md-dialog-content>
+
+    <md-dialog-actions layout="row">
+      <span flex></span>
+      <div ng-repeat="answer in answers.sure">
+        <md-button ng-click="sure(answer)"  aria-label="Biztos?">
+          <ng-md-icon icon="question_answer"></ng-md-icon>
+          {{answer}}
+        </md-button>
+      </div>
+
+      <md-button ng-click="cancel()" aria-label="Mégse">
+        <ng-md-icon icon="cancel"></ng-md-icon>
+        {{answers.cancel}}
+      </md-button>
+    </md-dialog-actions>
+  </form>
+</md-dialog>

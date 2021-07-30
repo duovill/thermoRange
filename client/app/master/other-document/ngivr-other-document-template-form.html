@@ -1,0 +1,184 @@
+<md-dialog aria-label="unused" class="ngivr-dialog-default-size ngivr-other-document-template-form" id="{{dialogId}}"
+           ng-disabled="disabled">
+    <form novalidate name="ngivrOtherDocumentTemplateForm" ng-submit="submit()">
+
+        <md-toolbar>
+            <div class="md-toolbar-tools" md-colors="{background: 'primary-500'}">
+                <h2 flex md-truncate>{{ options.type === 'new' ?
+                    $root.ngivr.strings.otherDocuments.form.template.new :
+                    $root.ngivr.strings.otherDocuments.form.template.edit }}</h2>
+                <md-button class="md-icon-button" ng-click="cancel({force: true})" aria-label="unused">
+                    <ng-md-icon icon="close"></ng-md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <md-content layout-padding>
+                <fieldset ng-disabled="!enabled">
+
+                    <!--
+                    *****************************************************
+                    Other document template name
+                    *****************************************************
+                    -->
+                    <md-input-container class="md-block">
+                        <label>{{ $root.ngivr.strings.otherDocuments.title.label }}</label>
+
+                        <input type="text" name="label" ng-model="model.label" required ngivr-validation-mongoose/>
+
+                        <div ng-messages="ngivrOtherDocumentTemplateForm.label.$error"
+                             ng-show="$root.ngivr.form.message.show(ngivrOtherDocumentTemplateForm, 'label')">
+                            <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                            <div ng-message="ngivrValidationMongoose">
+                                {{$root.ngivr.form.error.message(ngivrOtherDocumentTemplateForm, 'label')}}
+                            </div>
+                        </div>
+
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>{{ $root.ngivr.strings.otherDocuments.title.id }}</label>
+
+                        <input type="text" name="id" ng-model="model.id" required ngivr-validation-mongoose/>
+
+                        <div ng-messages="ngivrOtherDocumentTemplateForm.id.$error"
+                             ng-show="$root.ngivr.form.message.show(ngivrOtherDocumentTemplateForm, 'id')">
+                            <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                            <div ng-message="ngivrValidationMongoose">
+                                {{$root.ngivr.form.error.message(ngivrOtherDocumentTemplateForm, 'id')}}
+                            </div>
+                        </div>
+
+                    </md-input-container>
+
+                    <div style="text-align: right">
+                        <div ng-if="model.fields.length === 0" style="float: left">
+                            {{ $root.ngivr.strings.otherDocuments.fieldTable.empty }}
+
+                            <input type="text" name="fieldTable" ng-model="fieldTable" required style="display: none;"/>
+
+                            <div ng-messages="ngivrOtherDocumentTemplateForm.fieldTable.$error"
+                                 ng-show="$root.ngivr.form.message.show(ngivrOtherDocumentTemplateForm, 'fieldTable')">
+                                <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                            </div>
+
+                        </div>
+                        <ngivr-button ng-disabled="disabled"
+                                      ng-click="disabled || clickAddNewFieldOrEdit({ $event: $event})">
+                            <ng-md-icon icon="add"></ng-md-icon>
+                            {{ $root.ngivr.strings.button.addMetaInput }}
+                        </ngivr-button>
+                    </div>
+
+                    <div style="clear:both;"></div>
+
+                    <div ng-if="model.fields.length > 0" layout="column" layout-gt-xs="row" flex
+                         style="font-weight: bold;">
+                        <div flex="15">
+                            {{ $root.ngivr.strings.otherDocuments.label.type }}
+                        </div>
+                        <div flex="25" >
+                            {{ $root.ngivr.strings.otherDocuments.label.validation }}
+                        </div>
+                        <div flex="40">
+                            {{ $root.ngivr.strings.otherDocuments.label.label }}
+                        </div>
+
+                        <div flex="20" style="text-align: right">
+                            {{ $root.ngivr.strings.otherDocuments.label.action }}
+                        </div>
+                    </div>
+                    <span ng-repeat="field in model.fields">
+                        <div layout="column" layout-gt-xs="row">
+                            <div flex="15">
+                                <span style="text-transform: capitalize;">{{ $root.ngivr.strings.otherDocuments.title.types[field.type] }}</span>
+                                <md-divider ng-if="$root.$mdMedia('xs')"/>
+                            </div>
+                            <div flex="25" >
+                                <div ng-repeat="validation in field.validations track by validation.name">
+                                    {{ $root.ngivr.strings.otherDocuments.validations[validation.name] }}
+                                </div>
+                                <div ng-if="field.validations.length === 0">
+                                    {{ $root.ngivr.strings.otherDocuments.label.noValidationRule }}
+                                </div>
+                                <div ng-if="field.displayInList">
+                                    {{ $root.ngivr.strings.otherDocuments.title.displayInList }}
+                                </div>
+                                <md-divider ng-if="$root.$mdMedia('xs')"/>
+                            </div>
+                            <div flex="40">
+                                {{ field.label }}
+                                <md-divider ng-if="$root.$mdMedia('xs')"/>
+                            </div>
+
+                            <div flex="20" style="text-align: right;"
+                                 class="ngivr-other-document-template-field-list-actions">
+                                <md-button class="md-icon-button" ng-disabled="disabled"
+                                           ng-click="disabled || deleteField(field)" aria-label="unsued">
+                                    <ng-md-icon icon="delete"></ng-md-icon>
+                                </md-button>
+                                <md-button class="md-icon-button" ng-disabled="disabled"
+                                           ng-click="disabled || editField(field)" aria-label="unsued">
+                                    <ng-md-icon icon="edit"></ng-md-icon>
+                                </md-button>
+                            </div>
+                        </div>
+                        <md-divider ng-if="!$last"/>
+                    </span>
+
+
+                    <md-input-container class="md-block">
+                        <label>{{ $root.ngivr.strings.otherDocuments.title.defaultListField }}</label>
+
+                        <md-select required name="defaultField" ng-model="model.defaultField">
+                            <md-option ng-repeat="field in model.fields" ng-value="field.id">
+                                {{ field.label }}
+                            </md-option>
+                        </md-select>
+
+
+
+                        <div ng-messages="ngivrOtherDocumentTemplateForm.defaultField.$error"
+                             ng-show="$root.ngivr.form.message.show(ngivrOtherDocumentTemplateForm, 'defaultField')">
+                            <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                            <div ng-message="ngivrValidationMongoose">
+                                {{$root.ngivr.form.error.message(ngivrOtherDocumentTemplateForm, 'defaultField')}}
+                            </div>
+                        </div>
+
+                    </md-input-container>
+
+                    <!--
+                                    <pre>{{ model | json }}</pre>
+                    -->
+                </fieldset>
+            </md-content>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row" layout-align="end end">
+
+
+            <ngivr-lock ngivr-lock="lock">
+                <ngivr-lock-unlocked>
+                    <ngivr-button type="submit" ng-if="enabled">
+                        <ng-md-icon icon="{{ options.type === 'new' ? 'add' : 'save'}}"></ng-md-icon>
+                        {{ options.type === 'new' ? $root.ngivr.strings.button.new : $root.ngivr.strings.button.save
+                        }}
+                    </ngivr-button>
+                    <ngivr-button ng-if="disabled" ng-click="edit()">
+                        <ng-md-icon icon="edit"></ng-md-icon>
+                        {{ $root.ngivr.strings.button.edit }}
+                    </ngivr-button>
+                </ngivr-lock-unlocked>
+            </ngivr-lock>
+
+
+            <ngivr-button ng-click="cancel()">
+                <ng-md-icon icon="close"></ng-md-icon>
+                {{ enabled ? $root.ngivr.strings.button.cancel : $root.ngivr.strings.button.close }}
+            </ngivr-button>
+
+        </md-dialog-actions>
+
+    </form>
+</md-dialog>

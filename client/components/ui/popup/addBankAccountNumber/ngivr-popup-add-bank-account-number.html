@@ -1,0 +1,134 @@
+<md-dialog aria-label="" style="min-width: 400px">
+    <form name="addBankAccountForm" novalidate ng-cloak ng-submit="answer('save')">
+        <md-toolbar>
+            <div class="md-toolbar-tools portlet-title">
+                <h2>Bankszámlaszám hozzáadása</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon class="fa fa-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <div layout="column">
+                    <div>
+                        <ngivr-input-switch ng-model="here.isIban"
+
+                                            ngivr-caption="IBAN"
+                                            ngivr-off-display="ngivr.strings.inputSwitch.default.off"
+                                            ngivr-on-display="ngivr.strings.inputSwitch.default.on"
+                                            ngivr-on-value="true"
+                                            ngivr-off-value="false"></ngivr-input-switch>
+                    </div>
+
+                    <div layout="row">
+
+                        <!--
+                        ********************
+                        Számlaszám
+                        ********************
+                        -->
+
+                        <!--
+                        ********************
+                        Magyar
+                        ********************
+                        -->
+                        <div ng-if="!here.isIban" flex="100">
+                            <md-input-container class="md-block">
+                                <label>Bankszámla száma</label>
+                                <input type="text" name="bankAccountNumber" ng-model="here.number"
+                                       mask="%%%%%%%%-%%%%%%%%-%%%%%%%%" validate="false"
+                                       ngivr-validation-account-length="{iban: false}"
+                                       required
+                                       ngivr-validation-account="{iban: false}" ng-model-options="{ updateOn: 'blur' }"
+                                       iban="false"/>
+                            </md-input-container>
+
+
+                            <div ng-messages="addBankAccountForm.bankAccountNumber.$error"
+                                 ng-show="ngivr.form.message.show(addBankAccountForm, 'bankAccountNumber')">
+                                <div ng-message="ngivrValidationAccountLength">
+                                    {{ngivr.strings.form.validation.accountLength}}
+                                </div>
+                                <div ng-message="ngivrValidationAccount">
+                                    {{ngivr.strings.form.validation.invalidAccount}}
+                                </div>
+                                <div ng-message="required">
+                                    {{ngivr.strings.form.validation.required}}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--
+                        ********************
+                        IBAN
+                        ********************
+                        -->
+                        <div ng-if="here.isIban" flex="100">
+                            <md-input-container class="md-block">
+                                <label>Bankszámla száma</label>
+                                <input type="text" name="bankAccountNumber" ng-model="here.number"
+                                       mask="%%%% %%%% %%%% %%%% %%%% %%%% %%%% %%%% %%" validate="false"
+                                       ngivr-capitalize
+                                       required
+                                       ngivr-validation-account-length="{iban: true}" iban="true"
+                                       ngivr-validation-account="{iban: true}"/>
+                            </md-input-container>
+
+                            <div ng-messages="addBankAccountForm.bankAccountNumber.$error"
+                                 ng-show="ngivr.form.message.show(addBankAccountForm, 'bankAccountNumber')">
+                                <div ng-message="ngivrValidationAccountLength">
+                                    {{ngivr.strings.form.validation.ibanLength}}
+                                </div>
+                                <div ng-message="ngivrValidationAccount">
+                                    {{ngivr.strings.form.validation.invalidAccount}}
+                                </div>
+                                <div ng-message="required">
+                                    {{ngivr.strings.form.validation.required}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div layout="row">
+                        <div flex="25">
+                            <md-input-container class="md-block">
+                                <label>Deviza</label>
+                                <ngivr-select-currency-string name="currency"
+                                                              ng-model="here.currency"></ngivr-select-currency-string>
+                            </md-input-container>
+                        </div>
+
+                        <div flex>
+                            <md-input-container class="md-block">
+                                <label>Megnevezés</label>
+                                <textarea ng-model="here.name"/>
+                                <!--<input ng-model="here.name"/>-->
+                            </md-input-container>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <ngivr-button ng-click="cancel()">
+                <ng-md-icon icon="close"></ng-md-icon>
+                <md-tooltip>Mégse</md-tooltip>
+                Mégse
+            </ngivr-button>
+            <ngivr-button type="submit"
+            >
+                <ng-md-icon icon="save"></ng-md-icon>
+                <md-tooltip>Mentés</md-tooltip>
+                Mentés
+            </ngivr-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

@@ -1,0 +1,302 @@
+@font-face {
+    font-family: arial;
+    src: url('../fonts/arial.ttf');
+    font-style: normal;
+}
+
+.clear{
+	clear: both;
+}
+
+body{
+	font-family: arial;
+	text-align: center;
+}
+
+header{
+	width: 90%;
+	padding-bottom: 1%;
+	border-bottom: 1px solid black;
+	margin:4% 3% 0;
+	display: inline-block;
+}
+
+header img{
+	max-width: 180px;
+	width: 25%;
+	float: left;
+}
+
+.logo{
+	margin-top: 3%;
+}
+
+header ul{
+	text-align: left;
+	float: left;
+	padding-left: 0;
+	margin:2% 2% 0;
+}
+
+header ul li{
+	list-style: none;
+	font-size: 0.75em;
+	margin-bottom: 1.5%;
+}
+
+.qrcode1{
+	display: inline-block !important;
+}
+
+.qrcode2{
+	float: left;
+	margin-right: 1.5%;
+	display: none !important;
+}
+
+.qrcode3{
+	display: none !important;
+	float: left;
+}
+
+.qrcode4{
+	max-width: 210px;
+	display: none !important;
+	float:right !important;
+}
+
+.qrcode-container{
+	text-align: left;
+	float: left;
+	display: inline-block;
+}
+
+.qrcode-container div img{
+	max-width: 80px;
+	width: 36%;
+	display: inline-block;
+}
+
+.qrcode-container div h1{
+	display: inline-block;
+	font-size: 1.75em;
+	margin: 10% 8%;
+	vertical-align: top;
+}
+
+.qrcode-container h3{
+	margin-top: 1%;
+	margin-bottom: 1%;
+	font-size: 0.9em;
+}
+
+.qrcode-container p{
+	width: 210px;
+	margin-top: 0;
+	margin-bottom: 0;
+	font-size: 0.75em;
+	text-align: left;
+}
+
+.qrcode-container p span, .qrcode-container h3 span{
+	float: right;
+	text-align: right;
+}
+
+section{
+	padding: 0 5%;
+}
+
+.seller-container{
+	width: 55%;
+	float: left;
+	display: inline-block;
+}
+
+.seller{
+	text-align: left;
+	font-size: 0.75em;
+	margin:5% 5% 5% 0;
+}
+
+.seller td, .seller th{
+	padding-bottom: 1em;
+}
+
+.seller td:nth-child(1){
+	width: 42%;
+}
+
+.seller td:nth-child(2){
+	width: 76%;
+}
+
+.seller-container ul{
+	padding-left: 0;
+	text-align: left;
+	font-size: 0.75em;
+	letter-spacing: 0.0625em;
+	margin: 0 5% 0 0;
+}
+
+.seller-container ul li{
+	margin-bottom: 0.5em;
+	list-style: none;
+}
+
+.seller-container ul li:nth-child(1){
+	margin-bottom: 1em;
+}
+
+.purchaser-container{
+	display: inline-block;
+	font-size: 0.9em;
+	float: left;
+}
+
+.purchaser-container p{
+	text-align: left;
+	margin: 10% 0;
+}
+
+.purchaser{
+	display: inline-block;
+	padding-left: 0;
+	text-align: left;
+	float: left;
+	padding-left: 25%;
+	border-left: 1px solid black;
+}
+
+.purchaser li{
+	list-style: none;
+	margin-bottom: 7%;
+}
+
+.purchaser li:nth-child(1){
+	margin-bottom: 15%;
+}
+
+.taxID{
+	width: 100%;
+	margin:20% 0 20% 5% !important;
+}
+
+.taxID span{
+	float:right;
+}
+
+.billcopy{
+	font-size: 2em;
+}
+
+.itemizer{
+	width: 100%;
+	font-size: 0.7em;
+	text-align: left;
+}
+
+.itemizer th{
+	font-weight: normal;
+	text-align: center;
+	padding-bottom: 0.75em;
+}
+
+.itemizer td:last-child{
+	text-align: right;
+}
+
+
+.borderbottom td, .borderbottom th, .borderbottom{
+	border-bottom: 1px solid black;
+}
+
+.paddingtop td, .paddingtop th{
+	padding-top: 1em;
+}
+
+.paddingbottom td, .paddingbottom th{
+	padding-bottom: 1em;
+}
+
+.notes{
+	font-size: 0.8em;
+	padding-left: 0;
+	text-align: left;
+}
+
+.notes li{
+	list-style: none;
+	padding-bottom: 0.25em;
+}
+
+.notes li:nth-child(1){
+	padding-bottom: 1em;
+}
+
+.notes li:last-child{
+	padding-top: 1em;
+}
+
+footer{
+	width: 96%;
+	bottom: 0;
+    position: absolute;
+    padding: 0 2%;
+    vertical-align: bottom;
+}
+
+footer ul{
+	padding-left: 0;
+	font-size: 0.8em;
+	font-weight: bold;
+}
+
+footer ul li{
+	list-style: none;
+}
+
+.pieces{
+	width: 25%;
+	float: left;
+	font-size: 0.8em;
+	text-align: left;
+	margin: 5% 0 5% 5%;
+}
+
+.pieces p{
+	margin:0;
+}
+
+.pieces span{
+	text-align: right;
+	float: right;
+	margin-right: 25%;
+}
+
+.marketing{
+	text-align: center;
+	float: left;
+	margin-left: 13%;
+	margin-top: 5%;
+}
+
+.marketing ul{
+	margin-bottom:0;
+}
+
+.copy{
+	font-size: 0.75em;
+}
+
+.copy span{
+	float: none;
+	margin: 0 3%;
+}
+
+.pagenr{
+	width: 85%;
+	position: absolute;
+	bottom: 0;
+	margin-bottom: 0;
+}

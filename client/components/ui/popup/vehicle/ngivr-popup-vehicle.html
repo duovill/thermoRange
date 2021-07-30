@@ -1,0 +1,1117 @@
+<md-dialog aria-label="" style="min-width: 80%">
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools portlet-title">
+                <h2>{{buyContract.orderNumber}}</h2>
+                <!--        <span style="margin-left: 10px;" ng-if="inTicket">Bevételezés súlya:{{inTicket.nettoWeight}} mt</span>
+                        <span style="margin-left: 10px;" ng-if="outTicket">Kiadás súlya:{{outTicket.nettoWeight}} mt</span>-->
+                <span ng-if="vehicle.tcn" style="margin-left: 10px;">Ekáer súlya: {{vehicle.nettoWeight}} mt</span>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="hide()">
+                    <md-icon class="fa fa-close" aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content style="padding: 10px">
+            <div class="md-dialog-content" style="padding: 10px">
+                <ng-form name="vehiclePopupForm" novalidate>
+                    <div style="background: #000000;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            opacity: 0.2;
+            z-index: 9999;" ng-show="progressActivated">
+                        <div style="margin: 0;
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              transform: translate(-50%, -50%);">
+                            <md-progress-circular ng-disabled="!progressActivated" class="md-warn md-hue-1"
+                                                  md-diameter="60"></md-progress-circular>
+                        </div>
+                    </div>
+<!--<pre>{{vehicle.unloadDepot | json}}</pre>-->
+                    <fieldset ng-disabled="buyContract.orderClosed">
+
+                        <div ng-if="buyContract.direction === 'internal'">
+                            <div layout="row" layout-fill>
+                                <!--ekaer mezőkk-->
+                                <div ng-if="buyContract.ekaer">
+                                    <div layout="row">
+                                        <!--ekaer szám-->
+                                        <div ng-if="vehicle.tcn" flex>
+                                            <md-input-container>
+                                                <label>EKÁER</label>
+                                                <input name="tcn" ng-model="vehicle.tcn" disabled/>
+                                            </md-input-container>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Szállítmányozó-->
+                                <div flex="10">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>Szállítmányozó</label>
+                                        <ngivr-select-carrier
+                                            ng-disabled="!buyContract.ekaer || vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed"
+                                            ng-model="vehicle.carrier" name="carrier"
+                                            change-carrier="resetPlateNumbers()"
+                                            ng-model-options="{ getterSetter: true }"/>
+                                    </md-input-container>
+                                </div>
+                                <!--felrakás ideje-->
+                                <div flex="10">
+                                    <fieldset
+                                        ng-disabled="(vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed) && !uniqueVehicle">
+                                        <md-input-container>
+                                            <label>Felrakodás ideje</label>
+                                            <ngivr-input-date ng-model="vehicle.loadDate" name="loadDate"
+                                                              ng-change="vehicle.saved=false;setNeedCancel();"
+                                                              ng-disabled="(vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket) && !uniqueVehicle"></ngivr-input-date>
+                                        </md-input-container>
+                                    </fieldset>
+                                </div>
+                                <!--felrakott súly-->
+                                <div flex="10">
+                                    <md-input-container>
+                                        <label>Felrakott súly (mt)</label>
+                                        <input name="loadedWeight" type="number" ng-model="vehicle.loadedWeight"
+                                               ng-change="vehicle.saved = false" ng-max="getWeight('max')"
+                                               ng-min="getWeight('min')"
+                                               ng-disabled="(vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed) && !isUpdateWeightEdit && !uniqueVehicle"/>
+                                    </md-input-container>
+                                    <div ng-messages="vehiclePopupForm.loadedWeight.$error"
+                                         ng-show="ngivr.form.message.show(vehiclePopupForm, 'loadedWeight')"
+                                         style="height: auto !important;">
+                                        <div ng-message="max">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                                        <div ng-message="min">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                                    </div>
+                                </div>
+                                <!--felrakott Raktár-->
+                                <div flex="15">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>Raktárpozíció (Felrakó)</label>
+                                        <ngivr-select-depot ng-model="vehicle.loadDepot[0]" name="loadDepot"
+                                                            ng-disabled="true"
+                                                            site-id="buyContract.loadLocation[0]._id"
+                                                            ngivr-validation-mongoose
+                                                            ng-model-options="{ getterSetter: true }"/>
+                                    </md-input-container>
+                                </div>
+                                <!--lerakodás ideje-->
+                                <div flex="10">
+                                    <fieldset
+                                        ng-disabled="(vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket) && !uniqueVehicle">
+                                        <md-input-container>
+                                            <label>{{ngivr.strings.field.arrivalDateLong}}</label>
+                                            <ngivr-input-date ng-model="vehicle.arrivalDate" name="arrivalDateLong"
+                                                              ngivr-validation-future-date-forbidden
+                                                              ngivr-validation-date-before-date="vehicle.loadDate"
+                                                              ng-change="vehicle.saved =false;setNeedCancel();"
+                                                              ng-required="vehicle.unloadedWeight !== undefined && vehicle.unloadedWeight !== null"
+                                                              ng-disabled="( vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed) && !uniqueVehicle"></ngivr-input-date>
+                                        </md-input-container>
+
+                                        <div ng-messages="vehiclePopupForm.arrivalDateLong.$error">
+                                            <div ng-message="ngivrValidationFutureDateForbidden">
+                                                {{ngivr.strings.form.validation.futureDate}}
+                                            </div>
+                                            <div ng-message="ngivrValidationDateBeforeDate">
+                                                {{ngivr.strings.form.validation.dateBeforeLoadDate}}
+                                            </div>
+                                        </div>
+
+                                        <div ng-messages="vehiclePopupForm.arrivalDateLong.$error"
+                                             ng-show="ngivr.form.message.show(vehiclePopupForm, 'arrivalDateLong')"
+                                             style="height: auto !important;">
+                                            <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <!--lerakott súly-->
+                                <div flex="10" ng-style="{background: vehicle.inTicketDeleted ? 'yellow': 'inherit'}">
+                                    <md-input-container>
+                                        <label>{{ngivr.strings.field.unloadedWeight}}</label>
+                                        <input name="unloadedWeight" type="number" ng-model="vehicle.unloadedWeight"
+                                               ng-change="vehicle.saved =false" ng-max="getWeight('max')"
+                                               ng-min="getWeight('min')"
+                                               ng-required="vehicle.arrivalDate !== undefined"
+                                               ng-disabled="(vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed) && !isUpdateWeightEdit && !uniqueVehicle"/>
+                                    </md-input-container>
+
+                                    <div ng-messages="vehiclePopupForm.unloadedWeight.$error"
+                                         ng-show="ngivr.form.message.show(vehiclePopupForm, 'unloadedWeight')"
+                                         style="height: auto !important;">
+                                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                                        <div ng-message="max">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                                        <div ng-message="min">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                                    </div>
+                                </div>
+                                <!--lerakodás Raktár-->
+                                <div flex="10">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>Raktárpozíció (Lerakó)</label>
+                                        <ngivr-select-depot ng-model="vehicle.unloadDepot[0]" name="unloadDepot"
+                                                            ng-disabled="vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed"
+                                                            site-id="buyContract.unloadLocation[0]._id"
+                                                            ngivr-validation-mongoose
+                                                            ng-model-options="{ getterSetter: true }"/>
+                                    </md-input-container>
+                                </div>
+                                <!--mérlegjegy száma-->
+                                <!--mérlegjegy küldése-->
+                                <div flex="15">
+                                    <div layout="row">
+                                        <div flex="70">
+                                            <ngivr-icon-static count="23"
+                                                               ng-if="!vehicle.inTicket && !vehicle.outTicket"
+                                                               aria-label="0"
+                                                               ng-click="isDisabled.sendOrderTicket() || buyContract.orderClosed || sendNewTicketForVehicleAndDispo('internal_out')"
+                                                               ng-disabled="isDisabled.sendOrderTicket() || buyContract.orderClosed"
+                                                               ngivr-icon="send" ngivr-tooltip="Felrakodás küldése"/>
+
+                                            <div layout="column" ng-if="vehicle.outTicket">
+                                                <div flex>
+                                                    Kiadás sorszáma
+                                                </div>
+                                                <div flex>
+                                                    {{vehicle.outTicket}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--<div flex="30">-->
+                                        <!--<div ng-if="vehicle.outTicket" class="pull-right">-->
+                                        <!--<ngivr-popup-ledger-splitter ng-model="outTicket"-->
+                                        <!--callback="showVehiclePopup"-->
+                                        <!--split-weight="vehicle.splitWeight"-->
+                                        <!--from-order="buyContract"-->
+                                        <!--ng-direction="'internal_out'"-->
+                                        <!--ledger-index="getLedgerIndex('out')"-->
+                                        <!--ng-disabled="buyContract.orderClosed"></ngivr-popup-ledger-splitter>-->
+                                        <!--</div>-->
+                                        <!--</div>-->
+                                    </div>
+                                </div>
+                            </div>
+                            <ngivr-divider></ngivr-divider>
+                            <div layout="row" layout-fill>
+                                <div flex="15" ng-if="vehicle.carrier.name == ngivr.strings.notSelected"
+                                     style="margin-top: 6px;">
+                                    <ngivr-input-switch
+                                        ng-disabled="vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed"
+                                        ng-model="vehicle.isOwnVehicle"
+                                        ng-click="resetPlateNumbers();setNeedCancel();"
+                                        ngivr-caption="saját jármű"
+                                        ngivr-off-display="ngivr.strings.inputSwitch.default.off"
+                                        ngivr-on-display="ngivr.strings.inputSwitch.default.on" ngivr-on-value="true"
+                                        ngivr-off-value="false"
+                                        ng-disabled="vehicle.tcnStatus == 'F'"></ngivr-input-switch>
+                                </div>
+                                <div flex="15"></div>
+                                <!--vontató rsz.-->
+                                <div flex="10">
+                                    <fieldset
+                                        ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket || vehicle.outTicket) || buyContract.orderClosed">
+                                        <div
+                                            ng-if="vehicle.carrier.name === ngivr.strings.notSelected && vehicle.isOwnVehicle">
+                                            <ngivr-autocomplete-tow
+                                                ng-disabled="vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket"
+                                                name="platenumber1" ng-model="vehicle.plateNumber1Full"
+                                                trailer="vehicle.plateNumber2Full" country1="vehicle.country1"
+                                                country2="vehicle.country2" ngivr-capitalize></ngivr-autocomplete-tow>
+                                            <div>
+                                                <span ng-if="vehicle.plateNumber1Full == null">Hibás a rendszám vagy nem választott még</span>
+                                                <span ng-if="vehicle.plateNumber1Full != null">Kiválasztott rendszám: {{vehicle.plateNumber1Full.name}}</span>
+                                            </div>
+                                        </div>
+
+                                        <div ng-if="vehicle.carrier.name !== ngivr.strings.notSelected">
+                                            <md-input-container class="md-block">
+                                                <label>{{ngivr.strings.field.plateNumber1}}</label>
+                                                <input name="platenumber1"
+                                                       ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket || vehicle.outTicket)"
+                                                       ng-model="vehicle.plateNumber1"
+                                                       ngivr-capitalize/>
+                                            </md-input-container>
+                                        </div>
+
+                                        <div
+                                            ng-if="vehicle.carrier.name === ngivr.strings.notSelected && !vehicle.isOwnVehicle">
+                                            <md-input-container class="md-block">
+                                                <label>{{ngivr.strings.field.plateNumber1}}</label>
+                                                <input name="platenumber1"
+                                                       ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket || vehicle.outTicket)"
+                                                       ng-model="vehicle.plateNumber1"
+                                                       ngivr-capitalize/>
+                                            </md-input-container>
+                                            <span>Nem saját rendszám</span>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <!--vontató felségjel-->
+                                <div flex="10">
+                                    <md-input-container>
+                                        <label>Felségjel</label>
+                                        <input name="country1"
+                                               ng-disabled="vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed"
+                                               ng-model="vehicle.country1"
+                                               ng-required="buyContract.ekaer && (vehicle.plateNumber1 !== null || vehicle.plateNumber1Full !== null)"
+                                               ng-change="vehicle.saved =false" ngivr-capitalize/>
+                                    </md-input-container>
+                                </div>
+                                <!--vontatmány rsz-->
+                                <div flex="10">
+                                    <fieldset
+                                        ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket || vehicle.outTicket) || buyContract.orderClosed">
+                                        <div
+                                            ng-if="vehicle.carrier.name === ngivr.strings.notSelected && vehicle.isOwnVehicle">
+                                            <ngivr-autocomplete-trailer
+                                                ng-disabled="vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket"
+                                                name="platenumber2"
+                                                ng-model="vehicle.plateNumber2Full"
+                                                ngivr-capitalize></ngivr-autocomplete-trailer>
+
+                                            <div>
+                                                <span ng-if="vehicle.plateNumber2Full == null">Hibás a rendszám vagy nem választott még</span>
+                                                <span ng-if="vehicle.plateNumber2Full != null">Kiválasztott rendszám: {{vehicle.plateNumber2Full.name}}</span>
+                                            </div>
+                                        </div>
+
+                                        <div ng-if="vehicle.carrier.name !== ngivr.strings.notSelected">
+                                            <md-input-container class="md-block">
+                                                <label>{{ngivr.strings.field.plateNumber2}}</label>
+                                                <input name="platenumber2"
+                                                       ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket || vehicle.outTicket)"
+                                                       ng-model="vehicle.plateNumber2"
+                                                       ngivr-capitalize/>
+                                            </md-input-container>
+                                        </div>
+
+                                        <div
+                                            ng-if="vehicle.carrier.name === ngivr.strings.notSelected && !vehicle.isOwnVehicle">
+                                            <md-input-container class="md-block">
+                                                <label>{{ngivr.strings.field.plateNumber2}}</label>
+                                                <input name="platenumber1"
+                                                       ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket || vehicle.outTicket)"
+                                                       ng-model="vehicle.plateNumber2"
+                                                       ngivr-capitalize/>
+                                            </md-input-container>
+                                            <span>Nem saját rendszám</span>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <!--vontatmány felségjel-->
+                                <div flex="10">
+                                    <md-input-container>
+                                        <label>Felségjel</label>
+                                        <input name="country2"
+                                               ng-disabled="vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed"
+                                               ng-model="vehicle.country2"
+                                               ng-required="buyContract.ekaer && (vehicle.plateNumber2 != null || vehicle.plateNumber2Full !== null)"
+                                               ng-change="vehicle.saved =false" ngivr-capitalize/>
+                                    </md-input-container>
+                                </div>
+                                <div flex="15"></div>
+                                <div flex="15">
+                                    <div layout="row">
+                                        <div flex="70">
+                                            <ngivr-icon-static count="23"
+                                                               ng-if="!vehicle.inTicket"
+                                                               aria-label="0"
+                                                               ng-click="isDisabled.sendOrderTicket() || buyContract.orderClosed || sendNewTicketForVehicleAndDispo('internal_in')"
+                                                               ng-disabled="isDisabled.sendOrderTicket() || buyContract.orderClosed"
+                                                               ngivr-icon="send" ngivr-tooltip="Lerakodás küldése"/>
+
+                                            <div layout="column" ng-if="vehicle.inTicket"
+                                                 ng-style="{background: vehicle.inTicketDeleted ? 'yellow': 'inherit'}">
+                                                <div flex>
+                                                    Bevételezés sorszáma
+                                                </div>
+                                                <div flex>
+                                                    {{vehicle.inTicket}}
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div flex="30">
+                                            <div ng-if="vehicle.inTicket && buyContract.sygnus" class="pull-right">
+                                                <ngivr-popup-ledger-splitter ng-model="inTicket"
+                                                                             split-weight=""
+                                                                             from-order="buyContract"
+                                                                             callback="showVehiclePopup"
+                                                                             ng-direction="'internal_in'"
+                                                                             ledger-index="getLedgerIndex('in')"
+                                                                             ng-disabled="buyContract.orderClosed"></ngivr-popup-ledger-splitter>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div ng-if="cardType == 'order' && buyContract.direction !== 'internal'">
+                            <div layout="row" layout-fill>
+                                <!--ekaer mezőkk-->
+                                <div ng-if="buyContract.ekaer" flex="15">
+                                    <div layout="row">
+                                        <!--ekaer szám-->
+                                        <div ng-if="vehicle.tcn" flex>
+                                            <md-input-container>
+                                                <label>EKÁER</label>
+                                                <input name="tcn" ng-model="vehicle.tcn" disabled/>
+                                            </md-input-container>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Szállítmányozó-->
+                                <div flex="15">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>Szállítmányozó</label>
+                                        <ngivr-select-carrier
+                                            ng-disabled="!buyContract.ekaer || vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed"
+                                            ng-model="vehicle.carrier" name="carrier"
+                                            change-carrier="resetPlateNumbers()"
+                                            ng-model-options="{ getterSetter: true }"/>
+                                    </md-input-container>
+                                </div>
+                                <!--felrakás ideje-->
+                                <div flex="10">
+                                    <!--disabledből kiszedve: (buyContract.direction.includes('out')), lerakásnál az 'in'-->
+                                    <fieldset
+                                        ng-disabled="(vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket) && !uniqueVehicle">
+                                        <md-input-container>
+                                            <label>Felrakodás ideje</label>
+                                            <ngivr-input-date ng-model="vehicle.loadDate" name="loadDate"
+                                                              ng-change="vehicle.saved=false;setNeedCancel();"
+                                                              ng-disabled="(vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed) && !uniqueVehicle"></ngivr-input-date>
+                                        </md-input-container>
+                                    </fieldset>
+                                </div>
+                                <!--felrakott súly-->
+                                <div flex="10">
+                                    <md-input-container>
+                                        <label>{{ngivr.strings.field.loadedWeight}}</label>
+                                        <input name="loadedWeight" type="number" ng-model="vehicle.loadedWeight"
+                                               required ng-max="getWeight('max')" ng-min="getWeight('min')"
+                                               ng-change="vehicle.saved = false"
+                                               ng-disabled="(vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed) && !isUpdateWeightEdit && !uniqueVehicle"/>
+                                    </md-input-container>
+
+                                    <div ng-messages="vehiclePopupForm.loadedWeight.$error"
+                                         ng-show="ngivr.form.message.show(vehiclePopupForm, 'loadedWeight')"
+                                         style="height: auto !important;">
+                                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                                        <div ng-message="max">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                                        <div ng-message="min">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                                    </div>
+                                </div>
+                                <!--lerakodás ideje-->
+                                <div flex="10">
+                                    <fieldset
+                                        ng-disabled="!uniqueVehicle && (vehicle.tcnStatus == 'F' || originalVehicle.unloadedWeight)">
+                                        <md-input-container>
+                                            <label>{{ngivr.strings.field.arrivalDateLong}}</label>
+                                            <ngivr-input-date ng-model="vehicle.arrivalDate" name="arrivalDateLong"
+                                                              ngivr-validation-future-date-forbidden
+                                                              ngivr-validation-date-before-date="vehicle.loadDate"
+                                                              ng-change="vehicle.saved =false;setNeedCancel();"
+                                                              ng-required="vehicle.unloadedWeight !== undefined && vehicle.unloadedWeight !== null"
+                                                              ng-disabled="(vehicle.tcnStatus == 'F' || originalVehicle.unloadedWeight || buyContract.orderClosed) && !isUpdateWeightEdit && !uniqueVehicle"></ngivr-input-date>
+                                        </md-input-container>
+
+                                        <div ng-messages="vehiclePopupForm.arrivalDateLong.$error">
+                                            <div ng-message="ngivrValidationFutureDateForbidden">
+                                                {{ngivr.strings.form.validation.futureDate}}
+                                            </div>
+                                            <div ng-message="ngivrValidationDateBeforeDate">
+                                                {{ngivr.strings.form.validation.dateBeforeLoadDate}}
+                                            </div>
+                                        </div>
+
+                                        <div ng-messages="vehiclePopupForm.arrivalDateLong.$error"
+                                             ng-show="ngivr.form.message.show(vehiclePopupForm, 'arrivalDateLong')"
+                                             style="height: auto !important;">
+                                            <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                                        </div>
+
+                                    </fieldset>
+                                </div>
+                                <!--lerakott súly-->
+                                <div flex="10" ng-style="{background: vehicle.inTicketDeleted ? 'yellow': 'inherit'}">
+                                    <md-input-container>
+                                        <label>{{ngivr.strings.field.unloadedWeight}}</label>
+                                        <input name="unloadedWeight" type="number" ng-model="vehicle.unloadedWeight"
+                                               ng-change="vehicle.saved =false; getTCNData()"
+                                               ng-required="vehicle.arrivalDate !== undefined" ng-max="getWeight('max')"
+                                               ng-min="getWeight('min')"
+                                               ng-disabled="((buyContract.shipOntype !== undefined) || vehicle.tcnStatus == 'F' || originalVehicle.unloadedWeight || buyContract.orderClosed) && !isUpdateWeightEdit && !uniqueVehicle"/>
+                                    </md-input-container>
+
+                                    <div ng-messages="vehiclePopupForm.unloadedWeight.$error"
+                                         ng-show="ngivr.form.message.show(vehiclePopupForm, 'unloadedWeight')"
+                                         style="height: auto !important;">
+                                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                                        <div ng-message="max">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                                        <div ng-message="min">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                                    </div>
+                                </div>
+                                <!--
+                                  **************************
+                                  Raktár select vétel esetén
+                                  **************************
+                                  -->
+                                <div flex="15" ng-if="buyContract.relatedContract[0].buy">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>Raktárpozíció (Lerakó)</label>
+                                        <ngivr-select-depot ng-model="vehicle.depotFull" name="loadDepot"
+                                                            ng-disabled="vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed"
+                                                            site-id="buyContract.unloadLocation[0]._id"
+                                                            ngivr-validation-mongoose
+                                                            ng-model-options="{ getterSetter: true }"/>
+                                    </md-input-container>
+                                </div>
+                                <!--
+                                ***************************
+                                Raktár select eladás esetén
+                                ***************************
+                                -->
+                                <div flex="15" ng-if="!buyContract.relatedContract[0].buy">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>Raktárpozíció (Felrakó)</label>
+                                        <ngivr-select-depot ng-model="vehicle.depotFull" name="unloadDepot"
+                                                            ng-disabled="vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed"
+                                                            site-id="buyContract.loadLocation[0]._id"
+                                                            ngivr-validation-mongoose
+                                                            ng-model-options="{ getterSetter: true }"/>
+                                    </md-input-container>
+                                </div>
+                                <!--mérlegjegy száma-->
+                                <!--mérlegjegy küldése-->
+                                <div flex="=15">
+                                    <div layout="row">
+                                        <div flex="70">
+                                            <ngivr-icon-static count="23"
+                                                               ng-if="!vehicle.inTicket && !vehicle.outTicket"
+                                                               aria-label="0"
+                                                               ng-click="isDisabled.sendOrderTicket() || buyContract.orderClosed || sendNewTicketForVehicleAndDispo()"
+                                                               ng-disabled="isDisabled.sendOrderTicket() || buyContract.orderClosed"
+                                                               ngivr-icon="send" ngivr-tooltip="Küldés"/>
+                                            <div layout="column" ng-if="vehicle.inTicket || vehicle.outTicket">
+                                                <div flex>
+                                                    Mérlegjegy száma:
+                                                </div>
+                                                <div flex>
+                                                    {{vehicle.inTicket ? vehicle.inTicket :
+                                                    vehicle.outTicket}}
+                                                </div>
+                                            </div>
+                                            <!--<div ng-if="vehicle.inTicket || vehicle.outTicket">-->
+                                            <!--Mérlegjegy száma:<br>{{vehicle.inTicket ? vehicle.inTicket :-->
+                                            <!--vehicle.outTicket}}-->
+                                            <!--</div>-->
+                                        </div>
+                                        <div flex="30">
+                                            <div ng-if="vehicle.inTicket && !vehicle.inTicketDeleted"
+                                                 class="pull-right">
+                                                <ngivr-popup-ledger-splitter ng-model="inTicket"
+                                                                             callback="showVehiclePopup"
+                                                                             split-weight="vehicle.splitWeight"
+                                                                             ng-direction="'in'"
+                                                                             from-order="buyContract"
+                                                                             ledger-index="getLedgerIndex('in')"
+                                                                             ng-disabled="buyContract.orderClosed"></ngivr-popup-ledger-splitter>
+                                            </div>
+                                            <div ng-if="vehicle.outTicket" class="pull-right">
+                                                <ngivr-popup-ledger-splitter ng-model="outTicket"
+                                                                             split-weight="vehicle.splitWeight"
+                                                                             from-order="buyContract"
+                                                                             callback="showVehiclePopup"
+                                                                             ng-direction="'out'"
+                                                                             ledger-index="getLedgerIndex('out')"
+                                                                             ng-disabled="buyContract.orderClosed"></ngivr-popup-ledger-splitter>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <ngivr-divider></ngivr-divider>
+                            <div layout="row" layout-fill>
+                                <div flex="15" ng-if="vehicle.carrier.name == ngivr.strings.notSelected"
+                                     style="margin-top: 6px;">
+                                    <ngivr-input-switch
+                                        ng-disabled="vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed"
+                                        ng-model="vehicle.isOwnVehicle"
+                                        ng-click="resetPlateNumbers();setNeedCancel();"
+                                        ngivr-caption="saját jármű"
+                                        ngivr-off-display="ngivr.strings.inputSwitch.default.off"
+                                        ngivr-on-display="ngivr.strings.inputSwitch.default.on" ngivr-on-value="true"
+                                        ngivr-off-value="false"
+                                        ng-disabled="vehicle.tcnStatus == 'F'"></ngivr-input-switch>
+                                </div>
+                                <div flex="15"></div>
+                                <!--vontató rsz.-->
+                                <div flex="10">
+                                    <fieldset
+                                        ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket || vehicle.outTicket)">
+                                        <div
+                                            ng-if="vehicle.carrier.name === ngivr.strings.notSelected && vehicle.isOwnVehicle">
+                                            <ngivr-autocomplete-tow
+                                                ng-disabled="vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed"
+                                                name="platenumber1" ng-model="vehicle.plateNumber1Full"
+                                                trailer="vehicle.plateNumber2Full" country1="vehicle.country1"
+                                                country2="vehicle.country2" ngivr-capitalize></ngivr-autocomplete-tow>
+                                            <div>
+                                                <span ng-if="vehicle.plateNumber1Full == null">Hibás a rendszám vagy nem választott még</span>
+                                                <span ng-if="vehicle.plateNumber1Full != null">Kiválasztott rendszám: {{vehicle.plateNumber1Full.name}}</span>
+                                            </div>
+                                        </div>
+
+                                        <div ng-if="vehicle.carrier.name !== ngivr.strings.notSelected">
+                                            <md-input-container class="md-block">
+                                                <label>{{ngivr.strings.field.plateNumber1}}</label>
+                                                <input name="platenumber1"
+                                                       ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket || vehicle.outTicket) || buyContract.orderClosed"
+                                                       ng-model="vehicle.plateNumber1"
+                                                       ngivr-capitalize/>
+                                            </md-input-container>
+                                        </div>
+
+                                        <div
+                                            ng-if="vehicle.carrier.name === ngivr.strings.notSelected && !vehicle.isOwnVehicle">
+                                            <md-input-container class="md-block">
+                                                <label>{{ngivr.strings.field.plateNumber1}}</label>
+                                                <input name="platenumber1"
+                                                       ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket || vehicle.outTicket) || buyContract.orderClosed"
+                                                       ng-model="vehicle.plateNumber1"
+                                                       ngivr-capitalize/>
+                                            </md-input-container>
+                                            <span>Nem saját rendszám</span>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <!--vontató felségjel-->
+                                <div flex="10">
+                                    <md-input-container>
+                                        <label>Felségjel</label>
+                                        <input name="country1"
+                                               ng-disabled="vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed"
+                                               ng-model="vehicle.country1"
+                                               ng-required="buyContract.ekaer && (vehicle.plateNumber1 !== null || vehicle.plateNumber1Full)"
+                                               ng-change="vehicle.saved =false" ngivr-capitalize/>
+                                    </md-input-container>
+                                </div>
+                                <!--vontatmány rsz-->
+                                <div flex="10">
+                                    <fieldset
+                                        ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket || vehicle.outTicket) || buyContract.orderClosed">
+                                        <div
+                                            ng-if="vehicle.carrier.name === ngivr.strings.notSelected && vehicle.isOwnVehicle">
+                                            <ngivr-autocomplete-trailer
+                                                ng-disabled="vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed"
+                                                name="platenumber2"
+                                                ng-model="vehicle.plateNumber2Full"
+                                                ngivr-capitalize></ngivr-autocomplete-trailer>
+
+                                            <div>
+                                                <span ng-if="vehicle.plateNumber2Full == null">Hibás a rendszám vagy nem választott még</span>
+                                                <span ng-if="vehicle.plateNumber2Full != null">Kiválasztott rendszám: {{vehicle.plateNumber2Full.name}}</span>
+                                            </div>
+                                        </div>
+
+                                        <div ng-if="vehicle.carrier.name !== ngivr.strings.notSelected">
+                                            <md-input-container class="md-block">
+                                                <label>{{ngivr.strings.field.plateNumber2}}</label>
+                                                <input name="platenumber2"
+                                                       ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket || vehicle.outTicket) || buyContract.orderClosed"
+                                                       ng-model="vehicle.plateNumber2"
+                                                       ngivr-capitalize/>
+                                            </md-input-container>
+                                        </div>
+
+                                        <div
+                                            ng-if="vehicle.carrier.name === ngivr.strings.notSelected && !vehicle.isOwnVehicle">
+                                            <md-input-container class="md-block">
+                                                <label>{{ngivr.strings.field.plateNumber2}}</label>
+                                                <input name="platenumber1"
+                                                       ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket || vehicle.outTicket) || buyContract.orderClosed"
+                                                       ng-model="vehicle.plateNumber2"
+                                                       ngivr-capitalize/>
+                                            </md-input-container>
+                                            <span>Nem saját rendszám</span>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <!--vontatmány felségjel-->
+                                <div flex="10">
+                                    <md-input-container>
+                                        <label>Felségjel</label>
+                                        <input name="country2"
+                                               ng-disabled="vehicle.tcnStatus == 'F' || vehicle.inTicket || vehicle.outTicket || buyContract.orderClosed"
+                                               ng-model="vehicle.country2"
+                                               ng-required="buyContract.ekaer && (vehicle.plateNumber2 != null || vehicle.plateNumber2Full)"
+                                               ng-change="vehicle.saved =false" ngivr-capitalize/>
+                                    </md-input-container>
+                                </div>
+                                <div flex="15"></div>
+                                <div flex="15" style="margin-top: 10px">
+
+                                    <ngivr-icon-static count="23" aria-label="0" class="yellow-background"
+                                                       ng-if="(vehicle.inTicket || vehicle.outTicket) && !originalVehicle.unloadedWeight"
+                                                       extra-class="yellow-background"
+                                                       ng-click="updateUnLoadWeight(vehicle.inTicket ? 'in': 'out')"
+                                                       ngivr-icon="send" ngivr-tooltip="Frissítés"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div ng-if="cardType == 'ruralTour'">
+                            <div layout="row" layout-fill>
+                                <!--ekaer mezőkk-->
+                                <div ng-if="buyContract.ekaer" flex="15">
+                                    <div layout="row">
+                                        <!--ekaer szám-->
+                                        <div ng-if="vehicle.tcn" flex>
+                                            <md-input-container>
+                                                <label>EKÁER</label>
+                                                <input name="tcn" ng-model="vehicle.tcn" disabled/>
+                                            </md-input-container>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Szállítmányozó-->
+                                <div flex="15">
+                                    <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                                        <label>Szállítmányozó</label>
+                                        <ngivr-select-carrier
+                                            ng-disabled="!buyContract.ekaer || vehicle.tcnStatus == 'F' || (vehicle.inTicket && vehicle.outTicket) || buyContract.orderClosed"
+                                            ng-model="vehicle.carrier" name="carrier"
+                                            change-carrier="resetPlateNumbers()"
+                                            ng-model-options="{ getterSetter: true }"/>
+                                    </md-input-container>
+                                </div>
+                                <!--felrakás ideje-->
+                                <div flex="10">
+                                    <fieldset
+                                        ng-disabled="(vehicle.tcnStatus == 'F' ||(vehicle.inTicket && vehicle.outTicket) || buyContract.orderClosed) && !uniqueVehicle">
+                                        <md-input-container>
+                                            <label>Felrakodás ideje</label>
+                                            <ngivr-input-date ng-model="vehicle.loadDate" name="loadDate"
+                                                              ng-change="vehicle.saved=false;setNeedCancel();"
+                                                              ng-disabled="(vehicle.tcnStatus == 'F' || (vehicle.inTicket && vehicle.outTicket) || buyContract.orderClosed) && !uniqueVehicle"></ngivr-input-date>
+                                        </md-input-container>
+                                    </fieldset>
+                                </div>
+                                <!--felrakott súly-->
+                                <div flex="10">
+                                    <md-input-container>
+                                        <label>Felrakott súly (mt)</label>
+                                        <input name="loadedWeight" type="number" ng-model="vehicle.loadedWeight"
+                                               ng-change="vehicle.saved = false" ng-max="getWeight('max')"
+                                               ng-min="getWeight('min')"
+                                               ng-disabled="(vehicle.tcnStatus == 'F' || buyContract.orderClosed || (vehicle.inTicket && vehicle.outTicket)) && !isUpdateWeightEdit && !uniqueVehicle"/>
+                                    </md-input-container>
+                                    <div ng-messages="vehiclePopupForm.loadedWeight.$error"
+                                         ng-show="ngivr.form.message.show(vehiclePopupForm, 'loadedWeight')"
+                                         style="height: auto !important;">
+                                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                                        <div ng-message="max">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                                        <div ng-message="min">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                                    </div>
+                                </div>
+                                <!--lerakodás ideje-->
+                                <div flex="10">
+                                    <fieldset
+                                        ng-disabled="( vehicle.tcnStatus == 'F' || buyContract.orderClosed || (vehicle.inTicket && vehicle.outTicket)) && !uniqueVehicle">
+                                        <md-input-container>
+                                            <label>{{ngivr.strings.field.arrivalDateLong}}</label>
+                                            <ngivr-input-date ng-model="vehicle.arrivalDate" name="arrivalDateLong"
+                                                              ngivr-validation-future-date-forbidden
+                                                              ngivr-validation-date-before-date="vehicle.loadDate"
+                                                              ng-change="vehicle.saved =false;setNeedCancel('arrivalDate');"
+                                                              ng-required="vehicle.unloadedWeight !== undefined && vehicle.unloadedWeight !== null"
+                                                              ng-disabled="( vehicle.tcnStatus == 'F' || (vehicle.inTicket && vehicle.outTicket) || buyContract.orderClosed) && !uniqueVehicle"></ngivr-input-date>
+                                        </md-input-container>
+
+                                        <div ng-messages="vehiclePopupForm.arrivalDateLong.$error">
+                                            <div ng-message="ngivrValidationFutureDateForbidden">
+                                                {{ngivr.strings.form.validation.futureDate}}
+                                            </div>
+                                            <div ng-message="ngivrValidationDateBeforeDate">
+                                                {{ngivr.strings.form.validation.dateBeforeLoadDate}}
+                                            </div>
+                                        </div>
+
+                                        <div ng-messages="vehiclePopupForm.arrivalDateLong.$error"
+                                             ng-show="ngivr.form.message.show(vehiclePopupForm, 'arrivalDateLong')"
+                                             style="height: auto !important;">
+                                            <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <!--lerakott súly-->
+                                <div flex="10">
+                                    <md-input-container>
+                                        <label>{{ngivr.strings.field.unloadedWeight}}</label>
+                                        <input name="unloadedWeight" type="number" ng-model="vehicle.unloadedWeight"
+                                               ng-change="vehicle.saved =false; getTCNData()" ng-max="getWeight('max')"
+                                               ng-min="getWeight('min')"
+                                               ng-disabled="(vehicle.tcnStatus == 'F' || buyContract.orderClosed || (vehicle.inTicket && vehicle.outTicket)) && !isUpdateWeightEdit && !uniqueVehicle"/>
+                                    </md-input-container>
+
+                                    <div ng-messages="vehiclePopupForm.unloadedWeight.$error"
+                                         ng-show="ngivr.form.message.show(vehiclePopupForm, 'unloadedWeight')"
+                                         style="height: auto !important;">
+                                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                                        <div ng-message="max">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                                        <div ng-message="min">{{ngivr.strings.form.validation.wrongNumber}}</div>
+                                    </div>
+                                </div>
+                                <!--lerakóhely-->
+                                <div flex="15">
+                                    <md-input-container class="md-block" style="margin-top: 16px">
+                                        <label>Lerakóhely</label>
+                                        <md-select md-no-ink name="site"
+                                                   ng-disabled="vehicle.tcnStatus == 'F' || buyContract.orderClosed || (vehicle.inTicket && vehicle.outTicket)"
+                                                   ng-model="vehicle.unloadLocationId" required>
+                                            <md-option ng-repeat="i in buyContract.unloadLocation" value="{{ i._id }}"
+                                                       ng-selected="buyContract.unloadLocation.length === 1 ? buyContract.unloadLocation[0] : selectUnloadLocation(vehicle.unloadLocationId, buyContract.unloadLocation)">
+                                                {{ i.name}}
+                                            </md-option>
+                                        </md-select>
+                                    </md-input-container>
+                                </div>
+                                <!--mérlegjegy száma-->
+                                <!--mérlegjegy küldése-->
+                                <div flex="15">
+                                    <div layout="row">
+                                        <div flex="70">
+                                            <ngivr-icon-static count="23" ng-if="!vehicle.inTicket" aria-label="0"
+                                                               ng-click="isDisabled.sendRuralTourTicket() || buyContract.orderClosed || sendInTicket()"
+                                                               ng-disabled="isDisabled.sendRuralTourTicket() || buyContract.orderClosed"
+                                                               ngivr-icon="send" ngivr-tooltip="Bevételezés"/>
+                                            <div layout="column" ng-if="vehicle.inTicket">
+                                                <div flex>
+                                                    {{vehicle.inTicket}}
+                                                </div>
+                                                <div flex>
+                                                    {{buyContract.relatedContract[0].partner[0].name}}
+                                                </div>
+                                                <div flex>
+                                                    {{buyContract.relatedContract[0].contractNumber}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div flex="30">
+                                            <div ng-if="vehicle.inTicket" class="pull-right">
+                                                <ngivr-popup-ledger-splitter ng-model="inTicket"
+                                                                             callback="showVehiclePopup"
+                                                                             split-weight="vehicle.splitWeight"
+                                                                             from-order="buyContract"
+                                                                             ng-direction="'in'"
+                                                                             ledger-index="getLedgerIndex('in')"
+                                                                             ng-disabled="buyContract.orderClosed"></ngivr-popup-ledger-splitter>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <ngivr-divider></ngivr-divider>
+                            <div layout="row" layout-fill>
+                                <div flex="15" ng-if="vehicle.carrier.name == ngivr.strings.notSelected"
+                                     style="margin-top: 6px;">
+                                    <ngivr-input-switch
+                                        ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket && vehicle.outTicket) || buyContract.orderClosed"
+                                        ng-model="vehicle.isOwnVehicle"
+                                        ng-click="resetPlateNumbers();setNeedCancel();"
+                                        ngivr-caption="saját jármű"
+                                        ngivr-off-display="ngivr.strings.inputSwitch.default.off"
+                                        ngivr-on-display="ngivr.strings.inputSwitch.default.on" ngivr-on-value="true"
+                                        ngivr-off-value="false"
+                                        ng-disabled="vehicle.tcnStatus == 'F'"></ngivr-input-switch>
+                                </div>
+                                <div flex="15"></div>
+                                <!--vontató rsz.-->
+                                <div flex="10">
+                                    <fieldset
+                                        ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket && vehicle.outTicket) || buyContract.orderClosed">
+                                        <div
+                                            ng-if="vehicle.carrier.name === ngivr.strings.notSelected && vehicle.isOwnVehicle">
+                                            <ngivr-autocomplete-tow
+                                                ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket && vehicle.outTicket) || buyContract.orderClosed"
+                                                name="platenumber1" ng-model="vehicle.plateNumber1Full"
+                                                trailer="vehicle.plateNumber2Full" country1="vehicle.country1"
+                                                country2="vehicle.country2" ngivr-capitalize></ngivr-autocomplete-tow>
+                                            <div>
+                                                <span ng-if="vehicle.plateNumber1Full == null">Hibás a rendszám vagy nem választott még</span>
+                                                <span ng-if="vehicle.plateNumber1Full != null">Kiválasztott rendszám: {{vehicle.plateNumber1Full.name}}</span>
+                                            </div>
+                                        </div>
+
+                                        <div ng-if="vehicle.carrier.name !== ngivr.strings.notSelected">
+                                            <md-input-container class="md-block">
+                                                <label>{{ngivr.strings.field.plateNumber1}}</label>
+                                                <input name="platenumber1"
+                                                       ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket && vehicle.outTicket) || buyContract.orderClosed"
+                                                       ng-model="vehicle.plateNumber1"
+                                                       ngivr-capitalize/>
+                                            </md-input-container>
+                                        </div>
+
+                                        <div
+                                            ng-if="vehicle.carrier.name === ngivr.strings.notSelected && !vehicle.isOwnVehicle">
+                                            <md-input-container class="md-block">
+                                                <label>{{ngivr.strings.field.plateNumber1}}</label>
+                                                <input name="platenumber1"
+                                                       ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket && vehicle.outTicket) || buyContract.orderClosed"
+                                                       ng-model="vehicle.plateNumber1"
+                                                       ngivr-capitalize/>
+                                            </md-input-container>
+                                            <span>Nem saját rendszám</span>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <!--vontató felségjel-->
+                                <div flex="10">
+                                    <md-input-container>
+                                        <label>Felségjel</label>
+                                        <input name="country1"
+                                               ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket && vehicle.outTicket) || buyContract.orderClosed"
+                                               ng-model="vehicle.country1"
+                                               ng-required="buyContract.ekaer && (vehicle.plateNumber1 !== null || vehicle.plateNumber1Full !== null)"
+                                               ng-change="vehicle.saved =false" ngivr-capitalize/>
+                                    </md-input-container>
+                                </div>
+                                <!--vontatmány rsz-->
+                                <div flex="10">
+                                    <fieldset
+                                        ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket && vehicle.outTicket) || buyContract.orderClosed">
+                                        <div
+                                            ng-if="vehicle.carrier.name === ngivr.strings.notSelected && vehicle.isOwnVehicle">
+                                            <ngivr-autocomplete-trailer
+                                                ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket && vehicle.outTicket) || buyContract.orderClosed"
+                                                name="platenumber2"
+                                                ng-model="vehicle.plateNumber2Full"
+                                                ngivr-capitalize></ngivr-autocomplete-trailer>
+
+                                            <div>
+                                                <span ng-if="vehicle.plateNumber2Full == null">Hibás a rendszám vagy nem választott még</span>
+                                                <span ng-if="vehicle.plateNumber2Full != null">Kiválasztott rendszám: {{vehicle.plateNumber2Full.name}}</span>
+                                            </div>
+                                        </div>
+
+                                        <div ng-if="vehicle.carrier.name !== ngivr.strings.notSelected">
+                                            <md-input-container class="md-block">
+                                                <label>{{ngivr.strings.field.plateNumber2}}</label>
+                                                <input name="platenumber2"
+                                                       ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket && vehicle.outTicket) || buyContract.orderClosed"
+                                                       ng-model="vehicle.plateNumber2"
+                                                       ngivr-capitalize/>
+                                            </md-input-container>
+                                        </div>
+
+                                        <div
+                                            ng-if="vehicle.carrier.name === ngivr.strings.notSelected && !vehicle.isOwnVehicle">
+                                            <md-input-container class="md-block">
+                                                <label>{{ngivr.strings.field.plateNumber2}}</label>
+                                                <input name="platenumber1"
+                                                       ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket && vehicle.outTicket) || buyContract.orderClosed"
+                                                       ng-model="vehicle.plateNumber2"
+                                                       ngivr-capitalize/>
+                                            </md-input-container>
+                                            <span>Nem saját rendszám</span>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <!--vontatmány felségjel-->
+                                <div flex="10">
+                                    <md-input-container>
+                                        <label>Felségjel</label>
+                                        <input name="country2"
+                                               ng-disabled="vehicle.tcnStatus == 'F' || (vehicle.inTicket && vehicle.outTicket) || buyContract.orderClosed"
+                                               ng-model="vehicle.country2"
+                                               ng-required="buyContract.ekaer && (vehicle.plateNumber2 != null || vehicle.plateNumber2Full !== null)"
+                                               ng-change="vehicle.saved =false" ngivr-capitalize/>
+                                    </md-input-container>
+                                </div>
+                                <div flex="15"></div>
+                                <div flex="15" style="margin-top: 10px">
+                                    <div layout="row">
+                                        <div flex="70">
+                                            <ngivr-icon-static count="23" ng-if="!vehicle.outTicket && vehicle.inTicket"
+                                                               aria-label="0"
+                                                               ng-click="isDisabled.sendRuralTourTicket() || buyContract.orderClosed || sendOutTicket()"
+                                                               ng-disabled="isDisabled.sendRuralTourTicket() || buyContract.orderClosed"
+                                                               ngivr-icon="send" ngivr-tooltip="Árukiadás"/>
+                                            <div layout="column" ng-if="vehicle.outTicket">
+                                                <div flex>
+                                                    {{vehicle.outTicket}}
+                                                </div>
+                                                <div flex>
+                                                    {{sellContract.partner}}
+                                                </div>
+                                                <div flex>
+                                                    {{sellContract.contractNumber}}
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div flex="30">
+                                            <div ng-if="vehicle.outTicket" class="pull-right">
+                                                <ngivr-popup-ledger-splitter ng-model="outTicket"
+                                                                             split-weight="vehicle.splitWeightRuralOut"
+                                                                             from-order="buyContract"
+                                                                             callback="showVehiclePopup"
+                                                                             ng-direction="'out'"
+                                                                             ledger-index="getLedgerIndex('out')"
+                                                                             ng-disabled="buyContract.orderClosed"></ngivr-popup-ledger-splitter>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <ngivr-divider ng-if="buyContract.ekaer && buyContract.seller !== undefined
+                                      && buyContract.destination !=='' && buyContract.loadLocation !==''
+                                      && buyContract.unloadLocation !==''"></ngivr-divider>
+                    </fieldset>
+                    <!--
+                    *************
+                    EKÁER gombok
+                    *************
+                    -->
+                    <div layout="row" ng-if="buyContract.ekaer && buyContract.seller !== undefined
+                                      && buyContract.destination !=='' && buyContract.loadLocation !==''
+                                      && buyContract.unloadLocation !==''" layout-fill>
+                        <div flex="25" class="start center">
+                            <!--
+                          *********************
+                          EKÁER igénylés
+                          *********************
+                          -->
+                            <ngivr-button ng-if="buyContract.ekaer" class="pull-left"
+                                          ng-click="isDisabled.createTcn() || buyContract.orderClosed || createNewTcn()"
+                                          ng-disabled="isDisabled.createTcn() || buyContract.orderClosed">
+                                <ng-md-icon icon="send"></ng-md-icon>
+                                {{ngivr.strings.button.requestEkaer}}
+                            </ngivr-button>
+                        </div>
+                        <div flex="25" class="center center">
+                            <!--
+                          *********************
+                          EKÁER lezárás
+                          *********************
+                          -->
+                            <ngivr-button ng-if="buyContract.ekaer"
+                                          ng-click="isDisabled.finalizeTcn() || finalizeTcn()"
+                                          ng-disabled="isDisabled.finalizeTcn()">
+                                <ng-md-icon icon="send"></ng-md-icon>
+                                {{ngivr.strings.button.finalizeEkaer}}
+                            </ngivr-button>
+                        </div>
+                        <div flex="25" class="center center">
+                            <!--
+                          *********************
+                          EKÁER törlés
+                          *********************
+                          -->
+                            <ngivr-button ng-if="buyContract.ekaer"
+                                          ng-click="deleteTcn()"
+                                          ng-disabled="true">
+                                <ng-md-icon icon="cancel"></ng-md-icon>
+                                {{ngivr.strings.button.deleteEkaer}}
+                            </ngivr-button>
+                        </div>
+                        <div flex="25" class="end center">
+                            <!--
+                          *******************
+                          EKÁER módosítás
+                          *******************
+                          -->
+                            <ngivr-button ng-if="buyContract.ekaer" class="pull-right"
+                                          ng-click="isDisabled.modifyTcn() || buyContract.orderClosed || modifyTcn(true)"
+                                          ng-disabled="isDisabled.modifyTcn() || buyContract.orderClosed">
+                                <ng-md-icon icon="send"></ng-md-icon>
+                                {{ngivr.strings.button.modifyEkaer}}
+                            </ngivr-button>
+                        </div>
+                    </div>
+
+
+                </ng-form>
+
+
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+
+            <div ng-if="isEditable()">
+
+                <ngivr-lock ngivr-lock="lock">
+                    <ngivr-lock-unlocked>
+                        <ngivr-button ng-click="updateWeight()" ng-if="!isUpdateWeightEdit"
+                                      ng-disabled="buyContract.orderClosed">
+                            <ng-md-icon icon="edit">
+                            </ng-md-icon>
+                            <md-tooltip>{{ngivr.strings.button.edit}}</md-tooltip>
+                            {{ngivr.strings.button.edit}}
+                        </ngivr-button>
+                        <ngivr-button ng-click="saveUpdateWeight({notSaveVehicle: false})" ng-if="isUpdateWeightEdit">
+                            <ng-md-icon icon="save">
+                            </ng-md-icon>
+                            <md-tooltip>{{ngivr.strings.button.save}}</md-tooltip>
+                            {{ngivr.strings.button.save}}
+                        </ngivr-button>
+                        <ngivr-button ng-click="cancelUpdateWeight()" ng-if="isUpdateWeightEdit">
+                            <ng-md-icon icon="cancel">
+                            </ng-md-icon>
+                            <md-tooltip>{{ngivr.strings.button.cancel}}</md-tooltip>
+                            {{ngivr.strings.button.cancel}}
+                        </ngivr-button>
+                    </ngivr-lock-unlocked>
+                </ngivr-lock>
+
+            </div>
+
+            <!--<ngivr-input-switch-->
+            <!--ng-if="buyContract.ownScale"-->
+            <!--ng-model="vehicle.uniqueVehicle"-->
+            <!--ng-click="cc()"-->
+            <!--ngivr-caption="Adatok megadása kézzel"-->
+            <!--ngivr-off-display="ngivr.strings.inputSwitch.default.off"-->
+            <!--ngivr-on-display="ngivr.strings.inputSwitch.default.on" ngivr-on-value="true"-->
+            <!--ngivr-off-value="false" ng-disabled="vehicle.tcnStatus == 'F'"></ngivr-input-switch>-->
+
+            <ngivr-button
+                ng-if="vehicle.needCancel == true && (vehicle.inTicket && vehicle.outTicket) && !isUpdateWeightEdit"
+                ng-click="cancel() || ngivr.growl('close')">
+                <ng-md-icon icon="undo">
+                </ng-md-icon>
+                <md-tooltip>{{ngivr.strings.button.cancel}}</md-tooltip>
+                {{ngivr.strings.button.cancel}}
+            </ngivr-button>
+            <ngivr-button ng-click="answer()">
+                <ng-md-icon icon="close">
+                </ng-md-icon>
+                <md-tooltip>{{ngivr.strings.button.close}}</md-tooltip>
+                {{ngivr.strings.button.close}}
+            </ngivr-button>
+            <div ng-if="!buyContract.ekaer && !vehicle.inTicket && !vehicle.outTicket">
+                <ngivr-button ng-click="saveVehicle(false)">
+                    <ng-md-icon icon="save">
+                    </ng-md-icon>
+                    <md-tooltip>{{ngivr.strings.button.save}}</md-tooltip>
+                    {{ngivr.strings.button.save}}
+                </ngivr-button>
+            </div>
+        </md-dialog-actions>
+
+    </form>
+</md-dialog>
+
+

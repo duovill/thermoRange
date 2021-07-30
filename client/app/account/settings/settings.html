@@ -1,0 +1,48 @@
+<div class="col-md-3">
+    <h4 class="margin-bottom-50">Jelszómódosítás</h4>
+
+    <form class="form" name="form" ng-submit="changePassword(form)" novalidate>
+
+        <div class="form-group">
+            <label>Jelenlegi jelszó</label>
+
+            <input type="password" name="password" class="form-control" ng-model="user.oldPassword"
+                   mongoose-error/>
+            <p class="ng-message" ng-show="form.password.$error.mongoose">
+                {{ errors.other }}
+            </p>
+          <p class="ng-message" ng-show='isCapsLockOn'>Caps Lock be van kapcsolva!</p>
+        </div>
+
+        <div class="form-group">
+            <label>Új jelszó</label>
+
+            <input type="password" name="newPassword" class="form-control" ng-model="user.newPassword"
+                   ng-minlength="3"
+                   required/>
+            <p class="ng-message"
+               ng-show="(form.newPassword.$error.minlength || form.newPassword.$error.required) && (form.newPassword.$dirty || submitted)">
+                A jelszónak legalább 3 karakter hosszúnak kell lennie.
+            </p>
+        </div>
+
+      <div class="form-group">
+        <label>Új jelszó újra</label>
+
+        <input type="password" name="newPassword2" class="form-control" ng-model="user.newPassword2"
+               ng-minlength="3"
+               required/>
+        <p class="ng-message"
+           ng-show="(form.newPassword.$error.minlength || form.newPassword.$error.required) && (form.newPassword.$dirty || submitted)">
+          A jelszónak legalább 3 karakter hosszúnak kell lennie.
+        </p>
+      </div>
+
+        <p class="ng-message" ng-if="message"> {{ message }} </p>
+
+
+        <ngivr-button type="submit">Mentés</ngivr-button>
+
+
+    </form>
+</div>

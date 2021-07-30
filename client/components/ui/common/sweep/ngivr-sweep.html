@@ -1,0 +1,214 @@
+<ng-form name="sweepForm">
+
+
+    <div layout="column" flex layout-gt-sm="row">
+
+        <div layout="column" layout-gt-md="row" flex="100" flex-gt-md="50">
+
+            <!--
+            **********************
+            Raktár
+            **********************
+            -->
+            <div flex>
+                <md-input-container class="md-block">
+                    <label>{{ngivr.strings.field.depot}}</label>
+                    <ngivr-autocomplete-depot name="depot" ng-model="model.depot" site="userSite"
+                                              required></ngivr-autocomplete-depot>
+                </md-input-container>
+
+                <div ng-messages="sweepForm.depot.$error"
+                     ng-show="ngivr.form.message.show(sweepForm, 'depot')" style="height: auto !important;">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                </div>
+            </div>
+
+
+            <!--
+             ******************
+             Partner
+             ******************
+             -->
+            <div flex>
+                <md-input-container class="md-block">
+                    <label>{{ngivr.strings.field.partner}}</label>
+                    <ngivr-autocomplete-partner-more name="partner" ng-model="model.partner" ng-disabled="isOpenStock"
+                                                     ng-required="!isOpenStock"></ngivr-autocomplete-partner-more>
+                </md-input-container>
+
+                <div ng-messages="sweepForm.partner.$error"
+                     ng-show="ngivr.form.message.show(sweepForm, 'partner')" style="height: auto !important;">
+                    <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div layout="column" layout-gt-md="row" flex="100" flex-gt-md="50">
+
+            <!--
+           ******************
+           Cikk
+           ******************
+           -->
+            <div flex>
+                <div layout="row">
+                    <!--
+                    *******************
+                    Cikk
+                    *******************
+                    -->
+                    <div flex>
+                        <md-input-container class="md-block">
+                            <label>{{ngivr.strings.field.product}}</label>
+                            <ngivr-autocomplete-general-product name="product" ng-model="model.product"
+                                                                required></ngivr-autocomplete-general-product>
+
+                        </md-input-container>
+                        <div ng-messages="sweepForm.product.$error"
+                             ng-show="ngivr.form.message.show(sweepForm, 'product')" style="height: auto !important;">
+                            <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                        </div>
+                    </div>
+                    <!--
+                    ************************
+                    Szolgáltatási szerződés
+                    ************************
+                                    -->
+                    <div flex ng-if="model.partner._id && model.partner._id !== ngivr.settings.ownFirm._id">
+                        <md-input-container class="md-block md-container-md-select-fix" style="top: 6px">
+                            <label>{{ngivr.strings.field.serviceContract}}</label>
+                            <ngivr-select-service-contract required cost-bearer-id="model.partner._id"
+                                                           name="serviceContract" ng-model="model.serviceContract">
+                            </ngivr-select-service-contract>
+                        </md-input-container>
+
+                        <div ng-messages="sweepForm.serviceContract.$error"
+                             ng-show="ngivr.form.message.show(sweepForm, 'serviceContract')"
+                             style="margin-top: 10px; height: auto !important;">
+                            <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div flex>
+                <div layout="row">
+                    <!--
+                    ******************
+                    Mennyiség
+                    ******************
+                    -->
+                    <div flex>
+                        <md-input-container class="md-block">
+                            <label>{{ngivr.strings.field.quantity}} (mt)</label>
+                            <ngivr-input-number left="true" ng-model="model.quantity" name="quantity" min="0.001"
+                                                required></ngivr-input-number>
+                        </md-input-container>
+
+                        <div ng-messages="sweepForm.quantity.$error"
+                             ng-show="ngivr.form.message.show(sweepForm, 'quantity')" style="height: auto !important;">
+                            <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                            <div ng-message="wrongNumber">{{ngivr.strings.form.validation.min}}
+                                {{'0,001'}}
+                            </div>
+                        </div>
+                    </div>
+                    <!--
+                    ******************
+                    Dátum
+                    ******************
+                    -->
+                    <div flex>
+                        <md-input-container class="md-block">
+                            <label>{{ngivr.strings.field.date}}</label>
+                            <ngivr-input-date ng-model="model.fulfillmentDate" name="date"
+                                              ngivr-validation-future-date-forbidden
+                                              ngivr-validation-date-before="18" required></ngivr-input-date>
+                        </md-input-container>
+
+                        <div ng-messages="sweepForm.date.$error"
+                             ng-show="ngivr.form.message.show(sweepForm, 'date')" style="height: auto !important;">
+                            <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                            <div ng-message="ngivrValidationFutureDateForbidden">
+                                {{ngivr.strings.form.validation.futureDate}}
+                            </div>
+                            <div ng-message="ngivrValidationDateBefore">{{ngivr.strings.form.validation.validDate}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+    <div layout="row">
+        <div ng-if="$root.user.role === 'adminGlobal'" flex="25">
+            <div layout="row">
+                <div flex style="margin-top: 5px">
+                    <ngivr-input-switch ng-model="isOpenStock" ng-click="setForm()"
+                                        ngivr-caption="Nyitó készlet"
+                                        ngivr-off-display="'nem'"
+                                        ngivr-on-display="'igen'" ngivr-on-value="on"
+                                        ngivr-off-value="false"></ngivr-input-switch>
+                </div>
+                <div flex>
+                    <md-input-container ng-if="isOpenStock" class="md-block">
+                        <label>{{ngivr.strings.field.openStockValue}} (HUF)</label>
+                        <ngivr-input-number left="true" ng-model="model.openStockValue" name="openStockValue"
+                                            ng-disabled="!isOpenStock" min="0.001"
+                                            ng-required="isOpenStock"></ngivr-input-number>
+                    </md-input-container>
+                    <div ng-messages="sweepForm.openStockValue.$error"
+                         ng-show="ngivr.form.message.show(sweepForm, 'openStockValue') && isOpenStock"
+                         style="height: auto !important;">
+                        <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+                        <div ng-message="wrongNumber">{{ngivr.strings.form.validation.min}}
+                            {{'0,001'}}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <div flex>
+            <md-input-container class="md-block" style="bottom: 2px">
+                <textarea placeholder="{{ngivr.strings.field.reason}}" ng-model="model.reason" name="reason"
+                          required></textarea>
+            </md-input-container>
+
+            <div ng-messages="sweepForm.reason.$error"
+                 ng-show="ngivr.form.message.show(sweepForm, 'reason')" style="height: auto !important;">
+                <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+
+            </div>
+        </div>
+    </div>
+    <!--
+    ***************
+    Mentés
+    ***************
+    -->
+    <div layout="row">
+        <div flex layout-padding layout-align="end">
+            <ngivr-button class="pull-right" ng-click="saveSweep(sweepForm)">
+                {{direction === "in" ? 'Készlet bevételezése' : 'Készlet kivezetése'}}
+            </ngivr-button>
+        </div>
+    </div>
+</ng-form>
+
+
+<ngivr-list-sweep ngivr-query="query" user-site="userSite"></ngivr-list-sweep>
+
+

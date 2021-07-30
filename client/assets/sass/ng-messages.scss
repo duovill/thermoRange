@@ -1,0 +1,19 @@
+//@import "../metronic/sass/admin/layout2/themes/light";
+//@import "../metronic/sass/global/variables";
+@import "variables";
+
+[ng-messages] {
+    border-style: solid;
+    border-color: transparent;
+    border-width: 2px;
+    margin-bottom: 3px !important;
+}
+
+[ng-message], md-input-container [ng-message], .ng-message {
+    color: $ng-message-color !important;
+    background-color: $ng-message-bg !important;;
+    padding: 3px !important;;
+    font-size: 12px !important;;
+    border-radius: $ng-message-border-radius !important;
+   // margin-bottom: 3px !important;
+}

@@ -1,0 +1,238 @@
+<div ng-if="showDetails[$index]">
+    <md-tabs md-dynamic-height md-border-bottom >
+        <md-tab label="Áttekintő">
+
+            <div layout="row" class="margin-top-10">
+                <div flex="33">
+                  <span class="first-child"><b ng-bind="'Számla sorszáma: '"></b><span
+                      ng-bind="doc.incomingInvoiceNumber"></span></span>
+                </div>
+            </div>
+
+            <div layout="row" class="margin-top-10">
+
+                <div flex="33">
+                    <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Típus: '"></b><span
+                        ng-bind="registryStatusList[doc.registryStatus] + '/' + typeList[doc.type]"></span></span>
+                        <br/>
+                    </div>
+                </div>
+
+                <div flex="33">
+                    <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Érkezés: '"></b><span
+                        ng-bind="(doc.incomingDate | date: 'yyyy.MM.dd') + '/' + incomingTypesList[doc.incomingModeOfArrival]"></span></span>
+                        <br/>
+                    </div>
+                </div>
+
+                <div flex="33">
+                    <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Iktatás: '"></b><span
+                        ng-bind="(doc.createdAt | date: 'yyyy.MM.dd') + '/' + doc.history[0].userName"></span></span>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+
+            <div layout="row" class="margin-top-10">
+                <div flex="33">
+                    <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Teljesítés dátuma: '"></b><span
+                        ng-bind="doc.goodsSent | date: 'yyyy.MM.dd'"></span></span>
+                        <br/>
+                    </div>
+                </div>
+
+                <div flex="33">
+                    <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Fizetési határidő: '"></b><span
+                        ng-bind="doc.lastDayOfPayment | date: 'yyyy.MM.dd'"></span></span>
+                        <br/>
+                    </div>
+                </div>
+
+                <div flex="33">
+                    <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Elszámolás dátuma: '"></b><span
+                        ng-bind="doc.deadlineDate | date: 'yyyy.MM.dd'"></span></span>
+                        <br/>
+                    </div>
+                </div>
+
+            </div>
+
+            <div layout="row" class="margin-top-10">
+                <div flex="33">
+                    <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Fizetési mód: '"></b><span
+                        ng-bind="doc.incomingPayMode.FIZMOD_NEV"></span></span>
+                        <br/>
+                    </div>
+                </div>
+
+                <div flex ng-if="doc.incomingPayMode === 'transfer'">
+                    <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Bankszámlaszám: '"></b><span
+                        ng-bind="doc.incomingBankAccountNumber"></span></span>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+
+            <div layout="row" class="margin-top-10">
+                <div flex="33">
+                    <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Bruttó érték: '"></b><span
+                        ng-bind="doc.incomingBrutto | currency: doc.currency"></span></span>
+                        <br/>
+
+                    </div>
+                </div>
+
+                <div flex="33">
+                    <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Adótartalom: '"></b><span
+                        ng-bind="doc.incomingVAT | currency: doc.currency"></span></span>
+                        <br/>
+
+                    </div>
+                </div>
+
+                <div flex="33">
+                    <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Nettó érték: '"></b><span
+                        ng-bind="doc.incomingNetto | currency: doc.currency"></span></span>
+                        <br/>
+                    </div>
+                </div>
+
+            </div>
+
+            <div layout="row" ng-if="doc.incomingKATA" class="margin-top-10">
+                <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'KATA'"></b></span></span>
+                    <br/>
+                </div>
+            </div>
+
+            <div layout="row" ng-if="doc.incomingCashAccounting" class="margin-top-10">
+                <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Pénzforgalmi szemléletű ÁFA-elszámolás'"></b></span></span>
+                    <br/>
+                </div>
+            </div>
+
+            <div ng-if="doc.type !== 'normal'" class="margin-top-10">
+                <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Kapcsolódó bizonylatszám: '"></b><span
+                        ng-bind="doc.relatedInvoiceNumber"></span></span>
+                    <br/>
+                </div>
+            </div>
+
+            <div layout="row" ng-if="doc.comments[0]" class="margin-top-10">
+                <div class="detail-row">
+                  <span class="first-child"><b ng-bind="'Megjegyzés: '"></b><br><span style="white-space: pre-line"
+                                                                                      ng-bind="doc.comments[0]"></span></span>
+                    <br/>
+                </div>
+            </div>
+
+            <div ng-if="doc.type === 'normal' && doc.relatedInvoices" class="margin-top-10">
+                <div class="detail-row">
+                    <span class="first-child"><b ng-bind="'Kapcsolódó bizonylatszám(ok): '"></b><span
+                        ng-bind="doc.relatedInvoiceNumber"></span></span>
+                    <br/>
+                    <span ng-repeat="number in doc.relatedInvoices" class="first-child" style="margin-left:1em"><b
+                        ng-bind="number.type === 'correction' ? 'Korrekciós' : 'Sztornó'"></b> <span
+                        ng-bind="': ' + number.invoiceNumber"></span><br/></span>
+                </div>
+            </div>
+
+            <div ng-if="item.allButtons && !doc.cancelled && doc.type!=='storno' && doc.registryStatus === 'ware'" layout="row" layout-align="end end"
+                 layout-margin class="margin-top-10">
+
+                <md-button class="waves-effect waves-whitesmoke btn-small btn btn-grey" ng-if="doc.registryStatus !== 'advancement' && doc.registryStatus !== 'other' && doc.registryStatus !== 'service'"
+                           ng-click="doc.status === 'registered' ? startReconcilation(doc) : loadReconcilation(doc)"
+                           ng-disabled="ref.$ctrl.isLocked(doc)">
+                    Számlaegyeztetés
+                </md-button>
+
+                <md-button class="waves-effect waves-whitesmoke btn-small btn btn-grey" style="width: auto"
+                           ng-click="correctionSending(doc, true)"
+                           ng-disabled="ref.$ctrl.isLocked(doc) || doc.status !== 'registered'">
+                    Korrekcióra küldés
+                </md-button>
+
+            </div>
+            <form name="correctionForm" ng-if="doc.showCorrectionRow || doc.showCorrectionRowForMe || doc.status === 'checked_correction'" ng-submit="sendToCorrection(doc)">
+                <div layout="row" style="margin-right: 5px;">
+                    <div flex="75">
+                        <md-input-container class="md-block margin-bottom-10">
+                        <textarea placeholder="Megjegyzés" ng-disabled="doc.status === 'checked_correction'" name="correctionComment" required
+                                  ng-model="doc.correctionComment"></textarea>
+                        </md-input-container>
+                        <!--<md-input-container class="md-block">-->
+                        <!--<label>Megjegyzés</label>-->
+                        <!--<input ng-disabled="doc.status === 'checked_correction'" name="correctionComment"-->
+                        <!--ng-model="doc.correctionComment"/>-->
+                        <div ng-messages="correctionForm.correctionComment.$error">
+                            <p ng-message="required">A mező kitöltése kötelező!</p>
+                        </div>
+                        <!--</md-input-container>-->
+                    </div>
+                    <div flex ng-if="doc.status === 'registered'" style="margin-top: 6px">
+                        <div layout="row" layout-align="end end">
+                            <div style="margin-right: 3px;">
+                                <ngivr-button ng-click="sendToCorrection(doc, correctionForm)">
+                                    <span>Küldés</span></ngivr-button>
+                                <ngivr-button ng-click="correctionSending(doc, false)">
+                                    <span>Mégse</span></ngivr-button>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!--<div ng-if="doc.status === 'registered'" flex style="margin-top: 6px;">
+                      <ngivr-button ng-click="sendToCorrection(doc)" ng-disabled="false">
+                        <span>Küldés</span></ngivr-button>
+                    </div>
+                    <div ng-if="doc.status === 'registered'" flex style="margin-top: 6px;">
+                      <ngivr-button ng-click="doc.showCorrectionRow = false" ng-disabled="false">
+                        <span>Mégse</span></ngivr-button>
+                    </div>-->
+
+
+                </div>
+            </form>
+
+            <div ng-if="doc.status === 'checked_correction'" layout="row" layout-align="end end" layout-margin
+                 class="margin-top-10">
+                <md-button class="waves-effect waves-whitesmoke btn-small btn btn-grey" style="width: 220px"
+                           ng-click="changeStatus(doc, 'registered')"
+                           ng-disabled="isLocked(doc._id)">{{ngivr.strings.button.moveToRegistered}}
+
+                </md-button>
+            </div>
+
+
+        </md-tab>
+
+        <md-tab label="Szerkesztés" md-on-select="doc.status === 'checked_ack' ? editIncomingInvoice() : showForm = true"
+                md-on-deselect="socketService.get()">
+            <div ng-if="showForm">
+                <ngivr-form-new-filing ngivr-id="doc._id"
+                                       incoming-types-list="incomingTypesList"
+                                       pay-mode-list="payModeList"
+                                       ngivr-form-no-quit="true"
+                                       registry-status-list="registryStatusList"></ngivr-form-new-filing>
+            </div>
+
+        </md-tab>
+
+
+    </md-tabs>
+</div>

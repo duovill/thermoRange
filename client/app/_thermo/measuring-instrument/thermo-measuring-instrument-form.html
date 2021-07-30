@@ -1,0 +1,148 @@
+<md-dialog aria-label="unused" class="ngivr-dialog-default-size" id="{{dialogId}}"
+           ng-disabled="disabled">
+    <form novalidate name="thermoMeasuringInstrumentForm" ng-submit="submit()">
+
+        <md-toolbar>
+            <div class="md-toolbar-tools" md-colors="{background: 'primary-500'}">
+                <h2 flex md-truncate>{{ options.type === 'new' ?
+                    'Új Mérőműszerek' :
+                    'Mérőműszerek szerkesztése' }}</h2>
+                <md-button class="md-icon-button" ng-click="cancel({force: true})" aria-label="unused">
+                    <ng-md-icon icon="close"></ng-md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-dialog-content>
+            <md-content layout-padding>
+                <fieldset ng-disabled="!enabled">
+
+
+                    <md-input-container class="md-block">
+                        <label>Név</label>
+
+                        <input type="text" name="name" ng-model="model.name" required ngivr-validation-mongoose/>
+
+                        <div ng-messages="thermoMeasuringInstrumentForm.name.$error"
+                             ng-show="$root.ngivr.form.message.show(thermoMeasuringInstrumentForm, 'name')">
+                            <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                            <div ng-message="ngivrValidationMongoose">
+                                {{$root.ngivr.form.error.message(thermoMeasuringInstrumentForm, 'name')}}
+                            </div>
+                        </div>
+
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Mac ID</label>
+
+                        <input type="text" name="macId" ng-model="model.macId" required ng-pattern="macIdRegex" ngivr-validation-mongoose ngivr-capitalize/>
+
+                        <div ng-messages="thermoMeasuringInstrumentForm.macId.$error"
+                             ng-show="$root.ngivr.form.message.show(thermoMeasuringInstrumentForm, 'macId')">
+                            <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                            <div ng-message="pattern">A mac id formátuma helyes legyen (aa:bb:cc:dd:ee:ff)</div>
+                            <div ng-message="ngivrValidationMongoose">
+                                {{$root.ngivr.form.error.message(thermoMeasuringInstrumentForm, 'macId')}}
+                            </div>
+                        </div>
+
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Pontfelhő URL</label>
+
+                        <input type="text" name="pointCloudUrl" ng-model="model.pointCloudUrl"  ng-pattern="urlRegex" ngivr-validation-mongoose/>
+
+                        <div ng-messages="thermoMeasuringInstrumentForm.pointCloudUrl.$error"
+                             ng-show="$root.ngivr.form.message.show(thermoMeasuringInstrumentForm, 'pointCloudUrl')">
+                            <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                            <div ng-message="pattern">A robot url hibás</div>
+                            <div ng-message="ngivrValidationMongoose">
+                                {{$root.ngivr.form.error.message(thermoMeasuringInstrumentForm, 'pointCloudUrl')}}
+                            </div>
+                        </div>
+
+                    </md-input-container>
+
+                    <md-input-container class="md-block">
+                        <label>Hőkamera URL</label>
+
+                        <input type="text" name="thermalUrl" ng-model="model.thermalUrl"  ng-pattern="urlRegex" ngivr-validation-mongoose/>
+
+                        <div ng-messages="thermoMeasuringInstrumentForm.thermalUrl.$error"
+                             ng-show="$root.ngivr.form.message.show(thermoMeasuringInstrumentForm, 'thermalUrl')">
+                            <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                            <div ng-message="pattern">A robot url hibás</div>
+                            <div ng-message="ngivrValidationMongoose">
+                                {{$root.ngivr.form.error.message(thermoMeasuringInstrumentForm, 'thermalUrl')}}
+                            </div>
+                        </div>
+
+                    </md-input-container>
+
+
+                    <md-input-container class="md-block">
+                        <label>Pontfelhő  Térfogat URL</label>
+
+                        <input type="text" name="pointMeasureUrl" ng-model="model.pointMeasureUrl"  ng-pattern="urlRegex" ngivr-validation-mongoose/>
+
+                        <div ng-messages="thermoMeasuringInstrumentForm.pointMeasureUrl.$error"
+                             ng-show="$root.ngivr.form.message.show(thermoMeasuringInstrumentForm, 'pointMeasureUrl')">
+                            <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                            <div ng-message="pattern">A robot url hibás</div>
+                            <div ng-message="ngivrValidationMongoose">
+                                {{$root.ngivr.form.error.message(thermoMeasuringInstrumentForm, 'pointMeasureUrl')}}
+                            </div>
+                        </div>
+
+                    </md-input-container>
+
+                    <!--
+                    <md-input-container class="md-block">
+                        <label>Video URL</label>
+
+                        <input type="text" name="videoUrl" ng-model="model.videoUrl" required ng-pattern="urlRegex" ngivr-validation-mongoos/>
+
+                        <div ng-messages="thermoMeasuringInstrumentForm.videoUrl.$error"
+                             ng-show="$root.ngivr.form.message.show(thermoMeasuringInstrumentForm, 'videoUrl')">
+                            <div ng-message="required">{{$root.ngivr.strings.form.validation.required}}</div>
+                            <div ng-message="pattern">A video URL formátuma helyes legyen (pl. https://server.hu/video.mjpeg)</div>
+                            <div ng-message="ngivrValidationMongoose">
+                                {{$root.ngivr.form.error.message(thermoMeasuringInstrumentForm, 'videoUrl')}}
+                            </div>
+                        </div>
+
+                    </md-input-container>
+                    -->
+
+                </fieldset>
+            </md-content>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row" layout-align="end end">
+
+
+            <ngivr-lock ngivr-lock="lock">
+                <ngivr-lock-unlocked>
+                    <ngivr-button type="submit" ng-if="enabled">
+                        <ng-md-icon icon="{{ options.type === 'new' ? 'add' : 'save'}}"></ng-md-icon>
+                        {{ options.type === 'new' ? $root.ngivr.strings.button.new : $root.ngivr.strings.button.save
+                        }}
+                    </ngivr-button>
+                    <ngivr-button ng-if="disabled" ng-click="edit()">
+                        <ng-md-icon icon="edit"></ng-md-icon>
+                        {{ $root.ngivr.strings.button.edit }}
+                    </ngivr-button>
+                </ngivr-lock-unlocked>
+            </ngivr-lock>
+
+
+            <ngivr-button ng-click="cancel()">
+                <ng-md-icon icon="close"></ng-md-icon>
+                {{ enabled ? $root.ngivr.strings.button.cancel : $root.ngivr.strings.button.close }}
+            </ngivr-button>
+
+        </md-dialog-actions>
+
+    </form>
+</md-dialog>

@@ -1,0 +1,15 @@
+<span class="ngivr-input-data">
+
+    <input ng-model="display" class="ngivr-input-date" ng-keydown="key($event)" autocomplete="off"/>
+
+    <span ng-if="!currentDisabled">
+     <div style="float: left">
+      <ngivr-button ng-click="today()" href="javascript: void(0);" class="ngivr-input-date-today">{{ ngivr.strings.input.date.today }}</ngivr-button>
+     </div>
+      <div style="float: right; margin-top: 5px;" ng-if="isValid && display !== ''">
+        <ngivr-icon-fa ngivr-icon-fa="fa-minus" ng-click="add(-1, getType($event))" ngivr-tooltip-direction="bottom"
+                       ngivr-tooltip="A minusz vagy le kurzor gomb a nap, SHIFT-el a hónap, ALT-al az év változik."></ngivr-icon-fa>
+        <ngivr-icon-fa ngivr-icon-fa="fa-plus" ng-click="add(1, getType($event))" ngivr-color="accent" ngivr-tooltip-direction="bottom" ngivr-tooltip="A plusz vagy fel kurzor gomb a nap, SHIFT-el a hónap, ALT-al az év változik."></ngivr-icon-fa>
+       </div>
+</span>
+<div style="clear: both;"></div>

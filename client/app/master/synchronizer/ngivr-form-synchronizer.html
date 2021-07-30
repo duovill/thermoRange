@@ -1,0 +1,164 @@
+<div style="margin-top:10px;padding-left:10px;padding-right:10px;">
+	<ngivr-form name="synchronizer" ngivr-schema="synchronizer" ngivr-id="masterSlaveId" ng-model="data" ng-disabled="formLocked" ngivr-close="ngivrClose()">
+		<ngivr-form-body>
+			<md-input-container class="md-block">
+				<label>Szerver neve</label>
+				<input required name="serverName" ng-model="data.serverName" />
+			</md-input-container>
+
+			<div layout="row" class="align-btn">
+				<md-input-container class="md-block" style=flex:1>
+					<label>ID</label>
+					<input required name="id" ng-model="data.id" />
+				</md-input-container>
+				<div style="margin-top: 16px;margin-left:10px;">
+					<ngivr-icon-fa ngivr-icon-fa="fa-refresh" style="top:-4px;" ng-click="getID(32,data,'id')"></ngivr-icon-fa>
+					<ngivr-button-clipboard-copy ng-model="data.id"></ngivr-button-clipboard-copy>
+				</div>
+			</div>
+			<md-input-container class="md-block">
+				<div layout="row">
+					<ngivr-input-switch required ngivr-caption="MASTER" ngivr-off-display="ngivr.strings.inputSwitch.default.off" ngivr-on-display="ngivr.strings.inputSwitch.default.on" ngivr-on-value="true" ngivr-off-value="false" ng-model="data.enabledAsMaster"></ngivr-input-switch>
+					<ngivr-input-switch required ngivr-caption="CLIENT" ngivr-off-display="ngivr.strings.inputSwitch.default.off" ngivr-on-display="ngivr.strings.inputSwitch.default.on" ngivr-on-value="true" ngivr-off-value="false" ng-model="data.enabledAsClient"></ngivr-input-switch>
+				</div>
+			</md-input-container>
+			<div ng-show="data.enabledAsClient" style="margin-top:10px;padding-left:10px;padding-right:10px;">
+				<div layout="row">
+					<md-input-container class="md-block" style="flex:1">
+						<label>Master neve</label>
+						<input ng-required="data.enabledAsClient" name="masterServer.masterName" ng-model="data.masterServer.masterName" />
+					</md-input-container>
+					<md-input-container class="md-block">
+						<label>Utolsó szinkronizáció</label>
+						<input ng-disabled="true" ng-model="i.masterServer.lastSync" value="i.masterServer.lastSync|ngivrDate" />
+					</md-input-container>
+					<md-input-container class="md-block" style="margin-top:0px">
+						<ngivr-input-switch ng-disabled="1" required ngivr-caption="ONLINE" ngivr-off-display="ngivr.strings.inputSwitch.default.off" ngivr-on-display="ngivr.strings.inputSwitch.default.on" ngivr-on-value="true" ngivr-off-value="false" ng-model="i.masterServer.online"></ngivr-input-switch>
+					</md-input-container>
+				</div>
+				<md-input-container class="md-block">
+					<label>Master URL</label>
+					<input ng-required="data.enabledAsClient" name="masterServer.masterUrl" ng-model="data.masterServer.masterUrl" />
+				</md-input-container>
+				<md-input-container class="md-block">
+					<label>Master token</label>
+					<input ng-required="data.enabledAsClient" name="masterServer.masterToken" ng-model="data.masterServer.masterToken" />
+				</md-input-container>
+        <div layout="row" class="align-btn">
+          <md-input-container class="md-block" style=flex:1>
+            <label>Telephely</label>
+            <ngivr-autocomplete-site ng-model="data.site"></ngivr-autocomplete-site>
+          </md-input-container>
+        </div>
+        <div layout="row" class="align-btn">
+          <md-input-container class="md-block" style=flex:1>
+            <label>Mérlegház neve</label>
+            <input ng-model="data.weighingHouse" ng-value="data.weighingHouse" />
+          </md-input-container>
+        </div>
+        <div layout="row" class="align-btn">
+          <md-input-container class="md-block" style=flex:1>
+            <label>Mérlegjegy prefix</label>
+            <input ng-model="data.prefix" ng-value="data.prefix" />
+          </md-input-container>
+        </div>
+			</div>
+		</ngivr-form-body>
+	</ngivr-form>
+</div>
+
+<!-- KLIENSEK ÉS SZERKESZTŐ -->
+<div ng-show="data.enabledAsMaster" style="margin-top:10px;">
+	<ngivr-portlet ngivr-title="KLIENSEK LISTÁJA" ngivr-icon-fa="fa fa-list-ul" ngivr-form-save="ngivrFormSave">
+
+		<ngivr-portlet-action>
+			<md-button ng-hide="showEditor" ng-click="showClientForm()"><i class="fa fa-plus"></i>
+				<md-tooltip md-direction="bottom">Kliens hozzáadása</md-tooltip>
+				Új kliens hozzáadása
+			</md-button>
+			<md-button ng-show="showEditor" ng-click="cancelEdit(true)"><i class="fa fa-close"></i>
+				<md-tooltip md-direction="bottom">Bezárás mentés nélkül</md-tooltip>
+				Bezár
+			</md-button>
+		</ngivr-portlet-action>
+
+
+		<ngivr-portlet-body class="ngivr-portlet-clean">
+			<!-- EDITOR FORM -->
+			<div ng-if="showClientEditor" style="margin-top:10px;padding-left:10px;padding-right:10px;">
+				<ngivr-form name="synchronizer" ngivr-schema="synchronizerClients" ngivr-id="selectedClient" ng-model="selectedClientModel" ng-disabled="formLocked" ngivr-close="ngivrClientClose()">
+					<ngivr-form-body>
+						<div layout="row">
+							<md-input-container class="md-block" style="flex:1">
+								<label>Kliens szerver neve</label>
+								<input ng-model="selectedClientModel.name" />
+							</md-input-container>
+							<md-input-container class="md-block">
+								<label>Utolsó szinkronizáció</label>
+								<input ng-disabled="true" ng-model="selectedClientModel.lastSync" value="selectedClientModel.lastSync|ngivrDate" />
+							</md-input-container>
+							<md-input-container class="md-block" style="margin-top:0px">
+								<ngivr-input-switch ng-disabled="1" required ngivr-caption="ONLINE" ngivr-off-display="ngivr.strings.inputSwitch.default.off" ngivr-on-display="ngivr.strings.inputSwitch.default.on" ngivr-on-value="true" ngivr-off-value="false" ng-model="selectedClientModel.online"></ngivr-input-switch>
+							</md-input-container>
+
+						</div>
+						<div layout="row" class="align-btn">
+							<md-input-container class="md-block" style=flex:1>
+								<label>Kliens id</label>
+								<input ng-model="selectedClientModel.id" ng-value="selectedClientModel.id" />
+							</md-input-container>
+							<div style="margin-top: 16px;margin-left:10px;">
+								<ngivr-icon-fa ngivr-icon-fa="fa-refresh" style="top:-4px;" ng-click="getID(32,selectedClientModel,'id')"></ngivr-icon-fa>
+								<ngivr-button-clipboard-copy ng-model="selectedClientModel.id"></ngivr-button-clipboard-copy>
+							</div>
+						</div>
+						<div layout="row" class="align-btn">
+							<md-input-container class="md-block" style=flex:1>
+								<label>Auth token</label>
+								<input ng-model="selectedClientModel.token" ng-value="selectedClientModel.token" />
+							</md-input-container>
+							<div style="margin-top: 16px;margin-left:10px;">
+								<ngivr-icon-fa ngivr-icon-fa="fa-refresh" style="top:-4px;" ng-click="getID(128,selectedClientModel,'token')"></ngivr-icon-fa>
+								<ngivr-button-clipboard-copy ng-model="selectedClientModel.token"></ngivr-button-clipboard-copy>
+							</div>
+						</div>
+					</ngivr-form-body>
+				</ngivr-form>
+			</div>
+
+			<!-- KLIENS LISTA -->
+			<ngivr-list ngivr-schema="synchronizerClients" ngivr-ref="this" ngivr-query="clientQuery">
+				<!-- header (search)-->
+				<ngivr-list-searcher>
+					<md-input-container class="md-block">
+						<label>{{ ngivr.strings.title.search }}</label>
+						<input ng-model="list.inputSearch" ng-change="search(query)" ng-model-options="{debounce: ngivr.settings.debounce }" />
+					</md-input-container>
+				</ngivr-list-searcher>
+				<!-- listaelem template  -->
+				<ngivr-list-template>
+					<div class="loanRow">
+						<div class="loanIndex">
+							{{$index+1}}.
+						</div>
+						<div class="loanName">
+							{{doc.name}}
+						</div>
+						<div class="loanItem">
+							Utolsó szinkronizáció: {{doc.lastSync||"soha"}}
+						</div>
+						<div class="loanButton">
+							<md-button class="md-icon-button md-primary icon-button-table" aria-label="0" ng-click="changeVisible(doc)">
+								<i class="{{ doc.visible ? 'fa fa-eye' : 'fa fa-eye-slash' }}"></i>
+							</md-button>
+							<label>{{ doc.enabled ? 'Látható' : 'Tiltott' }}</label>
+							<ngivr-icon-fa ngivr-icon-fa="fa-eye" ng-click="showClientForm(doc)">
+							</ngivr-icon-fa>
+						</div>
+					</div>
+				</ngivr-list-template>
+			</ngivr-list>
+
+		</ngivr-portlet-body>
+	</ngivr-portlet>
+</div>

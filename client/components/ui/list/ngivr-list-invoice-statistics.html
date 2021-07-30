@@ -1,0 +1,144 @@
+<!-- <ngivr-list ngivr-schema="ticket" ngivr-ref="this" ngivr-query="ngivrQuery"> -->
+<ngivr-list ngivr-url="/api/statistics/invoiceStat" ngivr-ref="this" ngivr-query="ngivrQuery"
+            id="invStat{{::$ctrl.$id}}">
+
+    <ngivr-list-buttons>
+        <ngivr-button-excel-export ngivr-add-date="1" ngivr-filename="$ctrl.filename"
+                                   ngivr-url='/api/statistics/invoiceStat'
+                                   ngivr-server-query="query.search"></ngivr-button-excel-export>
+    </ngivr-list-buttons>
+
+<!--
+    <ngivr-list-searcher>
+
+        <md-input-container class="md-block md-select-card" >
+            <label>Kereső</label>
+            <input ng-model="ref.textSearch" ng-change="ref.$ctrl.search(query)"
+                   ng-model-options='{ debounce: ngivr.settings.debounce }'/>
+        </md-input-container>
+-->
+
+    </ngivr-list-searcher>
+
+  <ngivr-list-header>
+
+    <div layout="column" layout-gt-sm="row">
+      <md-input-container flex="50" class="md-block md-select-card">
+        <label>Év</label>
+        <!-- <input type="text" mask="2029.19.39" restrict="reject" ng-model="$ctrl.from" ng-change="$ctrl.search(query)" /> -->
+        <ngivr-input-number ng-model="ref.year" ng-change="ref.$ctrl.search(query)"/>
+      </md-input-container>
+
+      <md-input-container flex="50" class="md-block md-select-card">
+        <label>Hónap</label>
+        <!-- <input type="text" mask="2029.19.39" restrict="reject" ng-model="$ctrl.to" ng-change="$ctrl.search(query)" /> -->
+        <ngivr-input-number ng-model="ref.month" ng-change="ref.$ctrl.search(query)"/>
+      </md-input-container>
+    </div>
+
+
+    <div class="" hl-sticky="" container="stockLog_{{$ctrl.$id}}" offset-top="{{$ctrl.topOffset}}"
+         sticky-class="invstat-sticky-properties">
+      <div class="invstat-table-row invstat-table-row-header">
+        <div class="invstat-wrapper invstat-first-to-eighth">
+
+          <div class="invstat-wrapper invstat-attributes invstat-group-1-2-3-4">
+            <div class="invstat-wrapper invstat-group-1-2">
+              <div class="invstat-column invstat-col-1">Év</div>
+              <div class="invstat-column invstat-col-2">Hónap</div>
+            </div>
+            <!-- <div class="invstat-wrapper invstat-group-3-4">
+              <div class="invstat-column invstat-col-3">Termék</div>
+              <div class="invstat-column invstat-col-4">Raktár</div>
+            </div> -->
+          </div>
+          <div class="invstat-wrapper invstat-group-5-6-7-8">
+            <div class="invstat-wrapper invstat-group-5-6">
+              <div class="invstat-column invstat-col-5">Termékcsoport</div>
+              <!-- <div class="invstat-column invstat-col-6">Lerakott súly</div> -->
+            </div>
+            <!-- <div class="invstat-wrapper invstat-group-7-8">
+              <div class="invstat-column invstat-col-7">Mozgás iránya</div>
+              <div class="invstat-column invstat-col-8">Diszpószám</div>
+            </div> -->
+          </div>
+        </div>
+
+        <div class="invstat-wrapper invstat-nineth-to-sixteenth">
+          <div class="invstat-wrapper invstat-group-9-10-11-12">
+            <div class="invstat-wrapper invstat-group-9-10">
+              <div class="invstat-column invstat-col-9">Termék</div>
+              <!-- <div class="invstat-column invstat-col-10">Számlaszám</div> -->
+            </div>
+            <!-- <div class="invstat-wrapper invstat-group-11-12">
+              <div class="invstat-column invstat-col-11">Partner</div>
+            </div> -->
+          </div>
+          <div class="invstat-wrapper invstat-group-13-14-15-16">
+            <div class="invstat-wrapper invstat-group-13-14">
+              <div class="invstat-column invstat-col-13">Mennyiség</div>
+              <div class="invstat-column invstat-col-14">Ár</div>
+            </div>
+            <!-- <div class="invstat-wrapper invstat-group-15-16">
+              <div class="invstat-column invstat-col-15">Telephely</div>
+            </div> -->
+          </div>
+        </div>
+        <!-- <div class="container--unsticky"></div> -->
+      </div>
+      <!-- <div class="container--unsticky"></div> -->
+
+
+    </div>
+  </ngivr-list-header>
+
+  <ngivr-list-template>
+    <div class="invstat-table-row">
+      <div class="invstat-wrapper invstat-first-to-eighth">
+        <div class="invstat-wrapper invstat-attributes invstat-group-1-2-3-4">
+          <div class="invstat-wrapper invstat-group-1-2">
+            <div class="invstat-column invstat-col-1">{{doc.year}}</div>
+            <div class="invstat-column invstat-col-2">{{doc.month}}</div>
+          </div>
+          <!-- <div class="invstat-wrapper invstat-group-3-4"> -->
+            <!-- <div class="invstat-column invstat-col-3">{{doc.month}}</div> -->
+            <!-- <div class="invstat-column invstat-col-4">{{doc.depotName}}</div> -->
+          <!-- </div> -->
+        </div>
+        <div class="invstat-wrapper invstat-group-5-6-7-8">
+          <div class="invstat-wrapper invstat-group-5-6">
+            <div class="invstat-column invstat-col-5">{{doc.productGroup}}</div>
+            <!-- <div class="invstat-column invstat-col-6">{{doc.ledger.unloadedWeight}}</div> -->
+          </div>
+          <!-- <div class="invstat-wrapper invstat-group-7-8"> -->
+            <!-- <div class="invstat-column invstat-col-7">{{doc.product}}</div> -->
+            <!-- <div class="invstat-column invstat-col-8">{{doc.order[0].orderNumber}}</div> -->
+          <!-- </div> -->
+        </div>
+      </div>
+
+      <div class="invstat-wrapper invstat-nineth-to-sixteenth">
+        <div class="invstat-wrapper invstat-group-9-10-11-12">
+          <div class="invstat-wrapper invstat-group-9-10">
+            <div class="invstat-column invstat-col-9">{{doc.product}}</div>
+            <!-- <div class="invstat-column invstat-col-10">{{doc.invoiceNumber||'invoiceNr'}}</div> -->
+          </div>
+          <!-- <div class="invstat-wrapper invstat-group-11-12"> -->
+            <!-- <div class="invstat-column invstat-col-11">{{doc.order[0].partner[0].name|| doc.contract[0].partner[0].name ||doc.ownerName || 'N/A'}} -->
+            <!-- </div> -->
+          <!-- </div> -->
+        </div>
+        <div class="invstat-wrapper invstat-group-13-14-15-16">
+          <div class="invstat-wrapper invstat-group-13-14">
+            <div class="invstat-column invstat-col-13">{{doc.total.toFixed(0)|ngivrNumber}} kg</div>
+            <div class="invstat-column invstat-col-14">{{doc.totalPrice.toFixed(0)| currency: 'HUF'}}</div>
+          </div>
+          <!-- <div class="invstat-wrapper invstat-group-15-16"> -->
+            <!-- <div class="invstat-column invstat-col-15">{{doc.siteName}}</div> -->
+          <!-- </div> -->
+        </div>
+      </div>
+    </div>
+  </ngivr-list-template>
+
+</ngivr-list>

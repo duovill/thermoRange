@@ -1,0 +1,113 @@
+<ngivr-form ngivr-close="ngivrClose()" ngivr-lock-on-unlock="ngivrLockOnUnlock()" ngivr-schema="financialDocument" ngivr-id="ngivrId" ng-model="model">
+
+  <ngivr-form-body>
+
+    <md-input-container class="md-block" ng-if="model.registryDate">
+      <label>Iktatás</label>
+      <input type="text" readonly ng-disabled="true" ng-value="model.registryDate | ngivrDate"/>
+
+    </md-input-container>
+
+    <!--
+    *****************************************************
+    Dokumentum tipus
+    *****************************************************
+    -->
+    <md-input-container class="md-block">
+      <label>{{ ngivr.strings.financialDocument.field.documentType }}</label>
+
+      <ngivr-select-document-type ng-model="model.documentType" name="documentType" required ngivr-validation-mongoose />
+
+    </md-input-container>
+
+    <div ng-messages="$parent[$parent.formName].documentType.$error"
+         ng-show="ngivr.form.message.show($parent[$parent.formName], 'documentType')">
+      <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+      <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message($parent[$parent.formName], 'documentType')}}
+      </div>
+    </div>
+
+    <!--
+    *****************************************************
+    Partner autocomplate
+    *****************************************************
+    -->
+
+    <md-input-container class="md-block">
+      <label>{{ ngivr.strings.field.partner }}</label>
+
+      <ngivr-autocomplete-partner ng-model="model.partner[0]" name="partner" required ngivr-validation-mongoose>
+      </ngivr-autocomplete-partner>
+
+    </md-input-container>
+
+    <div ng-messages="$parent[$parent.formName].partner.$error"
+         ng-show="ngivr.form.message.show($parent[$parent.formName], 'partner')">
+      <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+      <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message($parent[$parent.formName], 'partner')}}
+      </div>
+    </div>
+
+
+    <!--
+    *****************************************************
+    bizonylatszám
+    *****************************************************
+    -->
+    <md-input-container class="md-block">
+      <label>{{ ngivr.strings.financialDocument.field.documentNumber }}</label>
+
+      <input ng-model="model.documentNumber" name="documentNumber" required ngivr-validation-mongoose/>
+
+    </md-input-container>
+
+    <div ng-messages="$parent[$parent.formName].documentNumber.$error"
+         ng-show="ngivr.form.message.show($parent[$parent.formName], 'documentNumber')">
+      <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+      <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message($parent[$parent.formName], 'documentNumber')}}
+      </div>
+    </div>
+
+    <!--
+    *****************************************************
+    Bruttó érték
+    *****************************************************
+    -->
+    <md-input-container class="md-block">
+      <label>{{ ngivr.strings.financialDocument.field.bruttoValue }}</label>
+
+      <input ng-model="model.bruttoValue" name="bruttoValue" type="number" required ngivr-validation-mongoose/>
+
+    </md-input-container>
+
+    <div ng-messages="$parent[$parent.formName].bruttoValue.$error"
+         ng-show="ngivr.form.message.show($parent[$parent.formName], 'bruttoValue')">
+      <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+      <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message($parent[$parent.formName], 'bruttoValue')}}
+      </div>
+    </div>
+
+
+    <!--
+    *****************************************************
+    Deviza
+    *****************************************************
+    -->
+
+  <md-input-container class="md-block md-container-md-select-fix">
+    <label>{{ ngivr.strings.financialDocument.field.currency }}</label>
+
+    <ngivr-select-currency ng-model="model.currency[0]" name="currency" required ngivr-validation-mongoose/>
+
+  </md-input-container>
+
+    <div ng-messages="$parent[$parent.formName].currency.$error"
+         ng-show="ngivr.form.message.show($parent[$parent.formName], 'currency')" style="height: auto !important;">
+      <div ng-message="required">{{ngivr.strings.form.validation.required}}</div>
+      <div ng-message="ngivrValidationMongoose">{{ngivr.form.error.message($parent[$parent.formName], 'currency')}}</div>
+    </div>
+  </ngivr-form-body>
+
+
+
+</ngivr-form>
